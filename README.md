@@ -1,8 +1,8 @@
 # Lab 1: Basic File System
 
-**Hand out: Sept TBD, 2022**
+**Hand out: Sept 22, 2022**
 
-**Deadline: Oct TBD 23:59 (GMT+8) No Extension**
+**Deadline: Oct 6 23:59 (GMT+8) No Extension**
 
 ## Get Ready
 
@@ -380,6 +380,6 @@ That should produce a file called lab1.tgz. Change the file name to your student
 $ mv lab.tgz lab1_[your student id].tgz
 ```
 
-Then upload **lab1\_[your student id].tgz** file to Canvas before the deadline. Make sure your implementation has passed all the tests before final submit. (If you must re-submit a new version, add explicit version number such as "V2" to indicate).
+Then upload **lab1\_[your student id].tgz** file to [Canvas](https://oc.sjtu.edu.cn/courses/49245) before the deadline. Make sure your implementation has passed all the tests before final submit. (If you must re-submit a new version, add explicit version number such as "V2" to indicate).
 
 You will receive full credit if your software passes the same tests we gave you when we run your software on our machines.
