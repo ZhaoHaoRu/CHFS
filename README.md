@@ -2,7 +2,7 @@
 
 **Hand out: Sept 22, 2022**
 
-**Deadline: Oct 6 23:59 (GMT+8) No Extension**
+**Deadline: Oct 7 23:59 (GMT+8) No Extension**
 
 ## Get Ready
 
