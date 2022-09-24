@@ -2,8 +2,15 @@
 
 ulimit -c unlimited
 
+LogDIR=$PWD/log
 ChFSDIR1=$PWD/chfs1
 
+# create log dir
+if [ ! -d "$LogDIR" ]; then
+    mkdir $LogDIR
+fi
+
+# start chfs1
 rm -rf $ChFSDIR1
 mkdir $ChFSDIR1 || exit 1
 sleep 1
