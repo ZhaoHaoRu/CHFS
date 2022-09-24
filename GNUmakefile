@@ -36,7 +36,7 @@ CXX = g++
 
 lab:  lab$(LAB)
 lab1: part1_tester chfs_client
-#lab2: chfs_client 
+lab2a: chfs_client 
 #lab3: chfs_client extent_server lock_server test-lab-3-b test-lab-3-c
 #lab4: chfs_client extent_server lock_server lock_tester test-lab-3-b\
 #	 test-lab-3-c

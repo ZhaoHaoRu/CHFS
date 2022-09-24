@@ -1,6 +1,5 @@
 // the extent server implementation
 
-#include "extent_server.h"
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,9 +8,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "extent_server.h"
+#include "persister.h"
+
 extent_server::extent_server() 
 {
   im = new inode_manager();
+  _persister = new chfs_persister("log"); // DO NOT change the dir name here
+
+  // Your code here for Lab2A: recover data on startup
 }
 
 int extent_server::create(uint32_t type, extent_protocol::extentid_t &id)
