@@ -29,7 +29,7 @@ int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &)
   
   const char * cbuf = buf.c_str();
   int size = buf.size();
-  printf("extent server the size of string want to write: %d\n", size);
+  printf("extent server the size of string want to write: %d", size);
   im->write_file(id, cbuf, size);
   
   return extent_protocol::OK;

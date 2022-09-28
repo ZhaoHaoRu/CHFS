@@ -53,7 +53,6 @@ chfs_client::isfile(inum inum)
         printf("isfile: %lld is a file\n", inum);
         return true;
     } 
-    printf("isfile: %lld is a dir\n", inum);
     return false;
 }
 /** Your code here for Lab...
@@ -77,7 +76,6 @@ chfs_client::isdir(inum inum)
         printf("isfile: %lld is a dir\n", inum);
         return true;
     } 
-    printf("isfile: %lld is not a dir!\n", inum);
     return false;
 }
 
@@ -94,7 +92,6 @@ chfs_client::issymlink(inum inum) {
         printf("isfile: %lld is a symbolic link!\n", inum);
         return true;
     } 
-    printf("isfile: %lld is not a symbolic link!\n", inum);
     return false;
 }
 
@@ -242,7 +239,6 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
      * note: lookup is what you need to check if directory exist;
      * after create file or dir, you must remember to modify the parent infomation.
      */
-    printf("chfs_client mkdir %lld %s\n", parent, name);
     extent_protocol::attr a;
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
@@ -269,7 +265,6 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
         printf("create directory error!\n");
         return IOERR;
     } 
-    printf("create new dir %lld\n", ino_out);
     // Create an empty extent for ino.(how to do? I don't know)
     // Add a <name, ino> entry into @parent.
     // my format for directories: inum/name/inum/name...inum/name/
@@ -281,7 +276,6 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
-    printf("the new dir info %s\n", buf.c_str());
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("put the parent inode info error!\n");
         return IOERR;
@@ -309,7 +303,7 @@ chfs_client::lookup(inum parent, const char *name, bool &found, inum &ino_out)
         return IOERR;   // readdir error
     }
     for(auto elem : dirent_list) {
-        if(elem.name == name) {     // TODO: I am not sure
+        if(elem.name == name) {    
             found = true;
             ino_out = elem.inum;
             break;
@@ -389,7 +383,6 @@ chfs_client::read(inum ino, size_t size, off_t off, std::string &data)
         return IOERR;
     }
     size_t length = buf.size();
-    printf("the buf true length: %ld\n", length);
     if((long int)length <= off) {
         data = {};
     } else if(off + size >= length) {
@@ -411,7 +404,6 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
      * note: write using ec->put().
      * when off > length of original file, fill the holes with '\0'.
      */
-    printf("begin write to inode %lld %ld %ld\n", ino, size, off);
     extent_protocol::attr a;
     if (ec->getattr(ino, a) != extent_protocol::OK) {
         return IOERR;
@@ -423,20 +415,14 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
     }
     // handle the data string to write
     bytes_written = size;
-    printf("prev_buf length before: %ld\n", prev_buf.size());
     if(off > (long int)prev_buf.length()) {
-        // bytes_written = off + size - prev_buf.length();
         prev_buf.resize(off);
     } 
     prev_buf.replace(off, size, next_buf);
-    // assume byte_written is the size of data written
-    printf("prev_buf length: %ld\n", prev_buf.size());
-    // printf("the to_write_str: %s\n", prev_buf.c_str());
     if(ec->put(ino, prev_buf) != extent_protocol::OK) {
         printf("extent server put error!\n");
         return IOERR;
     }
-    printf("byte_written: %ld\n", bytes_written);
     return r;
 }
 
@@ -502,7 +488,6 @@ int chfs_client::unlink(inum parent,const char *name)
 int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, const char *link_name, inum &ino) {
     int r = OK;
     extent_protocol::attr a;
-    printf("create symbolic link in parent %lld, true_file_path: %s, link name: %s\n", parent, true_file_path, link_name);
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent inode not valid!\n");
@@ -546,7 +531,6 @@ int chfs_client::parse_symbolic_link(std::string &buf, inum ino) {
     int r = OK;
 
     // verify the inode is valid
-    printf("parse symbolic link: %lld\n", ino);
     if(!issymlink(ino)) {
         printf("the inode type wrong!\n");
         return IOERR;
@@ -558,7 +542,6 @@ int chfs_client::parse_symbolic_link(std::string &buf, inum ino) {
         return IOERR;
     }
     buf = data;
-    printf("the symbolic link content: %s\n", buf.c_str());
-    // parse the path name (don't need?)
+    // parse the path name (don't need!)
     return r;
 }

@@ -179,8 +179,6 @@ fuseserver_read(fuse_req_t req, fuse_ino_t ino, size_t size,
     std::string data;
     int ret = chfs->read(ino, size,off, data);
     if(ret == chfs_client::OK) {
-        printf("fuseserver read: inode %ld, size %ld, off %ld\n", ino, size, off);
-        printf("the read data: %ld ", data.length());
         fuse_reply_buf(req, data.data(), data.size());
     } else {
         printf("read error!\n");
@@ -216,8 +214,6 @@ fuseserver_write(fuse_req_t req, fuse_ino_t ino,
     size_t byte_written = 0;
     int ret = chfs->write(ino, size, off, buf, byte_written);
     if(ret == extent_protocol::OK) {
-        printf("fuseserver write: inode %ld, size %ld, off %ld, buf size %ld\n", ino, size, off, strlen(buf));
-        printf("the write data: %ld \n", byte_written);
         fuse_reply_write(req, byte_written);
     } else {
         printf("write error!\n");
@@ -374,7 +370,6 @@ fuseserver_readdir(fuse_req_t req, fuse_ino_t ino, size_t size,
     chfs_client::inum inum = ino; // req->in.h.nodeid;
     struct dirbuf b;
 
-    printf("fuseserver_readdir\n");
 
     if(!chfs->isdir(inum)){
         fuse_reply_err(req, ENOTDIR);
@@ -428,7 +423,6 @@ fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
     // chfs_client::inum ino_out = 0;
     chfs_client::status ret;
     if((ret = fuseserver_createhelper(parent, name, mode, &e, extent_protocol::T_DIR)) == chfs_client::OK) {
-        printf("mkdir success!!!\n");
         fuse_reply_entry(req, &e);
     }
     // if(ret == chfs_client::OK) {
@@ -483,7 +477,6 @@ fuseserver_symlink(fuse_req_t req, const char *link, fuse_ino_t parent,
     e.entry_timeout = 0.0;
     e.generation = 0;
 
-    printf("begin to set the symbolic link!\n");
     chfs_client::inum inum;
     if((ret = chfs->create_symbolic_link(parent, link, name, inum)) == extent_protocol::OK) {
         e.ino = inum;
@@ -504,7 +497,6 @@ void
 fuseserver_readlink(fuse_req_t req, fuse_ino_t ino) {
     int ret = 0;
     std::string data;
-    printf("begin to read the symbolic link: %ld\n", ino);
     if((ret = chfs->parse_symbolic_link(data, ino)) == chfs_client::OK) {
         fuse_reply_readlink(req, data.c_str());
     } else {
