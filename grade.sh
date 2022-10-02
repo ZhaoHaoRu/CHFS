@@ -2,15 +2,17 @@
 make clean &> /dev/null 2>&1
 make &> /dev/null 2>&1 
 
-./test-lab2a-part1.sh
-./test-lab2a-part2.sh
+./stop.sh >/dev/null 2>&1
+./stop.sh >/dev/null 2>&1
+./stop.sh >/dev/null 2>&1
+./stop.sh >/dev/null 2>&1
+./stop.sh >/dev/null 2>&1
 
-##################################################
-#!/bin/bash
 score=0
 
-rm log -r
-./stop.sh
+mkdir chfs1 >/dev/null 2>&1
+mkdir chfs2 >/dev/null 2>&1
+
 ./start.sh
 
 test_if_has_mount(){
@@ -20,29 +22,257 @@ test_if_has_mount(){
 			echo "FATAL: Your ChFS client has failed to mount its filesystem!"
 			exit
 	fi;
+	chfs_count=$(ps -e | grep -o "chfs_client" | wc -l)
+	extent_count=$(ps -e | grep -o "extent_server" | wc -l)
+
+	if [ $chfs_count -ne 2 ];
+	then
+			echo "error: chfs_client not found (expecting 2)"
+			exit
+	fi;
+
+	if [ $extent_count -ne 1 ];
+	then
+			echo "error: extent_server not found"
+			exit
+	fi;
 }
 test_if_has_mount
 
-# run test a
-perl ./test-lab2a-part3-a.pl chfs1 | grep -q "Passed all"
+##################################################
+
+# run test 1
+./test-lab2b-part1-a.pl chfs1 | grep -q "Passed all"
 if [ $? -ne 0 ];
 then
-        echo "Failed test-A"
+        echo "Failed test-part1-A"
         #exit
 else
+
 	ps -e | grep -q "chfs_client"
 	if [ $? -ne 0 ];
 	then
 			echo "FATAL: chfs_client DIED!"
 			exit
 	else
-		score=$((score+20))
+		score=$((score+10))
 		#echo $score
-		echo "Passed A"
+		echo "Passed part1 A"
 	fi
+
 fi
 test_if_has_mount
 
+##################################################
+
+./test-lab2b-part1-b.pl chfs1 | grep -q "Passed all"
+if [ $? -ne 0 ];
+then
+        echo "Failed test-part1-B"
+        #exit
+else
+
+	ps -e | grep -q "chfs_client"
+	if [ $? -ne 0 ];
+	then
+			echo "FATAL: chfs_client DIED!"
+			exit
+	else
+		score=$((score+10))
+		#echo $score
+		echo "Passed part1 B"
+	fi
+
+fi
+test_if_has_mount
+
+##################################################
+
+./test-lab2b-part1-c.pl chfs1 | grep -q "Passed all"
+if [ $? -ne 0 ];
+then
+        echo "Failed test-part1-c"
+        #exit
+else
+
+	ps -e | grep -q "chfs_client"
+	if [ $? -ne 0 ];
+	then
+			echo "FATAL: chfs_client DIED!"
+			exit
+	else
+		score=$((score+10))
+		#echo $score
+		echo "Passed part1 C"
+	fi
+
+fi
+test_if_has_mount
+
+##################################################
+
+
+./test-lab2b-part1-d.sh chfs1 >tmp.1
+./test-lab2b-part1-d.sh chfs2 >tmp.2
+lcnt=$(cat tmp.1 tmp.2 | grep -o "Passed SYMLINK" | wc -l)
+
+if [ $lcnt -ne 2 ];
+then
+        echo "Failed test-part1-d"
+        #exit
+else
+
+	ps -e | grep -q "chfs_client"
+	if [ $? -ne 0 ];
+	then
+			echo "FATAL: chfs_client DIED!"
+			exit
+	else
+		score=$((score+10))
+		echo "Passed part1 D"
+		#echo $score
+	fi
+
+fi
+test_if_has_mount
+
+rm tmp.1 tmp.2
+
+##################################################################################
+
+./test-lab2b-part1-e.sh chfs1 >tmp.1
+./test-lab2b-part1-e.sh chfs2 >tmp.2
+lcnt=$(cat tmp.1 tmp.2 | grep -o "Passed BLOB" | wc -l)
+
+if [ $lcnt -ne 2 ];
+then
+        echo "Failed test-part1-e"
+else
+        #exit
+		ps -e | grep -q "chfs_client"
+		if [ $? -ne 0 ];
+		then
+				echo "FATAL: chfs_client DIED!"
+				exit
+		else
+			score=$((score+10))
+			echo "Passed part1 E"
+			#echo $score
+		fi
+fi
+
+test_if_has_mount
+
+rm tmp.1 tmp.2
+##################################################################################
+robust(){
+./test-lab2b-part1-f.sh chfs1 | grep -q "Passed ROBUSTNESS test"
+if [ $? -ne 0 ];
+then
+        echo "Failed test-part1-f"
+else
+        #exit
+		ps -e | grep -q "chfs_client"
+		if [ $? -ne 0 ];
+		then
+				echo "FATAL: chfs_client DIED!"
+				exit
+		else
+			score=$((score+10))
+			echo "Passed part1 F -- Robustness"
+			#echo $score
+		fi
+fi
+
+test_if_has_mount
+}
+
+
+
+##################################################################################
+consis_test(){
+./test-lab2b-part1-g chfs1 chfs2 | grep -q "test-lab2b-part1-g: Passed all tests."
+if [ $? -ne 0 ];
+then
+        echo "Failed test-part1-g"
+else
+        #exit
+		ps -e | grep -q "chfs_client"
+		if [ $? -ne 0 ];
+		then
+				echo "FATAL: chfs_client DIED!"
+				exit
+		else
+			score=$((score+10))
+			echo "Passed part1 G (consistency)"
+			#echo $score
+		fi
+fi
+}
+
+consis_test
+
+if [ $score -eq 60 ];
+then
+	echo "lab2b part 1 passed"
+else
+	echo "lab2b part 1 failed"
+fi
+
+test_if_has_mount
+
+##################################################################################
+./test-lab2b-part2-a chfs1 chfs2 | tee tmp.0
+lcnt=$(cat tmp.0 | grep -o "OK" | wc -l)
+
+if [ $lcnt -ne 5 ];
+then
+        echo "Failed test-part2-a: pass "$lcnt"/5"
+	score=$((score+$lcnt*10))
+else
+        #exit
+		ps -e | grep -q "chfs_client"
+		if [ $? -ne 0 ];
+		then
+				echo "FATAL: chfs_client DIED!"
+				exit
+		else
+			score=$((score+50))
+			echo "Passed part2 A"
+			#echo $score
+		fi
+fi
+
+rm tmp.0
+
+test_if_has_mount
+
+##################################################################################
+./test-lab2b-part2-b chfs1 chfs2 | tee tmp.0
+lcnt=$(cat tmp.0 | grep -o "OK" | wc -l)
+
+if [ $lcnt -ne 1 ];
+then
+        echo "Failed test-part2-b"
+else
+        #exit
+		ps -e | grep -q "chfs_client"
+		if [ $? -ne 0 ];
+		then
+				echo "FATAL: chfs_client DIED!"
+				exit
+		else
+			score=$((score+10))
+			echo "Passed part2 B"
+			#echo $score
+		fi
+fi
+
+rm tmp.0
+
 # finally reaches here!
+#echo "Passed all tests!"
+
+./stop.sh
 echo ""
-echo "Part3 score: "$score"/20"
+echo "Score: "$score"/120"

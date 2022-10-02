@@ -24,7 +24,7 @@ use strict;
 $| = 1;
 
 if($#ARGV != 0){
-    print STDERR "Usage: test-2a-part1-b.pl directory1\n";
+    print STDERR "Usage: test-lab1-part2-b.pl directory1\n";
     exit(1);
 }
 my $dir1 = $ARGV[0];
@@ -75,12 +75,7 @@ print "Check directory listing: ";
 dircheck($dir1);
 print "OK\n";
 
-chfscrash();
-chfsrestart();
-overallcheck();
-
 print "Passed all tests\n";
-exit(0);
 
 sub writeone {
     my($d, $name, $len) = @_;
@@ -144,7 +139,7 @@ sub append {
     }
     $contents = substr($contents, 0, $n);
     $files->{$name} .= $contents; ## Append the file content
-    
+
     seek(F, 0, 2);  ## goto end of file
     syswrite(F, $contents, length($contents), 0) or die "cannot append to $f";
     close(F);
@@ -170,7 +165,7 @@ sub writeat {
     }
     substr($x, $off, length($contents)) = $contents;
     $files->{$name} = $x;
-    
+
     seek(F, $off, 0);
     syswrite(F, $contents, length($contents), 0)
         or die "cannot write $f at offset $off";
@@ -200,50 +195,4 @@ sub dircheck {
     }
 }
 
-sub overallcheck {
-    checkcontent($dir1, $f2);
-    checkcontent($dir1, $f1);
-    checknot($dir1, "z-$$-z");
-    dircheck($dir1);
-}
-
-# to crash and restart chfs
-sub chfsrestart {
-    # restart
-    print "===== ChFS Restart =====\n";
-    system './start.sh';
-
-    # wait until chfs restart
-    my $time = 5;
-    while($time--) {
-        print "Wait for ChFS to mount...\n";
-        if(mounted()) { # mounted successfully
-            last;       # eq to 'break' in C
-        } else {        # wait for mounting
-            sleep(0.1);
-        };
-    }
-    
-    if (!mounted()) {
-        print "Fail to restart chfs!\n";
-        exit(1);
-    }
-}
-
-sub chfscrash {
-    print "===== ChFS Crash =====\n";
-    system './stop.sh';
-    # `pkill -SIGUSR1 chfs_client`;
-    if ($? == -1) {
-        print "Failed to crash ChFS: $!\n";
-    }
-    # wait for old chfs to exit on its own
-    while(mounted()) { 
-        print "Wait for ChFS to unmount...\n";
-        sleep(0.1);
-    }
-}
-
-sub mounted {
-    return (`mount | grep $dir1 | grep -v grep | wc -l` == 1);
-}
+exit(0);
