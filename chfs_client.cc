@@ -17,15 +17,12 @@
  * to achive all-or-nothing for these transactions.
  */
 
-chfs_client::chfs_client()
-{
-    ec = new extent_client();
-
-}
-
 chfs_client::chfs_client(std::string extent_dst, std::string lock_dst)
 {
-    ec = new extent_client();
+    ec = new extent_client(extent_dst);
+    // Lab2B: Use lock_client_cache when you test lock_cache
+    lc = new lock_client(lock_dst);
+    // lc = new lock_client_cache(lock_dst);
     if (ec->put(1, "") != extent_protocol::OK)
         printf("error init root dir\n"); // XYB: init root dir
 }
