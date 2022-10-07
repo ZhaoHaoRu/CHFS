@@ -4,7 +4,6 @@
 
 #include "lock_protocol.h"
 #include "lock_client.h"
-#include "lock_client_cache.h"
 #include "rpc.h"
 #include <arpa/inet.h>
 #include <vector>

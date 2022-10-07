@@ -52,15 +52,15 @@ rpc/rpctest: $(patsubst %.cc,%.o,$(rpctest)) rpc/$(RPCLIB)
 lock_demo=lock_demo.cc lock_client.cc
 lock_demo : $(patsubst %.cc,%.o,$(lock_demo)) rpc/$(RPCLIB)
 
-lock_tester=lock_tester.cc lock_client.cc lock_client_cache.cc
+lock_tester=lock_tester.cc lock_client.cc
 lock_tester : $(patsubst %.cc,%.o,$(lock_tester)) rpc/$(RPCLIB)
 
-lock_server=lock_server.cc lock_smain.cc lock_server_cache.cc handle.cc
+lock_server=lock_server.cc lock_smain.cc handle.cc
 lock_server : $(patsubst %.cc,%.o,$(lock_server)) rpc/$(RPCLIB)
 
 chfs_client=chfs_client.cc extent_client.cc fuse.cc extent_server.cc inode_manager.cc
 ifeq ($(LAB2BGE),1)
-  chfs_client += lock_client.cc lock_client_cache.cc
+  chfs_client += lock_client.cc
 endif
 chfs_client : $(patsubst %.cc,%.o,$(chfs_client)) rpc/$(RPCLIB)
 
