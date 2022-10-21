@@ -16,6 +16,7 @@ extent_protocol::status
 extent_client::create(uint32_t type, extent_protocol::extentid_t &id)
 {
   extent_protocol::status ret = extent_protocol::OK;
+  printf("extent client create: %d", type);
   ret = es->create(type, id);
   return ret;
 }

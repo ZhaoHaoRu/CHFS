@@ -299,6 +299,7 @@ chfs_client::lookup(inum parent, const char *name, bool &found, inum &ino_out)
 {
     int r = OK;
 
+    printf("lookup parent %lld, name %s\n", parent, name);
     /*
      * your code goes here.
      * note: lookup file from parent dir according to name;
@@ -370,6 +371,7 @@ chfs_client::readdir(inum dir, std::list<dirent> &list)
         dirent new_dirent;
         new_dirent.inum = n2i(inum_str);
         new_dirent.name = name_str;
+        printf("dir name: %s, inum: %lld\n", new_dirent.name.c_str(), new_dirent.inum);
         list.emplace_back(new_dirent);
     }
     return r;
@@ -501,6 +503,7 @@ int chfs_client::unlink(inum parent,const char *name)
 int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, const char *link_name, inum &ino) {
     int r = OK;
     extent_protocol::attr a;
+    printf("create symbolic link: parent :%lld, true file path: %s, link_name: %s\n", parent, true_file_path, link_name);
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent inode not valid!\n");

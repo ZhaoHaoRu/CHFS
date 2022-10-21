@@ -109,10 +109,13 @@ block_manager::write_block(uint32_t id, const char *buf)
 
 inode_manager::inode_manager()
 {
+  printf("initial inode manager!\n");
   bm = new block_manager();
-  uint32_t root_dir = alloc_inode(extent_protocol::T_DIR);
   _last_alloced = 0;
+  uint32_t root_dir = alloc_inode(extent_protocol::T_DIR);
+  _last_alloced = root_dir;
   if (root_dir != 1) {
+    printf("not the root dir!\n");
     exit(0);
   }
 }
@@ -326,7 +329,9 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
   char arr_for_remain[BLOCK_SIZE] = {0};
   int i = 0, pos = 0;
   // handle direct blocks
+  printf("get line 332\n");
   while(pos < size && i < NDIRECT) {
+    printf("pos: %d size: %d i: %d buf_len: %ld \t", pos, size, i, strlen(buf));
     if(!bm->is_valid_block(node->blocks[i])) {
       // has to alloc new
       uint32_t new_block_id = bm->alloc_block();
@@ -335,11 +340,15 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
     if(pos + BLOCK_SIZE > size) {
       memcpy(arr_for_remain, buf + pos, size - pos);
       bm->write_block(node->blocks[i], arr_for_remain);
+      // need to break!
+      break;
     }
     bm->write_block(node->blocks[i], buf + pos);
     pos += BLOCK_SIZE;
     ++i;
+    printf("get line 347\n");
   }
+  printf("get line 349");
   // handle indirect blocks
   if(pos < size && i == NDIRECT) {
     char indirect_blocks[BLOCK_SIZE] = {0};
@@ -369,6 +378,7 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
     // change the indirect block
     bm->write_block(node->blocks[NDIRECT], indirect_blocks);
   }
+  printf("get line 377");
   // free block if needed
   int used_block_num = (size - 1) / BLOCK_SIZE + 1;
   i = used_block_num;
@@ -381,6 +391,7 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
       break;
     }
   }
+  printf("get line 390");
   // free the indirect block
   if(i >= NDIRECT && pre_block_num > NDIRECT) {
     free_indirect_blocks(node, i - NDIRECT);
@@ -388,6 +399,7 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
       node->blocks[NDIRECT] = 0;
     }
   }
+  printf("get line 398");
   // change the inode information and save 
   node->size = size;
   node->atime = time(NULL);
