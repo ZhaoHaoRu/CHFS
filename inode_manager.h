@@ -4,6 +4,7 @@
 #define inode_h
 
 #include <stdint.h>
+#include <unordered_set>
 #include "extent_protocol.h"
 
 #define DISK_SIZE  1024*1024*16
@@ -22,6 +23,7 @@ class disk {
   disk();
   void read_block(uint32_t id, char *buf);
   void write_block(uint32_t id, const char *buf);
+ 
 };
 
 // block layer -----------------------------------------
@@ -35,12 +37,13 @@ typedef struct superblock {
 class block_manager {
  private:
   disk *d;
-  std::map <uint32_t, int> using_blocks;
+  std::map <uint32_t, int> using_blocks;  // this is bitmap!
  public:
   block_manager();
   struct superblock sb;
 
   uint32_t alloc_block();
+  bool is_valid_block(uint32_t id);
   void free_block(uint32_t id);
   void read_block(uint32_t id, char *buf);
   void write_block(uint32_t id, const char *buf);
@@ -81,7 +84,12 @@ class inode_manager {
   block_manager *bm;
   struct inode* get_inode(uint32_t inum);
   void put_inode(uint32_t inum, struct inode *ino);
+  // the using inum for inode
+  // std::unordered_set<uint32_t> using_inode_block;
+  uint32_t _last_alloced;
 
+  uint32_t* get_indirect_blocks(struct inode *node, int &block_count);
+  void free_indirect_blocks(struct inode *node, int begin_block);
  public:
   inode_manager();
   uint32_t alloc_inode(uint32_t type);
