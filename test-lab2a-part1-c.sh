@@ -42,11 +42,11 @@ fi
 echo "===== ChFS Crash =====\n"
 # pkill -SIGUSR1 chfs_client
 ./stop.sh
-if [ $? -ne 0 ];
-then 
-    echo "Failed to crash ChFS: $!\n"
-    exit
-fi
+# if [ $? -ne 0 ];
+# then 
+#     echo "Failed to crash ChFS: $!\n"
+#     exit
+# fi
 while [ `mount | grep "$pwd/chfs1" | grep -v grep | wc -l` -eq 1 ]
 do
     echo "Wait for ChFS to unmount...\n"

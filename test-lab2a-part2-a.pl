@@ -31,9 +31,9 @@ my $thr = threads->create(sub {
         # wait for next crash signal
         {
             lock($progress);
-            until ($progress > ($iters * 20)) {
+            # until ($progress >= ($iters * 10)) {
                 cond_wait($progress);
-            }
+            # }
         }
 
         # crash and restart
@@ -51,7 +51,7 @@ my $thr = threads->create(sub {
 for(my $iters = 0; $iters < 200; $iters++){
     createone();
     lock($progress);
-    $progress = $iters;
+    $progress = $iters + 1;
     if (($progress % 20) == 0) {
         cond_broadcast($progress);
     }
@@ -86,7 +86,7 @@ sub createone {
     my $contents = rand();
     print "create $name\n";
 
-    while(!open(F, ">$dir/$name")) {
+    while(!mounted() || !open(F, ">$dir/$name")) {
         # success(1), end loop
         # fail(0) without crash, error
         # fail(0) with crash, wait for restart

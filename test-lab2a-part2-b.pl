@@ -149,11 +149,11 @@ sub writeone {
 
     # write file
     while(1) {
-        while(!sysopen F, $f, O_TRUNC|O_RDWR|O_CREAT) {
+        while(!mounted() || !sysopen F, $f, O_TRUNC|O_RDWR|O_CREAT) {
             errhandle("test-lab2a-part2-b: cannot create $f", $!);
         }
 
-        if (!defined(syswrite F, $files->{$name}, length($files->{$name}))) {
+        if (!mounted() || !defined(syswrite F, $files->{$name}, length($files->{$name}))) {
             errhandle("test-lab2a-part2-b: cannot write to $f", $!);
             close(F);
         } else {
@@ -183,18 +183,18 @@ sub append {
 
     # write file
     while(1) {
-        while(!sysopen F, $f, O_RDWR) {
+        while(!mounted() || !sysopen F, $f, O_RDWR) {
             errhandle("test-lab2a-part2-b: cannot open $f for append", $!);
         }
 
         # goto end of file
-        if (!seek(F, $end, 0)) {
+        if (!mounted() || !seek(F, $end, 0)) {
             close(F);
             next;
         }
 
         my $sz = length($contents);
-        if (!defined(syswrite F, $contents, $sz, 0)) {
+        if (!mounted() || !defined(syswrite F, $contents, $sz, 0)) {
             errhandle("test-lab2a-part2-b: cannot append $sz bytes to $f", $!);
             close(F);
         } else {
@@ -225,17 +225,17 @@ sub writeat {
 
     # write file
     while(1) {
-        while(!sysopen F, $f, O_RDWR) {
+        while(!mounted() || !sysopen F, $f, O_RDWR) {
             errhandle("test-lab2a-part2-b: cannot open $f for read/write", $!);
         }
 
         # goto end of file
-        if (!seek(F, $off, 0)) {
+        if (!mounted() || !seek(F, $off, 0)) {
             close(F);
             next;
         }
 
-        if (!defined(syswrite(F, $contents, length($contents), 0))) {
+        if (!mounted() || !defined(syswrite(F, $contents, length($contents), 0))) {
             errhandle("test-lab2a-part2-b: cannot write $f at offset $off", $!);
             close(F);
         } else {
