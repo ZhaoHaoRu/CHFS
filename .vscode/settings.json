@@ -48,6 +48,12 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp",
+        "condition_variable": "cpp",
+        "ctime": "cpp"
     }
 }

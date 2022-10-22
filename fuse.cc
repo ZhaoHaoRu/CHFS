@@ -271,13 +271,17 @@ fuseserver_create(fuse_req_t req, fuse_ino_t parent, const char *name,
 {
     struct fuse_entry_param e;
     chfs_client::status ret;
+    // add log
+    printf("fuse create parent: %ld, name: %s\n", parent, name);
     if( (ret = fuseserver_createhelper( parent, name, mode, &e, extent_protocol::T_FILE)) == chfs_client::OK ) {
         fuse_reply_create(req, &e, fi);
         printf("OK: create returns.\n");
     } else {
         if (ret == chfs_client::EXIST) {
+            printf("fuse exist!\n");
             fuse_reply_err(req, EEXIST);
         }else{
+            printf("fuse create error!\n");
             fuse_reply_err(req, ENOENT);
         }
     }

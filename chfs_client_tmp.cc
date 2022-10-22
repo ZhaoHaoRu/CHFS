@@ -228,9 +228,12 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     }
 
     ///@note add transaction here
-    ec->begin_log();
+    if(ec->begin_log() != 0) {
+        printf("create begin log error!\n");
+    }
 
     // create a new file
+    // ec->create_log(extent_protocol::T_FILE);
     if(ec->create(extent_protocol::T_FILE, ino_out) != OK) {
         return IOERR;
     } 
@@ -244,11 +247,16 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
+
+    // ec->put_log(parent, buf);
     if(ec->put(parent, buf) != extent_protocol::OK) {
         return IOERR;
     }
-    printf("-----------------finish create-----------------\n");
-    ec->commit_log();
+
+    if(ec->commit_log() != 0) {
+        printf("create commit log error!");
+    }
+
     return r;
 }
 
@@ -286,9 +294,12 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
     }
 
     ///@note add log here
-    ec->begin_log();
+    if(ec->begin_log() != 0) {
+        printf("mkdir begin log error!\n");
+    }
 
     // create a new directory
+    // ec->create_log(extent_protocol::T_DIR);
     if(ec->create(extent_protocol::T_DIR, ino_out) != OK) {
         printf("create directory error!\n");
         return IOERR;
@@ -304,12 +315,16 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
+
+    // ec->put_log(parent, buf);
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("put the parent inode info error!\n");
         return IOERR;
     }
     
-    ec->commit_log();
+    if(ec->commit_log() != 0) {
+        printf("mkdir commit log error!\n");
+    }
     return r;
 }
 
@@ -454,14 +469,19 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
     prev_buf.replace(off, size, next_buf);
     
     ///@note add log here
-    ec->begin_log();
+    if(ec->begin_log() != 0) {
+        printf("write begin log error!\n");
+    }
 
+    // ec->put_log(ino, prev_buf);
     if(ec->put(ino, prev_buf) != extent_protocol::OK) {
         printf("extent server put error!\n");
         return IOERR;
     }
 
-    ec->commit_log();
+    if(ec->commit_log() != 0) {
+         printf("write commit log error!\n");
+    }
     return r;
 }
 
@@ -497,7 +517,9 @@ int chfs_client::unlink(inum parent,const char *name)
     }
 
     ///@note add log here
-    ec->begin_log();
+    if(ec->begin_log() != 0) {
+        printf("unlink begin log error!\n");
+    }
 
     // free the file's extent
     if(ec->remove(file_ino) != extent_protocol::OK) {
@@ -522,12 +544,16 @@ int chfs_client::unlink(inum parent,const char *name)
             ++it;
         }
     }
+
+    // ec->put_log(parent, new_buf);
     if(ec->put(parent, new_buf) != extent_protocol::OK) {
         printf("update parent directory error!\n");
         return IOERR;
     }
     
-    ec->commit_log();
+    if(ec->commit_log() != 0) {
+        printf("unlink commit log error!\n");
+    }
     return r;
 }
 
@@ -552,9 +578,12 @@ int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, co
     }
     
     ///@note add log here
-    ec->begin_log();
+    if(ec->begin_log() != 0) {
+        printf("symbolic link begin log error!\n");
+    }
 
     // create a new symbolic link
+    // ec->create_log(extent_protocol::T_SYMBOLIC);
     if(ec->create(extent_protocol::T_SYMBOLIC, ino) != OK) {
         printf("create symbolic link error!\n");
         return IOERR;
@@ -568,15 +597,20 @@ int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, co
     std::string inum_name_pair = ino_str + "/" + link_name + "/";
     buf += inum_name_pair;
     // set the symbolic value 
+    // ec->put_log(ino, std::string(true_file_path));
     if(ec->put(ino, std::string(true_file_path)) != extent_protocol::OK) {
         printf("set the symbolic value error!\n");
     }
+
+    // ec->put_log(parent, buf);
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("rewrite the parent inode fail!\n");
         return IOERR;
     }
 
-    ec->commit_log();
+    if(ec->commit_log() != 0) {
+        printf("symbolic link commit log error!\n");
+    }
     return r;
 }
 
