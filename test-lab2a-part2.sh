@@ -25,26 +25,26 @@ test_if_has_mount
 ##################################################
 
 # run test a
-perl ./test-lab2a-part2-a.pl chfs1 | grep -q "Passed all"
-if [ $? -ne 0 ];
-then
-        echo "Failed test-A"
-        #exit
-else
+# perl ./test-lab2a-part2-a.pl chfs1 | grep -q "Passed all"
+# if [ $? -ne 0 ];
+# then
+#         echo "Failed test-A"
+#         #exit
+# else
 
-	ps -e | grep -q "chfs_client"
-	if [ $? -ne 0 ];
-	then
-			echo "FATAL: chfs_client DIED!"
-			exit
-	else
-		score=$((score+20))
-		#echo $score
-		echo "Passed A"
-	fi
+# 	ps -e | grep -q "chfs_client"
+# 	if [ $? -ne 0 ];
+# 	then
+# 			echo "FATAL: chfs_client DIED!"
+# 			exit
+# 	else
+# 		score=$((score+20))
+# 		#echo $score
+# 		echo "Passed A"
+# 	fi
 
-fi
-test_if_has_mount
+# fi
+# test_if_has_mount
 
 ##################################################
 
@@ -72,4 +72,4 @@ test_if_has_mount
 
 # finally reaches here!
 echo ""
-echo "Part2 score: "$score"/40"
+echo "Part2 score: "$score"/20"
