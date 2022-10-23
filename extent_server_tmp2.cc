@@ -18,7 +18,7 @@ extent_server::extent_server()
   _persister = new chfs_persister("log"); // DO NOT change the dir name here
   tid = 0;
   // Your code here for Lab2A: recover data on startup
-  printf("get here!\n");
+//   printf("get here!\n");
 
   _persister->restore_logdata();
   std::vector<chfs_command> logs = _persister->get_logs();
@@ -32,11 +32,11 @@ extent_server::extent_server()
     } else if(log_entry.type == chfs_command::cmd_type::CMD_PUT) {
       // TODO: how here integer use?
       int tmp = 0;
-      printf("redo put inum: %lld buf: %ld\n", log_entry.inum, log_entry.input_string.size());
+      printf("redo put inum: %lld buf: %s\n", log_entry.inum, log_entry.input_string.size());
       put(log_entry.inum, log_entry.input_string, tmp, true);
     }
   }
-  // log_restart();
+//   log_restart();
   // _persister->clear();
 }
 
@@ -113,16 +113,9 @@ int extent_server::getattr(extent_protocol::extentid_t id, extent_protocol::attr
   return extent_protocol::OK;
 }
 
-int extent_server::remove(extent_protocol::extentid_t id, int &, bool is_restart)
+int extent_server::remove(extent_protocol::extentid_t id, int &)
 {
   printf("extent_server: write %lld\n", id);
-
-  // add the log
-  if(!is_restart) {
-    printf("for remove: %lld\n", id);
-    chfs_command remove_log(chfs_command::cmd_type::CMD_REMOVE, id);
-    _persister->append_log(remove_log);
-  }
 
   id &= 0x7fffffff;
   im->remove_file(id);
@@ -145,35 +138,17 @@ int extent_server::commit_log() {
   return extent_protocol::OK;
 }
 
-void extent_server::create_log(uint32_t type) {
-  chfs_command create_commend(chfs_command::cmd_type::CMD_CREATE, tid, type);
-  _persister->append_log(create_commend);
-  printf("create type: %d\n", type);
-}
-
-void extent_server::put_log(extent_protocol::extentid_t id, std::string buf) {
-  printf("put log inum: %lld buf: %s\n", id, buf.c_str());
-  chfs_command put_log(chfs_command::cmd_type::CMD_PUT, tid, id, buf);
-  _persister->append_log(put_log);
-}
-
 void extent_server::log_restart() {
-  printf("----------------begin restart--------------------\n");
-  // _persister->restore_checkpoint();
+  printf("----------------begin restart--------------------");
   _persister->restore_logdata();
 
   std::vector<chfs_command> logs = _persister->get_logs();
   std::vector<chfs_command> cur_logs;
 
-  // restore logs
   for(auto log_entry : logs) {
     if(log_entry.type == chfs_command::cmd_type::CMD_BEGIN) {
-      printf("get begin!\n");
       cur_logs.clear();
-      continue;
-
     } else if(log_entry.type == chfs_command::cmd_type::CMD_COMMIT) {
-      printf("get commit!\n");
       // all or nothing: the transaction can redo now
       for(auto entry : cur_logs) {
         if(entry.type == chfs_command::cmd_type::CMD_CREATE) {
@@ -183,13 +158,8 @@ void extent_server::log_restart() {
         } else if(entry.type == chfs_command::cmd_type::CMD_PUT) {
           // TODO: how here integer use?
           int tmp = 0;
-          printf("redo put inum: %lld buf: %s\n", entry.inum, entry.input_string.c_str());
-          put(entry.inum, entry.input_string, tmp, true);
-        
-        } else if(entry.type == chfs_command::cmd_type::CMD_REMOVE) {
-          printf("redo remove the inode: %lld\n", entry.inum);
-          int tmp = 0;
-          remove(entry.inum, tmp, true);
+          printf("not redo put inum: %lld buf: %s\n", log_entry.inum, log_entry.input_string.c_str());
+          put(log_entry.inum, log_entry.input_string, tmp, true);
         }
       }
 

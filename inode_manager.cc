@@ -160,11 +160,14 @@ inode_manager::alloc_inode(uint32_t type)
    * the 1st is used for root_dir, see inode_manager::inode_manager().
    */
   // create the new block
+  printf("get line 163\n");
   struct inode *new_node = new inode();
   bzero(new_node, sizeof(struct inode));
   new_node->atime = new_node->ctime = new_node->mtime = time(NULL);
   new_node->type = type;
   memset(new_node->blocks, 0, sizeof(blockid_t)*(NDIRECT+1));
+
+  printf("get line 170\n");
 
   for(int i = 1; i <= INODE_NUM; ++i) {
     uint32_t to_alloc = i + _last_alloced >= INODE_NUM ? (i + _last_alloced) % INODE_NUM + 1 : i + _last_alloced;
@@ -175,10 +178,12 @@ inode_manager::alloc_inode(uint32_t type)
       put_inode(to_alloc, new_node);
       _last_alloced = to_alloc;
       delete new_node;
+      printf("get line 181\n");
       return to_alloc;
     }
   }
   // an error occur
+  printf("get line 186\n");
   delete new_node;
   return 0;
 }
