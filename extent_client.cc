@@ -59,3 +59,28 @@ extent_client::remove(extent_protocol::extentid_t eid)
 }
 
 
+
+extent_protocol::status 
+extent_client::begin_log() {
+  int ret = es->begin_log();
+  return ret;
+}
+
+extent_protocol::status 
+extent_client::commit_log() {
+  int ret = es->commit_log();
+  return ret;
+}
+
+
+extent_protocol::status 
+extent_client::create_log(uint32_t type) {
+  // es->create_log(type);
+  return 0;
+}
+
+extent_protocol::status 
+extent_client::put_log(extent_protocol::extentid_t id, std::string buf) {
+  // es->put_log(id, buf);
+  return 0;
+}

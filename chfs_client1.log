@@ -1,0 +1,181 @@
+initial inode manager!
+create a root inode!
+read checkpoint type: begin! 0
+read checkpoint type: create! 2 
+read checkpoint type: put!  8
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: put!  0
+read checkpoint type: commit! 1
+read checkpoint type: begin! 0
+read checkpoint type: begin! 5
+FUSE library version: 2.9.9
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000000
+   max_readahead=0x00020000
+   max_write=0x00020000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: LOOKUP (1), nodeid: 1, insize: 46, pid: 2177
+lookup parent 1, name a2177
+dir name: a2177, inum: 2
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 600
+   getattr -> 600
+   unique: 4, success, outsize: 144
+unique: 6, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 2177
+   unique: 6, success, outsize: 32
+unique: 8, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 2177
+   unique: 8, error: -38 (Function not implemented), outsize: 16
+unique: 10, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 2177
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 600
+   getattr -> 600
+   unique: 10, success, outsize: 120
+unique: 12, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 2177
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 600
+   getattr -> 600
+   unique: 12, success, outsize: 120
+unique: 14, opcode: READ (15), nodeid: 2, insize: 80, pid: 2177
+   unique: 14, success, outsize: 616
+unique: 16, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 2177
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 600
+   getattr -> 600
+   unique: 16, success, outsize: 120
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 2177
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 2177
+lookup parent 1, name z-2177-z
+dir name: a2177, inum: 2
+   unique: 22, error: -2 (No such file or directory), outsize: 16
+unique: 24, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 2177
+   unique: 24, success, outsize: 32
+unique: 26, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 2177
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1667058866 1667058864 1667058864
+   unique: 26, success, outsize: 120
+unique: 28, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 2177
+isfile: 1 is a dir
+dir name: a2177, inum: 2
+   unique: 28, success, outsize: 48
+unique: 30, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 2177
+isfile: 1 is a dir
+dir name: a2177, inum: 2
+   unique: 30, success, outsize: 16
+unique: 32, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 32, success, outsize: 16

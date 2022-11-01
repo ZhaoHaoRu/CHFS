@@ -21,17 +21,26 @@ class extent_server {
 #endif
   inode_manager *im;
   chfs_persister *_persister;
+  // add tid
+  chfs_command::txid_t tid;
 
  public:
   extent_server();
 
-  int create(uint32_t type, extent_protocol::extentid_t &id);
-  int put(extent_protocol::extentid_t id, std::string, int &);
+  int create(uint32_t type, extent_protocol::extentid_t &id, bool is_restart = false);
+  int put(extent_protocol::extentid_t id, std::string, int &, bool is_restart = false);
   int get(extent_protocol::extentid_t id, std::string &);
   int getattr(extent_protocol::extentid_t id, extent_protocol::attr &);
-  int remove(extent_protocol::extentid_t id, int &);
+  int remove(extent_protocol::extentid_t id, int &, bool is_restart = false);
 
-  // Your code here for lab2A: add logging APIs
+  // TODO: Your code here for lab2A: add logging APIs
+  int begin_log();
+  int commit_log();
+  void create_log(uint32_t type);
+  void put_log(extent_protocol::extentid_t id, std::string);
+  
+  ///@brief read the log when restart
+  void log_restart();
 };
 
 #endif 

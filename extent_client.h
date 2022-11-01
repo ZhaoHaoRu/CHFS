@@ -21,6 +21,12 @@ class extent_client {
 				                          extent_protocol::attr &a);
   extent_protocol::status put(extent_protocol::extentid_t eid, std::string buf);
   extent_protocol::status remove(extent_protocol::extentid_t eid);
+
+  // TODO: Your code here for lab2A: add logging APIs
+  extent_protocol::status begin_log();
+  extent_protocol::status commit_log();
+  extent_protocol::status create_log(uint32_t type);
+  extent_protocol::status put_log(extent_protocol::extentid_t id, std::string buf);
 };
 
 #endif 
