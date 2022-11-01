@@ -211,11 +211,13 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     extent_protocol::attr a;
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
+        printf("the parent not a directory\n");
         return IOERR;
     }
     bool found = false;
     // check whether the file already exist
     if(lookup(parent, name, found, ino_out) != OK) {
+        printf("lookup error\n");
         return IOERR;
     }
     if(found) {
@@ -227,6 +229,7 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
 
     // create a new file
     if(ec->create(extent_protocol::T_FILE, ino_out) != OK) {
+        printf("extent client create error\n");
         return IOERR;
     } 
     // Create an empty extent for ino.(how to do? I don't know)
@@ -234,15 +237,17 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     // my format for directories: inum/name/inum/name...inum/name/
     std::string buf;
     if(ec->get(parent, buf) != extent_protocol::OK) {
+        printf("cannot get the parent inode\n");
         return IOERR;
     }
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
     if(ec->put(parent, buf) != extent_protocol::OK) {
+        printf("cannot put the content to parent inode\n");
         return IOERR;
     }
-    printf("-----------------finish create-----------------\n");
+    
     ec->commit_log();
     return r;
 }

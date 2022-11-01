@@ -254,8 +254,9 @@ fuseserver_createhelper(fuse_ino_t parent, const char *name,
     e->generation = 0;
 
     chfs_client::inum inum;
-    if ( type == extent_protocol::T_FILE )
+    if (type == extent_protocol::T_FILE ) {
 		ret = chfs->create(parent, name, mode, inum);
+    }
 	else 
 		ret = chfs->mkdir(parent,name,mode,inum);
     if (ret != chfs_client::OK)

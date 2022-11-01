@@ -27,11 +27,16 @@ class extent_server {
  public:
   extent_server();
 
-  int create(uint32_t type, extent_protocol::extentid_t &id, bool is_restart = false);
-  int put(extent_protocol::extentid_t id, std::string, int &, bool is_restart = false);
+  // for lab2A
+  // int create(uint32_t type, extent_protocol::extentid_t &id, bool is_restart = false);
+  // int put(extent_protocol::extentid_t id, std::string, int &, bool is_restart = false);
+  // int remove(extent_protocol::extentid_t id, int &, bool is_restart = false);
+  int create(uint32_t type, extent_protocol::extentid_t &id);
+  int put(extent_protocol::extentid_t id, std::string, int &);
+  int remove(extent_protocol::extentid_t id, int &);
   int get(extent_protocol::extentid_t id, std::string &);
   int getattr(extent_protocol::extentid_t id, extent_protocol::attr &);
-  int remove(extent_protocol::extentid_t id, int &, bool is_restart = false);
+  
 
   // TODO: Your code here for lab2A: add logging APIs
   int begin_log();

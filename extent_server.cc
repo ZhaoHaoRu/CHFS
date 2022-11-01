@@ -28,30 +28,27 @@ extent_server::extent_server()
       continue;
     } else if(log_entry.type == chfs_command::cmd_type::CMD_CREATE) {
       // printf("redo create type: %d\n", log_entry.inode_type);
-      create(log_entry.inode_type, log_entry.inum, true);
+      create(log_entry.inode_type, log_entry.inum);
     } else if(log_entry.type == chfs_command::cmd_type::CMD_PUT) {
       // TODO: how here integer use?
       int tmp = 0;
       // printf("redo put inum: %lld buf: %s\n", log_entry.inum, log_entry.input_string.c_str());
-      put(log_entry.inum, log_entry.input_string, tmp, true);
+      put(log_entry.inum, log_entry.input_string, tmp);
     }
   }
   // log_restart();
   // _persister->clear();
 }
 
-int extent_server::create(uint32_t type, extent_protocol::extentid_t &id, bool is_restart)
+int extent_server::create(uint32_t type, extent_protocol::extentid_t &id)
 {
   // alloc a new inode and return inum
-  // printf("extent_server: create inode\n");
-  // add to log
-  // printf("begin to create!\n");
-  
-  if(!is_restart) {
-    chfs_command create_commend(chfs_command::cmd_type::CMD_CREATE, tid, type);
-    _persister->append_log(create_commend);
-    // printf("create type: %d\n", type);
-  }
+  // for lab2A: add log
+  // if(!is_restart) {
+  //   chfs_command create_commend(chfs_command::cmd_type::CMD_CREATE, tid, type);
+  //   _persister->append_log(create_commend);
+  //   // printf("create type: %d\n", type);
+  // }
 
   id = im->alloc_inode(type);
   // printf("created inum: %lld\n", id);
@@ -59,7 +56,7 @@ int extent_server::create(uint32_t type, extent_protocol::extentid_t &id, bool i
   return extent_protocol::OK;
 }
 
-int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &, bool is_restart)
+int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &)
 {
   // printf("extent_server: put %lld\n", id);
   id &= 0x7fffffff;
@@ -67,12 +64,12 @@ int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &, b
   const char * cbuf = buf.c_str();
   int size = buf.size();
  
-  // add log
-  if(!is_restart) {
-    // printf("for redo put inum: %lld buf: %s\n", id, cbuf);
-    chfs_command put_log(chfs_command::cmd_type::CMD_PUT, tid, id, buf);
-    _persister->append_log(put_log);
-  }
+  // for lab2A: add log
+  // if(!is_restart) {
+  //   // printf("for redo put inum: %lld buf: %s\n", id, cbuf);
+  //   chfs_command put_log(chfs_command::cmd_type::CMD_PUT, tid, id, buf);
+  //   _persister->append_log(put_log);
+  // }
   
   im->write_file(id, cbuf, size);
 
@@ -113,16 +110,16 @@ int extent_server::getattr(extent_protocol::extentid_t id, extent_protocol::attr
   return extent_protocol::OK;
 }
 
-int extent_server::remove(extent_protocol::extentid_t id, int &, bool is_restart)
+int extent_server::remove(extent_protocol::extentid_t id, int &)
 {
   // printf("extent_server: write %lld\n", id);
 
-  // add the log
-  if(!is_restart) {
-    printf("for remove: %lld\n", id);
-    chfs_command remove_log(chfs_command::cmd_type::CMD_REMOVE, id);
-    _persister->append_log(remove_log);
-  }
+  // for lab2A: add the log
+  // if(!is_restart) {
+  //   printf("for remove: %lld\n", id);
+  //   chfs_command remove_log(chfs_command::cmd_type::CMD_REMOVE, id);
+  //   _persister->append_log(remove_log);
+  // }
 
   id &= 0x7fffffff;
   im->remove_file(id);
@@ -168,30 +165,26 @@ void extent_server::log_restart() {
   // restore logs
   for(auto log_entry : logs) {
     if(log_entry.type == chfs_command::cmd_type::CMD_BEGIN) {
-      // printf("get begin!\n");
       cur_logs.clear();
       continue;
 
     } else if(log_entry.type == chfs_command::cmd_type::CMD_COMMIT) {
-      // printf("get commit!\n");
       // all or nothing: the transaction can redo now
       for(auto entry : cur_logs) {
         if(entry.type == chfs_command::cmd_type::CMD_CREATE) {
-          // printf("redo create type: %d\n", entry.inode_type);
-          create(entry.inode_type, entry.inum, true);
+          create(entry.inode_type, entry.inum);
 
         } else if(entry.type == chfs_command::cmd_type::CMD_PUT) {
           // TODO: how here integer use?
           int tmp = 0;
           // printf("redo put inum: %lld buf: %s\n", entry.inum, entry.input_string.c_str());
-          put(entry.inum, entry.input_string, tmp, true);
+          put(entry.inum, entry.input_string, tmp);
         
         } 
-        // else if(entry.type == chfs_command::cmd_type::CMD_REMOVE) {
-        //   printf("redo remove the inode: %lld\n", entry.inum);
-        //   int tmp = 0;
-        //   remove(entry.inum, tmp, true);
-        // }
+        else if(entry.type == chfs_command::cmd_type::CMD_REMOVE) {
+          int tmp = 0;
+          remove(entry.inum, tmp);
+        }
       }
 
       cur_logs.clear();
