@@ -42,7 +42,7 @@ test_if_has_mount
 ##################################################
 
 # run test 1
-./test-lab2b-part1-a.pl chfs1 | grep -q "Passed all"
+perl ./test-lab2b-part1-a.pl chfs1 | grep -q "Passed all"
 if [ $? -ne 0 ];
 then
         echo "Failed test-part1-A"
@@ -55,7 +55,7 @@ else
 			echo "FATAL: chfs_client DIED!"
 			exit
 	else
-		score=$((score+10))
+		score=$((score+5))
 		#echo $score
 		echo "Passed part1 A"
 	fi
@@ -65,7 +65,7 @@ test_if_has_mount
 
 ##################################################
 
-./test-lab2b-part1-b.pl chfs1 | grep -q "Passed all"
+perl ./test-lab2b-part1-b.pl chfs1 | grep -q "Passed all"
 if [ $? -ne 0 ];
 then
         echo "Failed test-part1-B"
@@ -78,7 +78,7 @@ else
 			echo "FATAL: chfs_client DIED!"
 			exit
 	else
-		score=$((score+10))
+		score=$((score+5))
 		#echo $score
 		echo "Passed part1 B"
 	fi
@@ -88,7 +88,7 @@ test_if_has_mount
 
 ##################################################
 
-./test-lab2b-part1-c.pl chfs1 | grep -q "Passed all"
+perl ./test-lab2b-part1-c.pl chfs1 | grep -q "Passed all"
 if [ $? -ne 0 ];
 then
         echo "Failed test-part1-c"
@@ -101,7 +101,7 @@ else
 			echo "FATAL: chfs_client DIED!"
 			exit
 	else
-		score=$((score+10))
+		score=$((score+5))
 		#echo $score
 		echo "Passed part1 C"
 	fi
@@ -128,7 +128,7 @@ else
 			echo "FATAL: chfs_client DIED!"
 			exit
 	else
-		score=$((score+10))
+		score=$((score+5))
 		echo "Passed part1 D"
 		#echo $score
 	fi
@@ -155,7 +155,7 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+10))
+			score=$((score+5))
 			echo "Passed part1 E"
 			#echo $score
 		fi
@@ -178,7 +178,7 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+10))
+			score=$((score+5))
 			echo "Passed part1 F -- Robustness"
 			#echo $score
 		fi
@@ -203,7 +203,7 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+10))
+			score=$((score+5))
 			echo "Passed part1 G (consistency)"
 			#echo $score
 		fi
@@ -212,7 +212,7 @@ fi
 
 consis_test
 
-if [ $score -eq 60 ];
+if [ $score -eq 30 ];
 then
 	echo "lab2b part 1 passed"
 else
@@ -222,12 +222,34 @@ fi
 test_if_has_mount
 
 ##################################################################################
-./test-lab2b-part2-a chfs1 chfs2 | tee tmp.0
+
+./stop.sh >/dev/null 2>&1
+sleep 1
+mkdir chfs1 >/dev/null 2>&1
+mkdir chfs2 >/dev/null 2>&1
+./lock_server 3772 > lock_server.log 2>&1 &
+
+./lock_tester 3772 | grep -q "./lock_tester: passed all tests successfully"
+if [ $? -ne 0 ];
+then
+	echo "Failed test-part2"
+	#exit
+else
+	score=$((score+20))
+	#echo $score
+	echo "Passed part2"
+fi
+
+killall lock_server
+./start.sh
+
+##################################################################################
+./test-lab2b-part3-a chfs1 chfs2 | tee tmp.0
 lcnt=$(cat tmp.0 | grep -o "OK" | wc -l)
 
 if [ $lcnt -ne 5 ];
 then
-        echo "Failed test-part2-a: pass "$lcnt"/5"
+        echo "Failed test-part3-a: pass "$lcnt"/5"
 	score=$((score+$lcnt*10))
 else
         #exit
@@ -237,8 +259,8 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+50))
-			echo "Passed part2 A"
+			score=$((score+25))
+			echo "Passed part3 A"
 			#echo $score
 		fi
 fi
@@ -248,12 +270,12 @@ rm tmp.0
 test_if_has_mount
 
 ##################################################################################
-./test-lab2b-part2-b chfs1 chfs2 | tee tmp.0
+./test-lab2b-part3-b chfs1 chfs2 | tee tmp.0
 lcnt=$(cat tmp.0 | grep -o "OK" | wc -l)
 
 if [ $lcnt -ne 1 ];
 then
-        echo "Failed test-part2-b"
+        echo "Failed test-part3-b"
 else
         #exit
 		ps -e | grep -q "chfs_client"
@@ -262,8 +284,8 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+10))
-			echo "Passed part2 B"
+			score=$((score+25))
+			echo "Passed part3 B"
 			#echo $score
 		fi
 fi
@@ -275,4 +297,4 @@ rm tmp.0
 
 ./stop.sh
 echo ""
-echo "Score: "$score"/120"
+echo "Score: "$score"/100"

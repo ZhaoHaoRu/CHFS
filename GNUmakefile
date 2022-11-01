@@ -38,7 +38,7 @@ CXX = g++
 lab:  lab$(LAB)
 lab1: part1_tester chfs_client
 lab2a: chfs_client 
-lab2b: lock_server lock_tester lock_demo chfs_client extent_server test-lab2b-part1-g test-lab2b-part2-a test-lab2b-part2-b test-lab2b-part3-a test-lab2b-part3-b
+lab2b: lock_server lock_tester lock_demo chfs_client extent_server test-lab2b-part1-g test-lab2b-part3-a test-lab2b-part3-b
 
 rpclib=rpc/rpc.cc rpc/connection.cc rpc/pollmgr.cc rpc/thr_pool.cc rpc/jsl_log.cc gettime.cc
 rpc/librpc.a: $(patsubst %.cc,%.o,$(rpclib))
@@ -79,7 +79,7 @@ fuse.o: fuse.cc
 -include *.d
 -include rpc/*.d
 
-clean_files=rpc/rpctest rpc/*.o rpc/*.d *.o *.d chfs_client extent_server lock_server lock_tester lock_demo rpctest test-lab2b-part1-g test-lab2b-part2-a test-lab2b-part2-b test-lab2b-part3-a test-lab2b-part3-b demo_client demo_server
+clean_files=rpc/rpctest rpc/*.o rpc/*.d *.o *.d chfs_client extent_server lock_server lock_tester lock_demo rpctest test-lab2b-part1-g test-lab2b-part3-a test-lab2b-part3-b demo_client demo_server rpc/$(RPCLIB)
 .PHONY: clean handin
 clean: 
 	rm $(clean_files) -rf 
