@@ -1,242 +1,304 @@
-# **Lab 2A: Atomicity**
+# Lab 2B: RPC and Lock Server
 
-**Hand out: Oct. 20, 2022**
+**Hand out: Nov. 1, 2022**
 
-**Deadline: Oct. 27 23:59 (GMT+8)**
+**Deadline: Nov. 10 23:59 (GMT+8)**
 
-## **Introduction**
+## Introduction
 
-In this lab, you will learn how to achieve crash consistency in your standalone file system step by step, including:
+In this lab, you will learn how to achieve consistency under concurrent scenarios. This lab includes three parts:
 
-- **Part1:** you will implement a basic persister for **data persistence**, using log mechanism to persist ChFS data into disk.
-- **Part2:** you will use log mechanism to achieve **crash consistency**, i.e., each write operation(create, write, symlink…) in ChFS layer is atomic under crash condition.
-- In **Part3**, you will need to implement **checkpoint** to reduce log file size.
+- In **Part1**(30 points), you will use **RPC** to implement a single client file server.
+- In **Part2**(20 points), you will implement a **lock server**.
+- In **Part3**(50 points), you will add **2PL** to ensure that concurrent operations to the same file/directory from different chfs_clients occur one at a time.
 
 If you have questions about this lab, either in programming environment or requirement, please ask TA **Yiwen Zhang** by email([besssszyw@gmail.com](mailto:besssszyw@gmail.com)) or Wechat.
 
-## **Getting Started**
+## Getting started
 
-Please backup your solution of lab1 first.
+Please backup your solution of lab2A first.
 
-- First, save the lab1’s solution:
+- First, save the lab2A’s solution:
 
-  ```bash
-  $ cd lab-cse
-  $ git commit -a -m “solution for lab1”
+  ```shell
+  $ cd lab-cse   
+  $ git commit -a -m “solution for lab2A”
   ```
 
 - Then, pull from the repository:
 
-  ```bash
-  $ git pull
-  remote: Counting objects: 43, done.
-  …
-  [new branch]      lab2A      -> origin/lab2A
-  Already up-to-date
+  ```shell
+  $ git pull   
+  remote: Counting objects: 43, done.  
+  …   
+  [new branch]      lab2B      -> origin/lab2B   
+  Already up-to-date`
   ```
 
-- Then, change to lab2 branch:
+- Then, change to lab2B branch:
 
-  ```bash
-  $ git checkout lab2A
+  ```shell
+  $ git checkout lab2B
   ```
 
-- Merge with lab1, and solve the conflict by yourself (probably mainly in extent_server.cc and chfs_client.cc):
+- Merge with lab2A, and solve the conflict by yourself:
 
-  ```bash
-  $ git merge lab1
-  Auto-merging fuse.cc
-  CONFLICT (content): Merge conflict in chfs_client.cc
-  Automatic merge failed; fix conflicts and then commit the result
+  ```shell
+  $ git merge lab2A   
+  Auto-merging fuse.cc   
+  CONFLICT (content): Merge conflict in extent_client.cc   
+  Automatic merge failed; fix conflicts and then commit the result   
   ......
   ```
 
 - After merge all of the conflicts, you should be able to compile successfully:
 
-  ```bash
+  ```shell
   $ make
   ```
 
 - Make sure there's no error in make.
 
-Note: For this lab, you will not have to worry about concurrency problems. You also need not be concerned about malicious or buggy applications.
+Note: For this lab, **you will not have to worry about server failures or client failures**. You also need not be concerned about malicious or buggy applications.
 
-## Transactional FileSystem
+## Multi-thread FileSystem
 
-In lab1, we have implemented a basic file system on a single machine. In this lab, we will extend the file system to a transactional file system, which is robust against crashes.
-
-Below is the architecture of our transactional filesystem in lab2A. As you see a new component named persister has been added to the system, its function is to do logging, checkpoint, and data restoration. Skeleton code of persister has been provided in file persister.h.
-
-In our transactional filesystem, **we regard chfs_client as the transaction layer**, which means each chfs_client function(such as create, write, symlink…) should be treated as a **transaction**. Except from BEGIN and COMMIT, a transaction in ChFS usually consists of several other operations in extent_server layer. For example, the ‘create’ transaction(in chfs_client) consists of ‘create’ and ‘put’ operations(in extent_server).
-
-![arch](assets/lab2a.png)
-
-- Separating persistence module from ChFS logic brings us a lot of advantages, such as better modularity, code reusability.
-- Remember to persist your log and checkpoint data on disk. **And PLEASE separate your log file and checkpoint file,  put them under ‘log’ dir, name them as ‘logdata.bin’ and ‘checkpoint.bin’.**
+- In lab1, we have implemented a single-thread file system on a single machine. In this lab, we will extend the single-thread standalone fils system to a multi-thread standalone file system.
+- Separating extent service from ChFS logic brings us a lot of advantages, such as no fate sharing with ChFS client, high availability.
+- Luckily, most of your job has been done in the previous lab. You now can use extent service provided by extent_server through RPC in extent_client. Then a strawman multi-thread file system has been finished.
 - *You had better test your code with the previous test suit before any progress.*
 
-## Part 1: Persistency
+## Part 1: RPC
 
-### **Your job**
+### Your job
 
-In Part 1 your job is to use log mechanism to **persist** ChFS data into disk, and make sure data can be recovered completed after ChFS restart. The code you cope with in Part 1 is mainly in persister.h and extent_server.cc. After implementing the logging and recovering logic, your code should pass all Part 1 test scripts.
+In lab 2B, your aim is to extend your filesystem to a multi-thread file server. And in part 1, it now moves on to the RPC part. You will use the RPC lib(we have provided in rpc/) to achieve RPC communication between extent_server and extent_client.
 
-### Detailed Guidance
-
-1. First of all, read the code and comment in persister.h carefully. In this file, we provide you with  a skeleton chfs_command class and persister class. A transaction in ChFS consists of several ChFS commands, each command corresponds to a log entry.
-2. Implement chfs_command class in persister.h. A chfs_command object is a representation of a log entry, thus you may need to add transfer functions between chfs_command and string. A chfs_command object MUST contain a transaction id, other information is free to be added.
-3. A chfs_command object can be used to record an extent server layer operation. In fact, there are two kinds of logs: *command log*, a redo-only log that record the parameters of the operation, so that you can redo the operation while recovering; *value log,* a redo-undo log that record the state of your system before and after the operation for undo and redo. We recommend you to implement ***value log** here*.
-4. Implement function append_log and restore_logdata for persister class in persister.h. Remember to persist data into disk while logging, for crash happens anytime. And in restore_logdata, read raw binary data from disk and transfer it into ChFS command list.
-5. After implementing the util tool, call logging and restoring APIs in extent_server. Make sure each operation is persisted into disk, and the data can be recovered at the next startup.
-
-### About Test
-
-The test in Part 1 is basic, it only crashes ChFS after a filesystem operation has done(e.g. create, write, symlink). Therefore, just focus on persistency in this part. There are 3 scripts for this part, test-lab2a-part1-a.pl, test-lab2a-part1-b.pl and test-lab2a-part1-c.sh. You can run them one by one, for example:
-
-```bash
-$ make clean && make
-$ ./start.sh
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-$ perl ./test-lab2a-part1-a.pl chfs1
-create file-yyuvjztagkprvmxjnzrbczmvmfhtyxhwloulhggy-18674-0
-create file-hcmaxnljdgbpirprwtuxobeforippbndpjtcxywf-18674-1
-...
-dircheck                                                                                                                                                 
-===== ChFS Crash =====                                                                                                                                   
-===== ChFS Restart =====
-...
-Passed all tests!
-```
-
-All three test scripts will restart ChFS for several times, each restart generates corresponding output, and follows with checks for previous filesystem operations. If test file exits without printing "Passed all tests!", then there must be something wrong with your code. If the error happens after a restart of ChFS, then check your code for logging and recovering; but if the error happens before any crash, it is probably due to your bug in lab1 code.
-
-After passing 3 scripts one by one, run overall part 1 test scripts with:
-
-```bash
-$ make clean && make
-$ ./test-lab2a-part1.sh 
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-Passed A
-Passed B
-Passed C
-
-Part1 score: 40/40
-```
-
-Now you get full score in part 1, start part 2!
-
-## Part 2: All-or-nothing
-
-### **Your job**
-
-In Part 2 your job is to use log mechanism in ChFS client layer to achieve **crash consistency**, make sure each transaction(create, mkdir, write…) is atomic under crash condition.
+![lab2.png](assets/lab2b-1.png)
 
 ### Detailed Guidance
 
-Here you need to implement log logic for transaction in ChFS client. You may consider:
+In principle, you can implement whatever design you like as long as it satisfies the requirements in the "Your Job" section and passes the testers. In practice, you should follow the detailed guidance below.
 
-1. Add log API in extent server and extent client to provide log service for higher layer.
-2. Call log API in ChFS client to ensure transaction atomicity.
+Using the RPC system:
 
-Note that in practice, system crash may also occur when a log entry is being written to the log file. But in this lab we consider each log operation as an atomic operation, so you do not have to worry about this issue.
+- The RPC library. In this lab, you don't need to care about the implementation of RPC mechanisms, rather you'll use the RPC system to make your single-thread filesystem become a multi-thread filesystem.
+- A server uses the RPC library by creating an RPC server object (rpcs) listening on a port and registering various RPC handlers (see `main()` function in demo_server.cc).
+- A client creates a RPC client object (rpcc), asks for it to be connected to the demo_server's address and port, and invokes RPC calls (see demo_client.cc).
+- You can learn how to use the RPC system by studying the stat call implementation. Please note it's for illustration purpose only, you won't need to follow the implementation.
+  - You can use `make rpcdemo` to build the RPC demo.
+- RPC handlers have a standard interface with one to six request arguments and a reply value implemented as a last reference argument. The handler also returns an integer status code; the convention is to return zero for success and to return positive numbers for various errors. If the RPC fails in the RPC library (e.g.timeouts), the RPC client gets a negative return value instead. The various reasons for RPC failures in the RPC library are defined in rpc.h under rpc_const.
+- The RPC system marshalls objects into a stream of bytes to transmit over the network and unmarshalls them at the other end. Beware: the RPC library does not check that the data in an arriving message have the expected type(s). If a client sends one type and the server is expecting a different type, something bad will happen. You should check that the client's RPC call function sends types that are the same as those expected by the corresponding server handler function.
+- The RPC library provides marshall/unmarshall methods for standard C++ objects such as std::string, int, and char. You should be able to complete this lab with existing marshall/unmarshall methods.
 
 ### About Test
 
-The test is a little bit harder than part 1, in part 2 ChFS crashes any time, it could occur in the middle of an inode layer operation or an extent_server layer operation. In this way we can examine whether your filesystem achieves atomicity under crash conditions. There are 2 test scripts for this part, test-lab2a-part2-a.pl and test-lab2a-part2-b.pl. You can run them one by one, for example:
+- To grade this part of lab, a overall test script
+
+  ```bash
+  $ ./grade.sh
+  ```
+
+  is provided. Here's a successful grading.
+
+  ```shell
+   $ ./grade.sh
+   Passed A
+   Passed B
+   Passed C
+   Passed D
+   Passed E
+   Passed G (consistency)
+   Lab2 part 1 passed
+   ......
+  ```
+
+- You can also run test scripts one by one:
+
+  ```bash
+  $ make clean && make
+  $ ./start.sh
+  starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
+  $ perl ./test-lab2b-part1-a.pl chfs1
+  create file-yyuvjztagkprvmxjnzrbczmvmfhtyxhwloulhggy-18674-0
+  create file-hcmaxnljdgbpirprwtuxobeforippbndpjtcxywf-18674-1
+  ...
+  Passed all tests!
+  $ ./test-lab2b-part1-g chfs1 chfs2
+  Create then read: OK
+  ...
+  test-lab2b-part1-g: Passed all tests.
+  ```
+
+  Note test scripts a-f require only one mountpoint as input argument(use chfs1 or chfs2), test script g requires two mountpoint as input argument(use chfs1 and chfs2).
+
+## Part 2: Lock Server
+
+In part 2, you will implement a locking service to coordinate updates to the file system structures.
+
+![lab2b-2.png](assets/lab2b-2.png)
+
+We provide you with a skeleton RPC-based lock server, a lock client interface, a sample application that uses the lock client interface, and a tester. Now compile and start up the lock server, giving it a port number on which to listen to RPC requests. You'll need to choose a port number that other programs aren't using. For example:
 
 ```bash
-$ make clean && make
-$ ./start.sh
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-$ perl ./test-lab2a-part2-a.pl chfs1
-create file-yyuvjztagkprvmxjnzrbczmvmfhtyxhwloulhggy-18674-0
-...
-===== ChFS Crash =====
-test-lab2a-part2-a: cannot create chfs1/file-xerlcfysgkttqpkclweqlnsszmffexdaqwotdcfq-14912-21 due to system crash: Software caused connection abort
-===== ChFS Restart =====
-...
-dircheck
-Passed all tests!
+$ make 
+$./lock_server 3772
 ```
 
-All 2 test scripts will restart ChFS in the middle of filesystem operations for several times. If test file exits without printing "Passed all tests!", then there must be something wrong with your code.
-
-After passing 2 scripts one by one, run overall part 2 test scripts with:
+Now open a second terminal on the same machine and run lock_demo, giving it the port number on which the server is listening:
 
 ```bash
-$ make clean && make
-$ ./test-lab2a-part2.sh 
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-Passed A
-Passed B
-
-Part1 score: 40/40
+$ ./lock_demo 3772
+stat request from clt 1386312245
+stat returned 0
 ```
 
-Now you get full score in part 2, start part 3!
+lock_demo asks the server for the number of times a particular lock has been acquired, using the stat RPC that we have provided. In the skeleton code, this will always return 0. You can use it as an example of how to add RPCs. You don't need to fix stat to report the actual number of acquisitions of the given lock in this lab, but you may if you wish.
 
-## Part 3: Checkpoint
+The lock client skeleton does not do anything yet for the acquire and release operations; similarly, the lock server does not implement lock granting or releasing. Your job is to implement this functionality in the server, and to arrange for the client to send RPCs to the server.
 
-### **Your job**
+### Your Job
 
-In Part 3 your job is to implement **checkpoint** mechanism. Without checkpointing, log file grows indefinitely. In order to keep log file size within acceptable range, you have to use checkpoint mechanism to clear committed logs from time to time.
+Your job is to implement a correct lock server assuming a perfect underlying network. Correctness means obeying this invariant: at any point in time, there is at most one client holding a lock with a given identifier.
 
 ### Detailed Guidance
 
-- The semantics of checkpoint in this lab is slightly different from what you learned in class. The system you learn in the class is a persistent system, every write operation is directly  write through to the disk, so a checkpoint event just clears all committed log entries. While in this lab, ChFS is a memory system, persistence is achieved through logging. Therefore, a checkpoint event not only clears the committed log entry, but also needs to persist the current state of ChFS. The data file generated by checkpoint events should be named as ‘checkpoint.bin’.
-- Implement function checkpoint and restore_checkpoint for persister class in persister.h. You can either implement checkpoint by compress previous log entries, or make a snapshot of current ChFS state.
-- When and how to do checkpoint is up to you, but remember to keep your log file size under **MAX_LOG_SZ**, and your checkpoint file size under **DISK_SIZE**. Also, separate your log file and checkpoint file, put them under ‘log’ dir, name them as ‘logdata.bin’ and ‘checkpoint.bin’, or your test may fail.
-- Note: A *snapshot* is a record of the system state at a particular moment, it contains all the information to restore the system into the state at that moment.
-- Hint: If you use snapshot in checkpoint, consider the corner case when a snapshot happens in the middle of a transaction, and the system crashes just after snapshot completed, leaving the transaction uncommitted. In this case, you may need to use value log to undo the uncommitted transaction.
+In principle, you can implement whatever design you like as long as it satisfies the requirements in the "Your Job" section and passes the testers. In practice, you should follow the detailed guidance below.
+
+- Using the RPC system:
+
+  - A server uses the RPC library by creating an RPC server object (rpcs) listening on a port and registering various RPC handlers (see lock_smain.cc). A client creates a RPC client object (rpcc), asks for it to be connected to the lock_server's address and port, and invokes RPC calls (see lock_client.cc).
+  - Each RPC procedure is identified by a unique procedure number. We have defined the acquire and release RPC numbers you will need in lock_protocol.h. You must register handlers for these RPCs with the RPC server object (see lock_smain.cc).
+  - You can learn how to use the RPC system by studying the stat call implementation in lock_client and lock_server. RPC handlers have a standard interface with one to six request arguments and a reply value implemented as a last reference argument. The handler also returns an integer status code; the convention is to return zero for success and to return positive numbers for various errors. If the RPC fails in the RPC library (e.g.timeouts), the RPC client gets a negative return value instead. The various reasons for RPC failures in the RPC library are defined in rpc.h under rpc_const.
+  - The RPC system marshalls objects into a stream of bytes to transmit over the network and unmarshalls them at the other end. Beware: the RPC library does not check that the data in an arriving message have the expected type(s). If a client sends one type and the server is expecting a different type, something bad will happen. You should check that the client's RPC call function sends types that are the same as those expected by the corresponding server handler function.
+  - The RPC library provides marshall/unmarshall methods for standard C++ objects such asstd::string, int, and char. *You should be able to complete this lab with existing marshall/unmarshall methods.*
+
+- Implementing the lock server:
+
+  - The lock server can manage many distinct locks. Each lock is identified by an integer of type lock_protocol::lockid_t. The set of locks is open-ended: if a client asks for a lock that the server has never seen before, the server should create the lock and grant it to the client. When multiple clients request the same lock, the lock server must grant the lock to one client at a time.
+
+  - You will need to modify the lock server skeleton implementation in files lock_server.{cc,h} to accept acquire/release RPCs from the lock client, and to keep track of the state of the locks. Here is our suggested implementation plan.
+
+    - On the server, a lock can be in one of two states:
+
+      - free: no clients own the client
+      - locked: some client owns the lock
+
+      The RPC handler for acquire should first check if the lock is locked, and if so, the handler should block until the lock is free. When the lock is free, acquire changes its state to locked, then returns to the client, which indicates that the client now has the lock. The valuer returned by acquire doesn't matter. The handler for release should change the lock state to free, and notify any threads that are waiting for the lock. Consider using the C++ STL (Standard Template Library) std::map class to hold the table of lock states.
+
+    - Implementing the lock client:
+
+      The class lock_client is a client-side interface to the lock server (found in files lock_client.{cc,h}). The interface provides acquire() and release() functions that should send and receive RPCs. Multiple threads in the client program can use the same lock_client object and request the same lock. See lock_demo.cc for an example of how an application uses the interface. lock_client::acquire must not return until it has acquired the requested lock.
+
+    - Handling multi-thread concurrency:
+
+      - Both lock_client and lock_server's functions will be invoked by multiple threads concurrently. On the lock server side, the RPC library keeps a thread pool and invokes the RPC handler using one of the idle threads in the pool. On the lock client side, many different threads might also call lock_client's acquire() and release() functions concurrently.
+      - You should use pthread mutexes to guard uses of data that is shared among threads. You should use pthread condition variables so that the lock server acquire handler can wait for a lock. The Lab Information contain a link to information about pthreads, mutexes, and condition variables. Threads should wait on a condition variable inside a loop that checks the boolean condition on which the thread is waiting. This protects the thread from spurious wake-ups from the pthread_cond_wait() and pthread_cond_timedwait() functions.
+      - Use a simple mutex scheme: a single pthreads mutex for all of lock_server. You don't really need (for example) a mutex per lock, though such a setup can be made to work. Using "coarse-granularity" mutexes will simplify your code.
 
 ### About Test
 
-The test is fairly simple, it mainly checks the size of your log files. Log file bigger than **MAX_LOG_SZ** and checkpoint file bigger than **DISK_SIZE** will result in test failure. There are only 1 test scripts for this part, test-lab2a-part3-a.pl:
+We will use the program lock_tester to check the correctness invariant, i.e. whether the server grants each lock just once at any given time, under a variety of conditions. You run lock_tester with the same arguments as lock_demo. A successful run of lock_tester (with a correct lock server) will look like this:
 
 ```bash
-$ make clean && make
-$ ./start.sh
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-$ perl ./test-lab2a-part3-a.pl chfs1
-Write and read one file: OK
+$ ./lock_tester 3772
+simple lock client
+acquire a release a acquire a release a
+acquire a acquire b release b release a
+test2: client 0 acquire a release a
+test2: client 2 acquire a release a
 ...
-Check directory listing: OK
-===== ChFS Crash =====
-Check logfile and checkpoint file size: 
-        logfile xxx bytes, checkpoint xxx bytes
-===== ChFS Restart =====
-...
-Passed all tests
+./lock_tester: passed all tests successfully
 ```
 
-Test script prints out your log file and checkpoint file size. If you see any error like “Logfile too big” or “Checkpoint too big”, do some optimization to control your file size.
+If your lock server isn't correct, lock_tester will print an error message. For example, if lock_tester complains "error: server granted XXX twice", the problem is probably that lock_tester sent two simultaneous requests for the same lock, and the server granted both requests. A correct server would have granted the lock to just one client, waited for a release, and only then sent granted the lock to the second client.
 
-## **GRADING**
+## Part 3: Locking
+
+Now in part 3, you will use the lock service to coordinate chfs clients.
+
+You are going to ensure the atomicity of file system operations when there are multiple chfs_client processes sharing a file system. Your current implementation does not handle concurrent operations correctly. For example, your chfs_client's create method probably reads the directory's contents from the extent server, makes some changes, and stores the new contents back to the extent server. Suppose two clients issue simultaneous CREATEs for different file names in the same directory via different chfs_client processes. Both chfs_client processes might fetch the old directory contents at the same time and each might insert the newly created file for its client and write back the new directory contents. Only one of the files would be present in the directory in the end. The correct answer, however, is for both files to exist. This is one of many potential races. Others exist: concurrent CREATE and UNLINK, concurrent MKDIR and UNLINK, concurrent WRITEs, etc.
+
+### Your Job
+
+Your job is to add locking to chfs_client to ensure the correctness of concurrent operations.
+
+You should eliminate ChFS races by having chfs_client use your lock server's locks. For example, a chfs_client should acquire a lock on the directory before starting a CREATE, and only release the lock after finishing the write of the new information back to the extent server. If there are concurrent operations, the locks force one of the two operations to delay until the other one has completed. All chfs_client must acquire locks from the same lock server.
+
+### Detailed Guidance
+
+What to lock?
+
+- At one extreme you could have a single lock for the whole file system, so that operations never proceed in parallel. At the other extreme you could lock each entry in a directory, or each field in the attributes structure. Neither of these is a good idea! A single global lock prevents concurrency that would have been okay, for example CREATEs in different directories. Fine-grained locks have high overhead and make deadlock likely, since you often need to hold more than one fine-grained lock.
+- You should associate a lock with each inumber. Use the file or directory's inum as the name of the lock (i.e. pass the inum to acquire and release). The convention should be that any chfs_client operation should acquire the lock on the file or directory it uses, perform the operation, finish updating the extent server (if the operation has side-effects), and then release the lock on the inum. Be careful to release locks even for error returns from chfs_client operations.
+- You'll use your lock server from part 2. chfs_client should create and use a lock_client in the same way that it creates and uses its extent_client.
+- **(Be warned! Do not use a block/offset based locking protocol! Many adopters of a block-id-as-lock ended up refactoring their code in labs later on.)**
+- **(Notice: If you don't implement a reentrant lock, be careful not to recursively acquire the same lock in a thread.)**
+
+Things to watch out for:
+
+- This is the first lab that creates files using two different ChFS-mounted directories. If you were not careful in earlier labs, you may find that the components that assign inum for newly-created files and directories choose the same identifiers.
+- If your inode manager relies on pseudo-randomness to generate unique inode number, one possible way to fix this may be to seed the random number generator differently depending on the process's pid. The provided code has already done such seeding for you in the main function of [fuse.cc](http://fuse.cc).
+
+### About Test
+
+The testers for this part of the lab are test-lab2-part3-a and test-lab2-part3-b, source in test-lab2-part3-a.c and test-lab2-part3-b.c. The testers take two directories as arguments, issue concurrent operations in the two directories, and check that the results are consistent with the operations executing in some sequential order. Here's a successful execution of the testers:
+
+```bash
+$ ./start.sh
+$ ./test-lab2-part3-a ./chfs1 ./chfs2
+Create then read: OK
+Unlink: OK
+Append: OK
+Readdir: OK
+Many sequential creates: OK
+Write 20000 bytes: OK
+Concurrent creates: OK
+Concurrent creates of the same file: OK
+Concurrent create/delete: OK
+Concurrent creates, same file, same server: OK
+test-lab2-part2-b: Passed all tests.
+$ ./stop.sh
+$ ./start.sh
+$ ./test-lab2-part3-b ./chfs1 ./chfs2
+Create/delete in separate directories: tests completed OK
+$ ./stop.sh
+```
+
+If you try this before you add locking, it should fail at "Concurrent creates" test in test-lab2-part3-a. If it fails before "Concurrent creates", your code may have bugs despite having passed previous testers; you should fix them before adding locks.
+
+## GRADING
 
 Finally, after you've implemented all these features, run the grading script:
 
 ```bash
 $ ./grade.sh
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-Passed A
-Passed B
-Passed C
-
-Part1 score: 40/40
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-Passed A
-Passed B
-
-Part2 score: 40/40
-starting ./chfs_client /home/stu/cse-lab/chfs1  > chfs_client1.log 2>&1 &
-Passed A
-
-Part3 score: 20/20
+Passed part1 A                             
+Passed part1 B                             
+Passed part1 C                             
+Passed part1 D                                                                        
+Passed part1 E                                                                        
+Passed part1 G (consistency)                                                          
+lab2b part 1 passed   
+Passed part2                                                                         
+Concurrent creates: OK                                                                
+Concurrent creates of the same file: OK                                               
+Concurrent create/delete: OK               
+Concurrent creates, same file, same server: OK                                        
+Concurrent writes to different parts of same file: OK
+Passed part3 A
+Create/delete in separate directories: tests completed OK
+Passed part3 B                                                                        
+                                                                                      
+Score: 100/100
 ```
 
-Note that if you encounter a **"chfs_client DIED"**, your filesystem is not working. In such cases the requests are served by the system's file system (usually EXT3 or btrfs or tmpfs). **You would not be awarded credits if your chfs_client crashes, but could get partial credit if it produces incorrect result for some test cases**. So do look out for such mistakes. **We've seen dozens of students every year thinking that they've passed lots of tests before realizing this**.
+## Tips
 
-## **Handin Procedure**
+- This is also the first lab that writes null ('\0') characters to files. The std::string(char*)constructor treats '\0' as the end of the string, so if you use that constructor to hold file content or the written data, you will have trouble with this lab. Use the std::string(buf, size) constructor instead. Also, if you use C-style char[] carelessly you may run into trouble!
+- Do notice that a non RPC version may pass some of the tests, but RPC is checked against in actual grading. So please refrain yourself from doing so :)
+
+## Handin procedure
 
 After all above done:
 
@@ -244,12 +306,12 @@ After all above done:
 $ make handin
 ```
 
-That should produce a file called lab2a.tgz. Change the file name to your student id:
+That should produce a file called lab2b.tgz. Change the file name to your student id:
 
 ```
-$ mv lab.tgz lab2a_[your student id].tgz
+$ mv lab.tgz lab2b_[your student id].tgz
 ```
 
-Then upload **lab2a_[your student id].tgz** file to [Canvas](https://oc.sjtu.edu.cn/courses/49245) before the deadline. Make sure your implementation has passed all the tests before final submit. (If you must re-submit a new version, add explicit version number such as "V2" to indicate).
+Then upload **lab2b_[your student id].tgz** file to [Canvas](https://oc.sjtu.edu.cn/courses/49245) before the deadline. Make sure your implementation has passed all the tests before final submit. (If you must re-submit a new version, add explicit version number such as "V2" to indicate).
 
 You will receive full credit if your software passes the same tests we gave you when we run your software on our machines.
