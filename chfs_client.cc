@@ -21,8 +21,16 @@ chfs_client::chfs_client(std::string extent_dst, std::string lock_dst)
 {
     ec = new extent_client(extent_dst);
     lc = new lock_client(lock_dst);
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(1);
+    VERIFY(ret == lock_protocol::OK);
+
     if (ec->put(1, "") != extent_protocol::OK)
         printf("error init root dir\n"); // XYB: init root dir
+
+    ret = lc->release(1);
+    VERIFY(ret == lock_protocol::OK);
 }
 
 chfs_client::inum
@@ -159,8 +167,15 @@ chfs_client::setattr(inum ino, size_t size)
      * note: get the content of inode ino, and modify its content
      * according to the size (<, =, or >) content length.
      */
+    
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(ino);
+    VERIFY(ret == lock_protocol::OK);
+
     std::string buf;
     if(ec->get(ino, buf) != extent_protocol::OK) {
+        ret = lc->release(ino);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     size_t prev_size = buf.size();
@@ -173,12 +188,17 @@ chfs_client::setattr(inum ino, size_t size)
         buf.resize(size, '\0');
     }
 
-    ///@note add log here
+    // lab2A: add log here
     ec->begin_log();
 
     if(ec->put(ino, buf) != extent_protocol::OK) {
+        ret = lc->release(ino);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
+
+    ret = lc->release(ino);
+    VERIFY(ret == lock_protocol::OK);
 
     ec->commit_log();
     return r;
@@ -186,7 +206,7 @@ chfs_client::setattr(inum ino, size_t size)
 
 int chfs_client::check_dir_inode(inum parent, extent_protocol::attr& a) {
     int r = OK;
-     // the information stored in inode
+    // the information stored in inode
     if(ec->getattr(parent, a) != extent_protocol::OK) {
         return IOERR;
     }
@@ -207,20 +227,35 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
      * note: lookup is what you need to check if file exist;
      * after create file or dir, you must remember to modify the parent infomation.
      */
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(parent);
+    VERIFY(ret == lock_protocol::OK);
+
     printf("create name: %s, parent %lld\n", name, parent);
     extent_protocol::attr a;
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent not a directory\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
+
     bool found = false;
     // check whether the file already exist
     if(lookup(parent, name, found, ino_out) != OK) {
         printf("lookup error\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
+
     if(found) {
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return EXIST;
     }
 
@@ -230,25 +265,40 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     // create a new file
     if(ec->create(extent_protocol::T_FILE, ino_out) != OK) {
         printf("extent client create error\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     } 
+
     // Create an empty extent for ino.(how to do? I don't know)
     // Add a <name, ino> entry into @parent.
     // my format for directories: inum/name/inum/name...inum/name/
     std::string buf;
     if(ec->get(parent, buf) != extent_protocol::OK) {
         printf("cannot get the parent inode\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
+
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
+
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("cannot put the content to parent inode\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     
     ec->commit_log();
+
+    ret = lc->release(parent);
+    VERIFY(ret == lock_protocol::OK);
     return r;
 }
 
@@ -263,25 +313,42 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
      * note: lookup is what you need to check if directory exist;
      * after create file or dir, you must remember to modify the parent infomation.
      */
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(parent);
+    VERIFY(ret == lock_protocol::OK);
+
     extent_protocol::attr a;
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent inode is illegal!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     bool found = false;
     // The new directory should be empty (no . or ..)
     if(strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
         printf("the file name is illegal!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     // check whether the file already exist
     if(lookup(parent, name, found, ino_out) != OK) {
         printf("look up the file error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     if(found) {
         printf("the file already exist!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return EXIST;
     }
 
@@ -291,14 +358,21 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
     // create a new directory
     if(ec->create(extent_protocol::T_DIR, ino_out) != OK) {
         printf("create directory error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     } 
+
     // Create an empty extent for ino.(how to do? I don't know)
     // Add a <name, ino> entry into @parent.
     // my format for directories: inum/name/inum/name...inum/name/
     std::string buf;
     if(ec->get(parent, buf) != extent_protocol::OK) {
         printf("get the parent inode info error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     std::string ino_str = filename(ino_out);
@@ -306,10 +380,16 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
     buf += inum_name_pair;
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("put the parent inode info error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     
     ec->commit_log();
+
+    ret = lc->release(parent);
+    VERIFY(ret == lock_protocol::OK);
     return r;
 }
 
@@ -437,13 +517,22 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
      * note: write using ec->put().
      * when off > length of original file, fill the holes with '\0'.
      */
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(ino);
+    VERIFY(ret == lock_protocol::OK);
+
     extent_protocol::attr a;
     if (ec->getattr(ino, a) != extent_protocol::OK) {
+        ret = lc->release(ino);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     std::string prev_buf, next_buf;
     next_buf.assign(data, size);
     if(ec->get(ino, prev_buf) != extent_protocol::OK) {
+        ret = lc->release(ino);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     // handle the data string to write
@@ -458,10 +547,16 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
 
     if(ec->put(ino, prev_buf) != extent_protocol::OK) {
         printf("extent server put error!\n");
+
+        ret = lc->release(ino);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
 
     ec->commit_log();
+
+    ret = lc->release(ino);
+    VERIFY(ret == lock_protocol::OK);
     return r;
 }
 
@@ -476,37 +571,58 @@ int chfs_client::unlink(inum parent,const char *name)
      * and update the parent directory content.
      */
     // check whether parent is a valid directory
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(parent);
+    VERIFY(ret == lock_protocol::OK);
+
     extent_protocol::attr a;
     if(check_dir_inode(parent, a) != extent_protocol::OK) {
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     // find the file with this name
     bool found = false;
     inum file_ino = 0;
     if(lookup(parent, name, found, file_ino) != extent_protocol::OK) {
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     if(found == false) {
         printf("don't have such file!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return NOENT;
     } 
     // check whether it is a valid file name
     if(!isfile(file_ino)) {
         printf("the inum is not for a file!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
 
     ///@note add log here
     ec->begin_log();
 
+
     // free the file's extent
     if(ec->remove(file_ino) != extent_protocol::OK) {
         printf("extent client remove error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     // update the parent directory content.
     std::list<dirent> list;
     if(readdir(parent, list) != extent_protocol::OK) {
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     } 
     std::string new_buf;
@@ -524,30 +640,50 @@ int chfs_client::unlink(inum parent,const char *name)
     }
     if(ec->put(parent, new_buf) != extent_protocol::OK) {
         printf("update parent directory error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     
     ec->commit_log();
+
+    ret = lc->release(parent);
+    VERIFY(ret == lock_protocol::OK);
     return r;
 }
 
 int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, const char *link_name, inum &ino) {
     int r = OK;
+
+    // lab2B: add lock
+    lock_protocol::status ret = lc->acquire(parent);
+    VERIFY(ret == lock_protocol::OK);
+
     extent_protocol::attr a;
     printf("create symbolic link: parent :%lld, true file path: %s, link_name: %s\n", parent, true_file_path, link_name);
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent inode not valid!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     bool found = false;
     // check whether the symbol link already exist
     if(lookup(parent, link_name, found, ino) != OK) {
         printf("look up operation fail!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     if(found) {
         printf("the symbolic link already exist!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return EXIST;
     }
     
@@ -557,11 +693,18 @@ int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, co
     // create a new symbolic link
     if(ec->create(extent_protocol::T_SYMBOLIC, ino) != OK) {
         printf("create symbolic link error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     } 
+
     std::string buf;
     if(ec->get(parent, buf) != extent_protocol::OK) {
         printf("get the parent inode content error!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
     std::string ino_str = filename(ino);
@@ -573,10 +716,16 @@ int chfs_client::create_symbolic_link(inum parent,const char *true_file_path, co
     }
     if(ec->put(parent, buf) != extent_protocol::OK) {
         printf("rewrite the parent inode fail!\n");
+
+        ret = lc->release(parent);
+        VERIFY(ret == lock_protocol::OK);
         return IOERR;
     }
 
     ec->commit_log();
+
+    ret = lc->release(parent);
+    VERIFY(ret == lock_protocol::OK);
     return r;
 }
 
