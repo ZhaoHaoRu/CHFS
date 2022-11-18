@@ -2,6 +2,7 @@
 
 marshall &operator<<(marshall &m, const request_vote_args &args) {
     // Lab3: Your code here
+    
     return m;
 }
 unmarshall &operator>>(unmarshall &u, request_vote_args &args) {

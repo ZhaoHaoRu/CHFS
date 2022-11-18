@@ -21,6 +21,13 @@ enum raft_rpc_status {
 class request_vote_args {
 public:
     // Lab3: Your code here
+    int term{0};
+    int candidate_id{0};
+    int last_log_index{0};
+    int last_log_term{0};
+
+    request_vote_args(int t, int cid, int lli, int llt): term(t), 
+        candidate_id(cid), last_log_index(lli), last_log_term(llt) {}
 };
 
 marshall &operator<<(marshall &m, const request_vote_args &args);
@@ -29,6 +36,10 @@ unmarshall &operator>>(unmarshall &u, request_vote_args &args);
 class request_vote_reply {
 public:
     // Lab3: Your code here
+    int term{0};
+    bool vote_granted{false};
+
+    request_vote_reply(int t, bool granted): term(t), vote_granted(granted) {}
 };
 
 marshall &operator<<(marshall &m, const request_vote_reply &reply);

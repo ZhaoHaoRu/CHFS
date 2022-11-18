@@ -110,8 +110,9 @@ block_manager::write_block(uint32_t id, const char *buf)
 inode_manager::inode_manager()
 {
   bm = new block_manager();
-  uint32_t root_dir = alloc_inode(extent_protocol::T_DIR);
   _last_alloced = 0;
+  uint32_t root_dir = alloc_inode(extent_protocol::T_DIR);
+  _last_alloced = root_dir;
   if (root_dir != 1) {
     exit(0);
   }
@@ -335,6 +336,8 @@ inode_manager::write_file(uint32_t inum, const char *buf, int size)
     if(pos + BLOCK_SIZE > size) {
       memcpy(arr_for_remain, buf + pos, size - pos);
       bm->write_block(node->blocks[i], arr_for_remain);
+      // need to break!
+      break;
     }
     bm->write_block(node->blocks[i], buf + pos);
     pos += BLOCK_SIZE;
