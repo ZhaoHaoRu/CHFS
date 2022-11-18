@@ -26,7 +26,7 @@ Each part relies on the implementation of the prior one. So you must implement t
 Before starting this lab, please back up all of your prior labs' solutions.
 ```
 % cd cse-lab
-% git commit -a -m "upload lab2b"
+% git commit -a -m "upload lab2B-sol"
 ```
 Then, pull this lab from the repo:
 ```
@@ -401,8 +401,7 @@ Below is the architecture of our filesystem in lab3. In this part, you will exte
 <img src="./assets/part5.png" width="500" />
 </div>
 
-As you see, the single extent server has been extended to a  
-raft group(`extent_server_dist`). The raft group replaces the `extent_server` in lab1.  `extent_server_dist` and `extent_client` will communicate using RPC lib.
+As you see, the single extent server has been extended to a raft group(`extent_server_dist`). The raft group replaces the `extent_server` in lab1.  `extent_server_dist` and `extent_client` will communicate using RPC lib.
 **Notice: You must not change rpc interface in extent_sdist_main.cc** 
 Below is the code of `extent_server_dist`. 
 The raft group consists of at least three `chfs_state_machine` and provides rpc functions which will be called in `extent_client`.
