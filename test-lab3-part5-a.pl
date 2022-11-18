@@ -24,7 +24,7 @@ use strict;
 $| = 1;
 
 if($#ARGV != 0){
-    print STDERR "Usage: test-lab1-part2-b.pl directory1\n";
+    print STDERR "Usage: test-lab3-part5.pl directory1\n";
     exit(1);
 }
 my $dir1 = $ARGV[0];
@@ -33,14 +33,21 @@ my $f1 = "a$$";
 my $f2 = "b$$";
 
 my $files = { };
+my $seq = 0;
 
+for(my $iters = 0; $iters < 30; $iters++){
+    createone();
+}
+
+
+# createone();
 print "Write and read one file: ";
 writeone($dir1, $f1, 600);
 checkcontent($dir1, $f1);
 print "OK\n";
 
 print "Write and read a second file: ";
-writeone($dir1, $f2, 4111);
+writeone($dir1, $f2, 411);
 checkcontent($dir1, $f2);
 checkcontent($dir1, $f1);
 print "OK\n";
@@ -52,8 +59,8 @@ checkcontent($dir1, $f2);
 print "OK\n";
 
 print "Append to an existing file: ";
-writeone($dir1, $f1, 8192);
-append($dir1, $f1, 7007);
+writeone($dir1, $f1, 819);
+append($dir1, $f1, 1025);
 checkcontent($dir1, $f1);
 print "OK\n";
 
@@ -62,20 +69,31 @@ writeat($dir1, $f1, 190);
 checkcontent($dir1, $f1);
 print "OK\n";
 
-print "Write beyond the end of an existing file: ";
-writeat($dir1, $f1, 65536);
-checkcontent($dir1, $f1);
-print "OK\n";
-
 print "Check that one cannot open non-existant file: ";
 checknot($dir1, "z-$$-z");
 print "OK\n";
 
-print "Check directory listing: ";
-dircheck($dir1);
-print "OK\n";
+
 
 print "Passed all tests\n";
+exit(0);
+
+sub createone {
+    my $name = "file -\n-\t-";
+    for(my $i = 0; $i < 40; $i++){
+	$name .= sprintf("%c", ord('a') + int(rand(26)));
+    }
+    $name .= "-$$-" . $seq;
+    $seq = $seq + 1;
+    my $contents = rand();
+    print "create $name\n";
+    if(!open(F, ">$dir1/$name")){
+        print STDERR "cannot create $dir1/$name : $!\n";
+        exit(1);
+    }
+    close(F);
+    $files->{$name} = $contents;
+}
 
 sub writeone {
     my($d, $name, $len) = @_;
@@ -195,5 +213,50 @@ sub dircheck {
     }
 }
 
-exit(0);
+sub overallcheck {
+    checkcontent($dir1, $f2);
+    checkcontent($dir1, $f1);
+    checknot($dir1, "z-$$-z");
+    dircheck($dir1);
+}
 
+# to crash and restart chfs
+sub chfsrestart {
+    # restart
+    print "===== ChFS Restart =====\n";
+    system './start.sh';
+
+    # wait until chfs restart
+    my $time = 5;
+    while($time--) {
+        print "Wait for ChFS to mount...\n";
+        if(mounted()) { # mounted successfully
+            last;       # eq to 'break' in C
+        } else {        # wait for mounting
+            sleep(0.1);
+        };
+    }
+    
+    if (!mounted()) {
+        print "Fail to restart chfs!\n";
+        exit(1);
+    }
+}
+
+sub chfscrash {
+    print "===== ChFS Crash =====\n";
+    system './stop.sh';
+    # `pkill -SIGUSR1 chfs_client`;
+    if ($? == -1) {
+        print "Failed to crash ChFS: $!\n";
+    }
+    # wait for old chfs to exit on its own
+    while(mounted()) { 
+        print "Wait for ChFS to unmount...\n";
+        sleep(0.1);
+    }
+}
+
+sub mounted {
+    return (`mount | grep $dir1 | grep -v grep | wc -l` == 1);
+}

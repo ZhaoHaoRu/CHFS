@@ -30,20 +30,28 @@ class chfs_client {
     std::string name;
     chfs_client::inum inum;
   };
+  struct syminfo {
+    std::string slink;
+    unsigned long long size;
+    unsigned long atime;
+    unsigned long mtime;
+    unsigned long ctime;
+  };
 
  private:
   static std::string filename(inum);
   static inum n2i(std::string);
 
  public:
-  chfs_client();
-  chfs_client(std::string, std::string);
+  // chfs_client();
+  chfs_client(std::string);
 
   bool isfile(inum);
   bool isdir(inum);
 
   int getfile(inum, fileinfo &);
   int getdir(inum, dirinfo &);
+  int getsymlink(inum, syminfo&);
 
   int setattr(inum, size_t);
   int lookup(inum, const char *, bool &, inum &);
@@ -55,6 +63,7 @@ class chfs_client {
   int mkdir(inum , const char *, mode_t , inum &);
   
   /** you may need to add symbolic link related methods here.*/
+
 };
 
 #endif 

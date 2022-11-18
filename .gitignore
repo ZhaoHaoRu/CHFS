@@ -1,0 +1,8 @@
+.vscode/
+chfs1/
+log/
+*.o
+*.d
+*.log
+.clang-format
+raft_temp/

@@ -1,15 +1,18 @@
-LAB=1
+LAB=3
 SOL=0
 RPC=./rpc
 LAB1GE=$(shell expr $(LAB) \>\= 1)
 LAB2GE=$(shell expr $(LAB) \>\= 2)
+LAB2AGE=$(shell expr $(LAB) \>\= 2a)
+LAB2BGE=$(shell expr $(LAB) \>\= 2b)
+LAB2CGE=$(shell expr $(LAB) \>\= 2c)
 LAB3GE=$(shell expr $(LAB) \>\= 3)
 LAB4GE=$(shell expr $(LAB) \>\= 4)
 LAB5GE=$(shell expr $(LAB) \>\= 5)
-LAB6GE=$(shell expr $(LAB) \>\= 6)
-LAB7GE=$(shell expr $(LAB) \>\= 7)
+
 CXXFLAGS =  -g -MMD -Wall -I. -I$(RPC) -DLAB=$(LAB) -DSOL=$(SOL) -D_FILE_OFFSET_BITS=64
 FUSEFLAGS= -D_FILE_OFFSET_BITS=64 -DFUSE_USE_VERSION=25 -I/usr/local/include/fuse -I/usr/include/fuse
+RPCLIB=librpc.a
 
 ifeq ($(shell uname -s),Darwin)
   MACFLAGS= -D__FreeBSD__=10
@@ -36,84 +39,34 @@ CXX = g++
 
 lab:  lab$(LAB)
 lab1: part1_tester chfs_client
-#lab2: chfs_client 
-#lab3: chfs_client extent_server lock_server test-lab-3-b test-lab-3-c
-#lab4: chfs_client extent_server lock_server lock_tester test-lab-3-b\
-#	 test-lab-3-c
-#lab5: chfs_client extent_server lock_server test-lab-3-b test-lab-3-c
-#lab6: lock_server rsm_tester
-#lab7: lock_tester lock_server rsm_tester
+lab2a: chfs_client 
+lab2b: lock_server lock_tester lock_demo chfs_client extent_server test-lab2b-part1-g test-lab2b-part2-a test-lab2b-part2-b 
+lab3: raft_test chfs_client test-lab3-part5-b extent_server_dist 
 
-hfiles1=rpc/fifo.h rpc/connection.h rpc/rpc.h rpc/marshall.h rpc/method_thread.h\
-	rpc/thr_pool.h rpc/pollmgr.h rpc/jsl_log.h rpc/slock.h rpc/rpctest.cc\
-	lock_protocol.h lock_server.h lock_client.h gettime.h gettime.cc lang/verify.h \
-        lang/algorithm.h
-hfiles2=chfs_client.h extent_client.h extent_protocol.h extent_server.h
-hfiles3=lock_client_cache.h lock_server_cache.h handle.h tprintf.h
-hfiles4=log.h rsm.h rsm_protocol.h config.h paxos.h paxos_protocol.h rsm_state_transfer.h rsmtest_client.h tprintf.h
-hfiles5=rsm_state_transfer.h rsm_client.h
-rsm_files = rsm.cc paxos.cc config.cc log.cc handle.cc
-
-#
-#rpclib=rpc/rpc.cc rpc/connection.cc rpc/pollmgr.cc rpc/thr_pool.cc rpc/jsl_log.cc gettime.cc
-#rpc/librpc.a: $(patsubst %.cc,%.o,$(rpclib))
-#	rm -f $@
-#	ar cq $@ $^
-#	ranlib rpc/librpc.a
+rpclib=rpc/rpc.cc rpc/connection.cc rpc/pollmgr.cc rpc/thr_pool.cc rpc/jsl_log.cc gettime.cc
+rpc/librpc.a: $(patsubst %.cc,%.o,$(rpclib))
+	rm -f $@
+	ar cq $@ $^
+	ranlib rpc/librpc.a
 
 rpc/rpctest=rpc/rpctest.cc
-rpc/rpctest: $(patsubst %.cc,%.o,$(rpctest)) rpc/librpc.a
+rpc/rpctest: $(patsubst %.cc,%.o,$(rpctest)) rpc/$(RPCLIB)
 
-lock_demo=lock_demo.cc lock_client.cc
-lock_demo : $(patsubst %.cc,%.o,$(lock_demo)) rpc/librpc.a
-
-lock_tester=lock_tester.cc lock_client.cc
-ifeq ($(LAB4GE),1)
-  lock_tester += lock_client_cache.cc
-endif
-ifeq ($(LAB7GE),1)
-  lock_tester+=rsm_client.cc handle.cc lock_client_cache_rsm.cc
-endif
-lock_tester : $(patsubst %.cc,%.o,$(lock_tester)) rpc/librpc.a
-
-lock_server=lock_server.cc lock_smain.cc
-ifeq ($(LAB4GE),1)
-  lock_server+=lock_server_cache.cc handle.cc
-endif
-ifeq ($(LAB6GE),1)
-  lock_server+= $(rsm_files)
-endif
-ifeq ($(LAB7GE),1)
-  lock_server+= lock_server_cache_rsm.cc
-endif
-
-lock_server : $(patsubst %.cc,%.o,$(lock_server)) rpc/librpc.a
-
-part1_tester=part1_tester.cc extent_client.cc extent_server.cc inode_manager.cc
-part1_tester : $(patsubst %.cc,%.o,$(part1_tester))
 chfs_client=chfs_client.cc extent_client.cc fuse.cc extent_server.cc inode_manager.cc
-ifeq ($(LAB3GE),1)
-  chfs_client += lock_client.cc
-endif
-ifeq ($(LAB7GE),1)
-  chfs_client += rsm_client.cc lock_client_cache_rsm.cc
-endif
-ifeq ($(LAB4GE),1)
-  chfs_client += lock_client_cache.cc
-endif
-chfs_client : $(patsubst %.cc,%.o,$(chfs_client)) rpc/librpc.a
 
-extent_server=extent_server.cc extent_smain.cc
-extent_server : $(patsubst %.cc,%.o,$(extent_server)) rpc/librpc.a
+chfs_client : $(patsubst %.cc,%.o,$(chfs_client)) rpc/$(RPCLIB)
 
-test-lab-3-b=test-lab-3-b.c
-test-lab-3-b:  $(patsubst %.c,%.o,$(test_lab_4-b)) rpc/librpc.a
+extent_server=extent_server.cc extent_smain.cc inode_manager.cc
+extent_server : $(patsubst %.cc,%.o,$(extent_server)) rpc/$(RPCLIB)
 
-test-lab-3-c=test-lab-3-c.c
-test-lab-4-c:  $(patsubst %.c,%.o,$(test_lab_4-c)) rpc/librpc.a
+extent_server_dist= extent_server_dist.cc extent_sdist_main.cc extent_server.cc inode_manager.cc chfs_state_machine.cc  raft_protocol.cc raft_test_utils.cc 
+extent_server_dist: $(patsubst %.cc,%.o,$(extent_server_dist)) rpc/$(RPCLIB)
 
-rsm_tester=rsm_tester.cc rsmtest_client.cc
-rsm_tester:  $(patsubst %.cc,%.o,$(rsm_tester)) rpc/librpc.a
+test-lab3-part5-b= extent_server_dist.cc test-lab3-part5-b.cc extent_server.cc inode_manager.cc chfs_state_machine.cc raft_protocol.cc raft_test_utils.cc chfs_client.cc extent_client.cc
+test-lab3-part5-b: $(patsubst %.cc,%.o,$(test-lab3-part5-b)) rpc/$(RPCLIB)
+
+raft_test=raft_protocol.cc raft_test_utils.cc raft_test.cc
+raft_test : $(patsubst %.cc,%.o,$(raft_test)) rpc/$(RPCLIB)
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -127,15 +80,23 @@ fuse.o: fuse.cc
 -include *.d
 -include rpc/*.d
 
-clean_files=rpc/rpctest rpc/*.o rpc/*.d *.o *.d chfs_client extent_server lock_server lock_tester lock_demo rpctest test-lab-3-b test-lab-3-c rsm_tester part1_tester
+clean_files=rpc/rpctest rpc/*.o rpc/*.d *.o *.d chfs_client extent_server extent_server_dist lock_server lock_tester lock_demo rpctest test-lab2b-part1-g test-lab2b-part2-a test-lab2b-part2-b demo_client demo_server raft_test raft_temp raft_chfs_test test-lab3-part5-b rpc/$(RPCLIB)
 .PHONY: clean handin
 clean: 
 	rm $(clean_files) -rf 
 
-handin_ignore=$(clean_files) core* *log
+handin_ignore=$(clean_files) core* *log .git
 handin_file=lab$(LAB).tgz
 labdir=$(shell basename $(PWD))
 handin: 
 	@bash -c "cd ../; tar -X <(tr ' ' '\n' < <(echo '$(handin_ignore)')) -czvf $(handin_file) $(labdir); mv $(handin_file) $(labdir); cd $(labdir)"
-	@echo Please modify lab1.tgz to lab1_[your student id].tgz and upload it to Canvas \(https://oc.sjtu.edu.cn/courses/49245\)
+	@echo Please modify lab3.tgz to lab3_[your student id].tgz and upload it to Canvas \(https://oc.sjtu.edu.cn/courses/49245\)
 	@echo Thanks!
+
+rpcdemo: demo_server demo_client
+
+demo_client:
+	$(CXX) $(CXXFLAGS) demo_client.cc rpc/$(RPCLIB) $(LDFLAGS) $(LDLIBS) -o demo_client
+
+demo_server:
+	$(CXX) $(CXXFLAGS) demo_server.cc rpc/$(RPCLIB) $(LDFLAGS) $(LDLIBS) -o demo_server
