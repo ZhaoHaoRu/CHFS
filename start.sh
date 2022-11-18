@@ -14,14 +14,7 @@ BASE_PORT=$[BASE_PORT+2000]
 EXTENT_PORT=$BASE_PORT
 ChFS1_PORT=$[BASE_PORT+2]
 
-LogDIR=$PWD/log
 ChFSDIR1=$PWD/chfs1
-
-
-# create log dir
-if [ ! -d "$LogDIR" ]; then
-    mkdir $LogDIR
-fi
 
 
 # =======start extent server=======

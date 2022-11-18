@@ -15,4 +15,3 @@ $UMOUNT $ChFSDIR1
 killall extent_server_dist
 killall chfs_client
 
-rm log -r

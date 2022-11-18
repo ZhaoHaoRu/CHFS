@@ -80,7 +80,7 @@ int test_persist_chfs() {
     }
 
     mssleep(2000); // wait for election
-    printf("--- begin test after crash ---\n");
+    printf("========== begin test after crash ==========\n");
     for (i = 1; i < FILE_NUM; i++) {
         chfs_client::inum inum = inums[i];
         std::string contents;
