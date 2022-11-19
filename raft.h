@@ -6,8 +6,10 @@
 #include <chrono>
 #include <thread>
 #include <ctime>
+#include <unordered_set>
 #include <algorithm>
 #include <thread>
+#include <random>
 #include <stdarg.h>
 
 #include "rpc.h"
@@ -92,7 +94,28 @@ private:
     std::thread *background_apply;
 
     // Your code here:
-
+    int vote_for{-1};
+    // the votes earned from all clients
+    std::unordered_set<int> earned_votes; 
+    // thw clock for time-out
+    std::chrono::steady_clock::time_point clock{std::chrono::steady_clock::now()};
+    // the local last term index
+    int last_term{0};
+    // the local last log index
+    int last_log_index{0};
+    // the index of highest log entry known to be committed
+    int commit_index{0};
+    // index of highest log entry applied to state machine 
+    int last_applied{0};
+    int client_count;
+    // for each server, index of the next log entry to send to that server (initialized to leader
+    // last log index + 1)
+    std::vector<int> next_index;
+    // for each server, index of highest log entry known to be replicated on server
+    // (initialized to 0, increases monotonically
+    std::vector<int> match_index;
+    // log entries; each entry contains command for state machine, and term when entry was received by leader (first index is 1)
+    std::vector<log_entry<command>> log;
     /* ----Persistent state on all server----  */
 
     /* ---- Volatile state on all server----  */
@@ -130,6 +153,8 @@ private:
     void run_background_apply();
 
     // Your code here:
+    void init_follower();
+    void init_leader();
 };
 
 template <typename state_machine, typename command>
@@ -155,6 +180,7 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
 
     // Your code here:
     // Do the initialization
+    client_count = rpc_clients.size();
 }
 
 template <typename state_machine, typename command>
@@ -225,26 +251,128 @@ bool raft<state_machine, command>::save_snapshot() {
     return true;
 }
 
+template <typename state_machine, typename command>
+void raft<state_machine, command>::init_follower() {
+    role = follower;
+    vote_for = -1;
+    earned_votes.clear();
+    next_index.clear();
+    match_index.clear();
+}
+
+template <typename state_machine, typename command>
+void raft<state_machine, command>::init_leader() {
+    role = leader;
+    earned_votes.clear();
+    leader_id = my_id;
+    vote_for = -1;
+    next_index.resize(client_count, last_log_index + 1);
+    match_index.resize(client_count, 0);
+}
+
 /******************************************************************
 
                          RPC Related
 
 *******************************************************************/
+// reply to the voting request
 template <typename state_machine, typename command>
 int raft<state_machine, command>::request_vote(request_vote_args args, request_vote_reply &reply) {
     // Lab3: Your code here
+    std::unique_lock<std::mutex> lock(mtx);
+
+    if(args.term < current_term) {
+        reply.vote_granted = false;
+        reply.term = current_term;
+        return -1;
+    }
+    
+    if(args.term > current_term) {
+        current_term = args.term;
+        vote_for = -1;
+        reply.vote_granted = false;  // TODO: I am not sure
+        if(role == leader || role == candidate) {
+            // TODO: need to step down
+        }
+    }
+    
+    // is a reply message
+    bool is_up_to_date_log = (args.last_log_term > last_term) || (args.last_log_term == last_term && args.last_log_index > last_log_index);
+    reply.vote_granted = false;
+    reply.term = current_term;
+    if(vote_for == args.candidate_id || (vote_for == -1 && is_up_to_date_log)) {
+        reply.vote_granted = true;
+        vote_for = args.candidate_id;
+        // update timeout
+        clock = std::chrono::steady_clock::now();
+    }
+
     return 0;
 }
 
 template <typename state_machine, typename command>
 void raft<state_machine, command>::handle_request_vote_reply(int target, const request_vote_args &arg, const request_vote_reply &reply) {
     // Lab3: Your code here
+    std::unique_lock<std::mutex> lock(mtx);
+
+    // judge candiate or follower or leader
+    // this server is expired
+    if(arg.term < current_term || arg.term < reply.term) {
+        init_follower();
+        return;
+    }
+
+    if(reply.vote_granted) {
+        earned_votes.insert(target);
+        if(earned_votes.size() >= rpc_clients.size() / 2 + 1) {
+            init_leader();
+        }
+    }
     return;
 }
 
 template <typename state_machine, typename command>
 int raft<state_machine, command>::append_entries(append_entries_args<command> arg, append_entries_reply &reply) {
     // Lab3: Your code here
+    std::unique_lock<std::mutex> lock(mtx);
+    last_log_index = log[log.size() - 1].log_index;
+    last_term = log[log.size() - 1].term;
+
+    if(arg.term > current_term && is_leader(current_term)) {
+        current_term = arg.term;
+        init_follower();
+    }
+
+    reply.term = current_term;
+    if(arg.term < current_term) {
+        reply.success = false;
+        return 0;
+    }
+
+    // Reply false if log doesn’t contain an entry at prevLogIndex
+    // whose term matches prevLogTerm 
+    if(arg.prev_log_index > last_log_index || arg.prev_log_term != last_term) {
+        reply.success = false;
+        return 0;
+    }
+
+    // If an existing entry conflicts with a new one (same index but different terms), 
+    // delete the existing entry and all that follow it
+    if(arg.prev_log_index < last_log_index) {
+        int n = log.size() - 1;
+        while(n >= 0) {
+            if(log[n].log_index == arg.prev_log_index && log[n].term != arg.prev_log_term) {
+                break;
+            }
+        }
+        if(n >= 0) {
+            log.resize(n);
+        }
+    }
+
+    // Append any new entries not already in the log
+    
+
     return 0;
 }
 
@@ -305,15 +433,52 @@ void raft<state_machine, command>::send_install_snapshot(int target, install_sna
 template <typename state_machine, typename command>
 void raft<state_machine, command>::run_background_election() {
     // Periodly check the liveness of the leader.
-
+    
     // Work for followers and candidates.
 
-    /*
+
     while (true) {
         if (is_stopped()) return;
         // Lab3: Your code here
+        if (role == leader) {
+            continue;
+        }
+        
+        // get the timeout val
+        std::random_device rd; 
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(150, 300);
+        int timeout = dis(gen);
+
+        // get the time passed
+        auto cur_time = std::chrono::steady_clock::now();
+        auto time_gap = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - clock);
+        
+        if(time_gap < timeout) {
+            continue;
+        }
+
+        if(role == follower || role == candidate) {
+            std::unique_lock<std::mutex> lock(mtx);
+            role = candidate;
+            ++current_term;
+            vote_for = my_id;
+            earned_votes.clear();
+            earned_votes.insert(my_id);
+
+            // generate the request
+            request_vote_args args(current_term, my_id, last_log_index, last_term);
+            lock.unlock();
+
+            for(int i = 0; i < client_count; ++i) {
+                if(i == my_id) {
+                    continue;
+                }
+                thread_pool->addObjJob(this, &raft::send_request_vote, i, args);
+            }
+        }
     }    
-    */
+
     return;
 }
 
