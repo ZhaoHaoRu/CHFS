@@ -9,15 +9,20 @@ typedef raft_group<list_state_machine, list_command> list_raft_group;
 TEST_CASE(part1, leader_election, "Initial election") {
     int num_nodes = 3;
     list_raft_group *group = new list_raft_group(num_nodes);
-
+    
+    // TODO: add for debug
+    fprintf(stderr, "after init!\n");
+    fprintf(stderr, "check whether there is exact one leader in the group\n");
     // 1. check whether there is exact one leader in the group
     mssleep(300); // sleep 300 ms
     group->check_exact_one_leader();
 
+    fprintf(stderr, "check whether every one has the same term\n");
     // 2. check whether every one has the same term
     mssleep(2000); // sleep 2s
     int term1 = group->check_same_term();
 
+    fprintf(stderr, "wait for a few seconds and check whether the term is not changed\n");
     // 3. wait for a few seconds and check whether the term is not changed.
     mssleep(2000); // sleep 2s
     int term2 = group->check_same_term();
@@ -114,11 +119,14 @@ TEST_CASE(part2, fail_no_agree, "Fail No Agreement") {
 
     // 3 of 5 followers disconnect
     int leader = group->check_exact_one_leader();
+    fprintf(stderr, "3 of 5 followers disconnect, the leader: %d\n", leader);
+    fprintf(stderr, "the disable server: %d, %d, %d\n", (leader + 1) % num_nodes, (leader + 2) % num_nodes, (leader + 3) % num_nodes);
     group->disable_node((leader + 1) % num_nodes);
     group->disable_node((leader + 2) % num_nodes);
     group->disable_node((leader + 3) % num_nodes);
 
     int temp_term, temp_index;
+    fprintf(stderr, "send new command: %d\n", leader);
     int is_leader = group->nodes[leader]->new_command(list_command(20), temp_term,
                                                       temp_index);
     ASSERT(is_leader,
@@ -132,6 +140,7 @@ TEST_CASE(part2, fail_no_agree, "Fail No Agreement") {
            "There is no majority, but index " << temp_index << " is committed");
 
     // repair
+    fprintf(stderr, "repair!\n");
     group->enable_node((leader + 1) % num_nodes);
     group->enable_node((leader + 2) % num_nodes);
     group->enable_node((leader + 3) % num_nodes);

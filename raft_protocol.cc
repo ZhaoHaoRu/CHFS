@@ -7,10 +7,7 @@ marshall &operator<<(marshall &m, const request_vote_args &args) {
     // req_header new_req_header;
     // m.pack_req_header(new_req_header);
     // add the content
-    m = m << args.term;
-    m = m << args.candidate_id;
-    m = m << args.last_log_index;
-    m = m << args.last_log_term;
+    m << args.term << args.candidate_id << args.last_log_index << args.last_log_term;
     return m;
 }
 unmarshall &operator>>(unmarshall &u, request_vote_args &args) {

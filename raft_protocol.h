@@ -28,6 +28,7 @@ public:
 
     request_vote_args(int t, int cid, int lli, int llt): term(t), 
         candidate_id(cid), last_log_index(lli), last_log_term(llt) {}
+    request_vote_args(){}
 };
 
 marshall &operator<<(marshall &m, const request_vote_args &args);
@@ -40,6 +41,7 @@ public:
     bool vote_granted{false};
 
     request_vote_reply(int t, bool granted): term(t), vote_granted(granted) {}
+    request_vote_reply(){}
 };
 
 marshall &operator<<(marshall &m, const request_vote_reply &reply);
@@ -54,23 +56,20 @@ public:
     int term{0};
 
     log_entry(command c, int log_ind, int t): cmd(c), log_index(log_ind), term(t) {}
+    log_entry(){}
 };
 
 template <typename command>
 marshall &operator<<(marshall &m, const log_entry<command> &entry) {
     // Lab3: Your code here
-    m = m << entry.cmd;
-    m = m << entry.log_index;
-    m = m << entry.term;
+    m << entry.cmd << entry.log_index << entry.term;
     return m;
 }
 
 template <typename command>
 unmarshall &operator>>(unmarshall &u, log_entry<command> &entry) {
     // Lab3: Your code here
-    u = u >> entry.cmd;
-    u = u >> entry.log_index;
-    u = u >> entry.term;
+    u >> entry.cmd >> entry.log_index >> entry.term;
     return u;
 }
 
@@ -91,32 +90,22 @@ public:
 
     append_entries_args(int t, int lid, int prev_log_ind, int prev_log_tm ,std::vector<log_entry<command>> &cmds, int lcmt):
         term(t), leader_id(lid), prev_log_index(prev_log_ind), prev_log_term(prev_log_tm), entries(cmds), leader_commit(lcmt) {}
+    append_entries_args(){}
 };
 
 template <typename command>
 marshall &operator<<(marshall &m, const append_entries_args<command> &args) {
     // Lab3: Your code here
-    m = m << args.term;
-    m = m << args.leader_id;
-    m = m << args.prev_log_index;
-    m = m << args.prev_log_term;
-
-    for(auto entry : args.entries) {
-        m = m << entry;
-    }
-    m = m << args.leader_commit;
+    m << args.term << args.leader_id << args.prev_log_index << args.prev_log_term <<
+    args.entries << args.leader_commit;
     return m;
 }
 
 template <typename command>
 unmarshall &operator>>(unmarshall &u, append_entries_args<command> &args) {
     // Lab3: Your code here
-    u = u >> args.term;
-    u = u >> args.leader_id;
-    u = u >> args.prev_log_index;
-    u = u >> args.prev_log_term;
-    u = u >> args.entries;
-    u = u >> args.leader_commit;
+    u >> args.term >> args.leader_id >> args.prev_log_index >> args.prev_log_term 
+        >> args.entries >> args.leader_commit;
     return u;
 }
 
@@ -129,6 +118,7 @@ public:
     bool success{false};
 
     append_entries_reply(int t, bool succ): term(t), success(succ) {}
+    append_entries_reply(){}
 };
 
 marshall &operator<<(marshall &m, const append_entries_reply &reply);

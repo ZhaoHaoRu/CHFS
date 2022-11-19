@@ -232,7 +232,7 @@ int raft_group<state_machine, command>::check_exact_one_leader() {
       int term = -1;
       bool is_leader = node->is_leader(term);
       if (is_leader) {
-        ASSERT(term > 0, "term " << term << " should not have a leader.");
+        ASSERT(term > 0, "term " << term << " should not have a leader. the leader: " << node->my_id);
         ASSERT(term_leaders.find(term) == term_leaders.end(),
                "term " << term << " has more than one leader.");
         term_leaders[term] = j;
@@ -276,7 +276,7 @@ int raft_group<state_machine, command>::check_same_term() {
     if (current_term == -1)
       current_term = term;
     ASSERT(current_term == term,
-           "inconsistent term: " << current_term << ", " << term);
+           "inconsistent term: " << current_term << ", " << term << ", the node: " << i );
   }
   return current_term;
 }
@@ -374,6 +374,7 @@ int raft_group<state_machine, command>::append_new_command(
              check_start + std::chrono::seconds(2)) {
         int committed_server = num_committed(log_idx);
         // std::cout << "nun commited: " << committed_server << std::endl;
+        // std::cout << "committed_server: " << committed_server << " expected_servers: " << expected_servers << std::endl;
         if (committed_server >= expected_servers) {
           // The log is committed!
           int commited_value = get_committed_value(log_idx);

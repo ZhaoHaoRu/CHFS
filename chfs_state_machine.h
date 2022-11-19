@@ -31,6 +31,8 @@ public:
     extent_protocol::extentid_t id;
     std::string buf;
     std::shared_ptr<result> res;
+    // TODO: for consistent with list_state
+    int value;
 
     chfs_command_raft();
 
