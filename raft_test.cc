@@ -515,6 +515,7 @@ TEST_CASE(part3, persist2, "More persistence") {
         fprintf(stdout, "get line 515\n");
         group->enable_node((leader1 + 0) % num_nodes);
         group->enable_node((leader1 + 4) % num_nodes);
+        fprintf(stdout, "get line 518, the enable node: %d, %d\n", (leader1 + 0) % num_nodes, (leader1 + 4) % num_nodes);
     }
     group->append_new_command(1000, num_nodes);
     group->wait_commit(index, num_nodes, -1);
@@ -600,6 +601,7 @@ TEST_CASE(part3, unreliable_agree, "Agreement under unreliable network") {
     group->set_reliable(false);
     std::vector<std::thread *> workers;
     for (int iters = 1; iters < 50; iters++) {
+        fprintf(stdout, "iter: %d\n", iters);
         for (int j = 0; j < 4; j++) {
             std::thread *t = new std::thread(
                 [=]() { group->append_new_command((100 * iters) + j, 1); });
