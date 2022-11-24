@@ -282,7 +282,7 @@ int
 chfs_client::lookup(inum parent, const char *name, bool &found, inum &ino_out)
 {
     int r = OK;
-
+    found = false;
     /*
      * your code goes here.
      * note: lookup file from parent dir according to name;

@@ -200,11 +200,11 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
         log.emplace_back(new_entry);
         // assume the dummy command don't need to persist
     }
-
+    
     commit_index = log[log.size() - 1].log_index;
 
     int upper_bound = 10000000;
-
+    printf("get line 209\n");
     if(vote_for > upper_bound) {
         vote_for = -1;
     }
@@ -290,7 +290,7 @@ bool raft<state_machine, command>::new_command(command cmd, int &term, int &inde
     log.emplace_back(new_entry);
     next_index[my_id] = index + 1;
     match_index[my_id] = index;
-    // // RAFT_LOG("new command persist log, the log size: %ld", log.size());
+    RAFT_LOG("new command persist log, the log size: %ld", log.size());
     storage->persist(log);
 
     return true;
@@ -355,10 +355,10 @@ int raft<state_machine, command>::request_vote(request_vote_args args, request_v
         last_term = log[log.size() - 1].term;
     }
 
-    // RAFT_LOG("begin to handle request vote from %d, the args.term %d, the current term: %d, the last_log_index: %d, args.last_log_index: %d, the last term: %d, the arg.last_term: %d", args.candidate_id, args.term, current_term, last_log_index, args.last_log_index, last_term, args.last_log_term);
+    RAFT_LOG("begin to handle request vote from %d, the args.term %d, the current term: %d, the last_log_index: %d, args.last_log_index: %d, the last term: %d, the arg.last_term: %d", args.candidate_id, args.term, current_term, last_log_index, args.last_log_index, last_term, args.last_log_term);
 
     if(args.term < current_term) {
-        // RAFT_LOG("the args.term of %d: %d, the current_term of %d: %d", args.candidate_id, args.term, my_id, current_term);
+        RAFT_LOG("the args.term of %d: %d, the current_term of %d: %d", args.candidate_id, args.term, my_id, current_term);
         reply.vote_granted = false;
         reply.term = current_term;
         return 0;
@@ -378,7 +378,7 @@ int raft<state_machine, command>::request_vote(request_vote_args args, request_v
     }
     
     // is a reply message
-    bool is_up_to_date_log = (args.last_log_term > last_term) || (args.last_log_term == last_term && args.last_log_index >= last_log_index);
+    bool is_up_to_date_log = (args.last_log_term > last_term) || (args.term > my_term && args.last_log_term == last_term && args.last_log_index >= last_log_index);
     reply.vote_granted = false;
     reply.term = current_term;
 
@@ -386,14 +386,14 @@ int raft<state_machine, command>::request_vote(request_vote_args args, request_v
         return 0;
     }
 
-    // RAFT_LOG("the vote for: %d, the  is_updatelog: %d", vote_for, is_up_to_date_log);
-    if(vote_for == args.candidate_id || (args.term > my_term && vote_for == -1 && is_up_to_date_log)) {
+    RAFT_LOG("the vote for: %d, the  is_updatelog: %d", vote_for, is_up_to_date_log);
+    if(vote_for == args.candidate_id || (vote_for == -1 && is_up_to_date_log)) {
         reply.vote_granted = true;
         vote_for = args.candidate_id;
         // persist the meta data
         storage->persist_metadata(current_term, vote_for);
         // update timeout
-        // // RAFT_LOG("update time out");
+        // RAFT_LOG("update time out");
         clock = std::chrono::steady_clock::now();
     }
 
@@ -409,20 +409,20 @@ void raft<state_machine, command>::handle_request_vote_reply(int target, const r
     // judge candiate or follower or leader
     // this server is expired
     if(arg.term < current_term || arg.term < reply.term) {
-        // RAFT_LOG("the target: %d, the arg.term: %d, the current_term: %d, the reply.term: %d", target, arg.term, current_term, reply.term);
+        RAFT_LOG("the target: %d, the arg.term: %d, the current_term: %d, the reply.term: %d", target, arg.term, current_term, reply.term);
         // vote_for = -1;
         init_follower();
         return;
     }
 
-    // RAFT_LOG("%d receive the vote from the client: %d", arg.candidate_id, target);
+    RAFT_LOG("%d receive the vote from the client: %d", arg.candidate_id, target);
     // here maybe the vote from the remain minority server
     if(reply.vote_granted && role != leader) {
         earned_votes.insert(target);
-        // RAFT_LOG("the current earned vote count: %ld, the client size: %ld", earned_votes.size(), rpc_clients.size());
+        RAFT_LOG("the current earned vote count: %ld, the client size: %ld", earned_votes.size(), rpc_clients.size());
 
         if(earned_votes.size() >= rpc_clients.size() / 2 + 1) {
-            // RAFT_LOG("init leader: %d", my_id);
+            RAFT_LOG("init leader: %d", my_id);
             init_leader();
             // RAFT_LOG("init leader finish");
         }
@@ -536,12 +536,12 @@ void raft<state_machine, command>::handle_append_entries_reply(int node, const a
     std::unique_lock<std::mutex> lock(mtx);
     assert(node >= 0 && node < client_count);
 
-    // // RAFT_LOG("handle append entries update clock");
+    // RAFT_LOG("handle append entries update clock");
     clock = std::chrono::steady_clock::now();
 
     // if reply.term > arg.term, leader or candidate should step down
     if(reply.term > arg.term) {
-        // RAFT_LOG("init follower: the reply.term: %d, the arg.term: %d", reply.term, arg.term);
+        RAFT_LOG("init follower: the reply.term: %d, the arg.term: %d", reply.term, arg.term);
         init_follower();
         // vote_for = -1;
         return;
@@ -560,17 +560,17 @@ void raft<state_machine, command>::handle_append_entries_reply(int node, const a
     if(reply.success) {
         match_index[node] = arg.entries[arg.entries.size() - 1].log_index;
         next_index[node] = std::max(match_index[node] + 1, next_index[node]); 
-        // RAFT_LOG("success from client %d, now the match_index: %d, the next_index: %d", node, match_index[node], next_index[node]);
+        RAFT_LOG("success from client %d, now the match_index: %d, the next_index: %d", node, match_index[node], next_index[node]);
         // judge majority index
         int majority_index = get_majority_same_index();
-        // RAFT_LOG("the majority index: %d, log[majority_index].term: %d, commit_index: %d", majority_index, log[majority_index].term, commit_index);
+        RAFT_LOG("the majority index: %d, log[majority_index].term: %d, commit_index: %d", majority_index, log[majority_index].term, commit_index);
         if(log[majority_index].term == current_term && majority_index > commit_index) {
             commit_index = majority_index;
         }
     } else {
         // If AppendEntries fails because of log inconsistency: decrement nextIndex and retry
         // refer zhihu
-        // RAFT_LOG("failure from node %d!", node);
+        RAFT_LOG("failure from node %d!", node);
         int prev_index = arg.prev_log_index;
         while(prev_index > 0 && log[prev_index].term == arg.prev_log_term) {
             --prev_index;
@@ -642,23 +642,26 @@ void raft<state_machine, command>::run_background_election() {
             continue;
         }
         auto cur_time = std::chrono::steady_clock::now();
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        
         std::unique_lock<std::mutex> lock(mtx);
         // get the timeout val
         std::random_device rd; 
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(1000, 1500);
-        int timeout = dis(gen);
+        std::uniform_int_distribution<> dis(900, 1100);
+        // int timeout = dis(gen);
+        int candidate_timeout = (rand() % 200) + 900;
+        int timeout = (rand() % 200) + 300;
 
         // get the time passed
         auto time_gap = std::chrono::duration_cast<std::chrono::milliseconds>(cur_time - clock);
+        
         // // RAFT_LOG("the time debug: my role: %d, the time_gap: %d", role, time_gap.count());
 
-        if(time_gap.count() <= timeout) {
+        if((role == follower && time_gap.count() <= timeout) || (role == candidate && time_gap.count() <= candidate_timeout)) {
             continue;
         }
 
-        // RAFT_LOG("the follower %d begin a new election, the time gap: %ld, timeout: %d, my pre role: %d, the former leader: %d", my_id, time_gap.count(), timeout, role, leader_id);
+        RAFT_LOG("the follower %d begin a new election, the time gap: %ld, timeout: %d, my pre role: %d, the former leader: %d", my_id, time_gap.count(), timeout, role, leader_id);
 
         if(role == follower || role == candidate) {
             role = candidate;
@@ -688,6 +691,7 @@ void raft<state_machine, command>::run_background_election() {
             }
         }
         lock.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }    
 
     return;
@@ -810,7 +814,7 @@ void raft<state_machine, command>::run_background_ping() {
         send_heartbeat();
         lock.unlock();
         // wait shorter to avoid race
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         // Lab3: Your code here:
     }    
 

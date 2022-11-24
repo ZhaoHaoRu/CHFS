@@ -168,7 +168,7 @@ inode_manager::alloc_inode(uint32_t type)
     uint32_t to_alloc = i + _last_alloced >= INODE_NUM ? (i + _last_alloced) % INODE_NUM + 1 : i + _last_alloced;
     if(get_inode(to_alloc) == nullptr) {
       if(to_alloc == 1) {
-        printf("create a root inode!\n");
+        printf("create a root inode!!!\n");
       }
       put_inode(to_alloc, new_node);
       _last_alloced = to_alloc;

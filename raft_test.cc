@@ -363,7 +363,7 @@ TEST_CASE(part2, rpc_count, "RPC counts aren't too high") {
     int leader = group->check_exact_one_leader();
 
     int total1 = group->rpc_count(-1);
-
+    fprintf(stderr, "the total rpc: %d\n", total1);
     ASSERT(total1 <= 30 && total1 >= 1,
            "too many or few RPCs (" << total1 << ") to elect initial leader");
 
