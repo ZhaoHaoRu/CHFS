@@ -152,6 +152,7 @@ TEST_CASE(part2, fail_no_agree, "Fail No Agreement") {
     group->enable_node((leader + 3) % num_nodes);
 
     int leader2 = group->check_exact_one_leader();
+    fprintf(stdout, "send new command: %d\n", leader2);
     is_leader = group->nodes[leader2]->new_command(list_command(30), temp_term,
                                                    temp_index);
     ASSERT(is_leader, "leader2 reject the new command");

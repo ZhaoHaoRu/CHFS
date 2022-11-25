@@ -6,3 +6,5 @@ log/
 *.log
 .clang-format
 raft_temp/
+tmp.txt
+tmp_grade.sh

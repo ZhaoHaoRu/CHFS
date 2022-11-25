@@ -1,3 +1,7 @@
+make clean &> /dev/null 2>&1
+echo "Building lab3 tests"
+make &> /dev/null 2>&1 
+
 raft_test_case() {
 	i=1
     # echo "Testing " $1"."$2;
@@ -15,4 +19,4 @@ raft_test_case() {
 	score=$((score+$3))
 }
 
-raft_test_case part1 re_election 10
+raft_test_case part2 fail_no_agree 5
