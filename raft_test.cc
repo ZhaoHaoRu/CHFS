@@ -533,7 +533,7 @@ TEST_CASE(part3, persist3,
     delete group;
 }
 
-void figure_8_test(list_raft_group *group, int num_tries = 1000) {
+void figure_8_test(list_raft_group *group, int num_tries = 100) {
     int num_nodes = 5;
     group->append_new_command(2048, 1);
     int nup = num_nodes;
