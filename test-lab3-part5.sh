@@ -19,7 +19,7 @@ test_if_has_mount(){
 
 	if [ $chfs_count -ne 1 ];
 	then
-			echo "error: chfs_client not found (expecting 2)"
+			echo "error: chfs_client not found"
 			exit
 	fi;
 
