@@ -25,7 +25,7 @@ test_if_has_mount(){
 
 	if [ $extent_count -ne 1 ];
 	then
-			echo "error: extent_server not found"
+			echo "error: extent_server_dist not found"
 			exit
 	fi;
 }
