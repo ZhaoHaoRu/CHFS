@@ -557,6 +557,7 @@ void figure_8_test(list_raft_group *group, int num_tries = 1000) {
     group->append_new_command(2048, 1);
     int nup = num_nodes;
     for (int iters = 0; iters < num_tries; iters++) {
+        fprintf(stderr, "the iters: %d\n", iters);
         int leader = -1;
         for (int i = 0; i < num_nodes; i++) {
             int term, index;
@@ -633,16 +634,21 @@ TEST_CASE(part4, basic_snapshot, "Basic snapshot") {
     int leader = group->check_exact_one_leader();
     int killed_node = (leader + 1) % num_nodes;
     group->disable_node(killed_node);
-    for (int i = 1; i < 100; i++)
+    fprintf(stdout, "get line 637\n");
+    for (int i = 1; i < 1; i++)
         group->append_new_command(100 + i, num_nodes - 1);
+    printf("get herre!!!\n");
+    fprintf(stdout, "get line 640\n");
     leader = group->check_exact_one_leader();
     int other_node = (leader + 1) % num_nodes;
     if (other_node == killed_node)
         other_node = (leader + 2) % num_nodes;
+    fprintf(stdout, "get line 643\n");
     ASSERT(group->nodes[leader]->save_snapshot(), "leader cannot save snapshot");
     ASSERT(group->nodes[other_node]->save_snapshot(),
            "follower cannot save snapshot");
     mssleep(2000);
+    fprintf(stdout, "get line 647\n");
     group->enable_node(killed_node);
     leader = group->check_exact_one_leader();
     group->append_new_command(1024, num_nodes);

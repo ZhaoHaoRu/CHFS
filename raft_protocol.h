@@ -127,6 +127,19 @@ unmarshall &operator>>(unmarshall &m, append_entries_reply &reply);
 class install_snapshot_args {
 public:
     // Lab3: Your code here
+    // leader's term
+    int term;
+    int leader_id;
+    // the snapshot replaces all entries up through and including this index
+    int last_included_index;
+    // term of lastIncludedIndex
+    int last_included_term;
+    // the data size
+    int data_size;
+    // raw bytes of the snapshot chunk, starting at offset
+    std::string data;
+
+    install_snapshot_args(){}
 };
 
 marshall &operator<<(marshall &m, const install_snapshot_args &args);
@@ -135,6 +148,10 @@ unmarshall &operator>>(unmarshall &m, install_snapshot_args &args);
 class install_snapshot_reply {
 public:
     // Lab3: Your code here
+    int term;
+
+    install_snapshot_reply(int t): term(t) {} 
+    install_snapshot_reply() {}
 };
 
 marshall &operator<<(marshall &m, const install_snapshot_reply &reply);

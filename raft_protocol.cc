@@ -2,11 +2,6 @@
 
 marshall &operator<<(marshall &m, const request_vote_args &args) {
     // Lab3: Your code here
-    // TODO: I am confused about the header, maybe not need...
-    // add the request header
-    // req_header new_req_header;
-    // m.pack_req_header(new_req_header);
-    // add the content
     m << args.term << args.candidate_id << args.last_log_index << args.last_log_term;
     return m;
 }
@@ -49,20 +44,26 @@ unmarshall &operator>>(unmarshall &m, append_entries_reply &args) {
 
 marshall &operator<<(marshall &m, const install_snapshot_args &args) {
     // Lab3: Your code here
+    m << args.term << args.leader_id << args.last_included_index << 
+    args.last_included_term << args.data_size << args.data;
     return m;
 }
 
 unmarshall &operator>>(unmarshall &u, install_snapshot_args &args) {
     // Lab3: Your code here
+    u >> args.term >> args.leader_id >> args.last_included_index >>
+    args.last_included_term >> args.data_size >> args.data;
     return u;
 }
 
 marshall &operator<<(marshall &m, const install_snapshot_reply &reply) {
     // Lab3: Your code here
+    m << reply.term;
     return m;
 }
 
 unmarshall &operator>>(unmarshall &u, install_snapshot_reply &reply) {
     // Lab3: Your code here
+    u >> reply.term;
     return u;
 }
