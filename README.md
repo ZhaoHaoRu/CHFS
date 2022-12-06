@@ -25,7 +25,7 @@ $ make clean && make
 
 (Reference: MIT 6.824 Distributed Systems)
 
-In this lab, you are asked to build a MapReduce framework on top of your Distributed Filesystem implemented in Lab1-3. Make sure that you can pass all the tests in lab3 before you get start.
+In this lab, you are asked to build a MapReduce framework on top of your Distributed Filesystem implemented in Lab1-3. **Make sure that you can pass all the tests in lab3 before you get start.**
 
 You will implement a worker process that calls Map and Reduce functions and handles reading and writing files, and a coordinator process that hands out tasks to workers and copes with failed workers.
 
@@ -60,7 +60,7 @@ There are four files added for this part: `mr_protocol.h`, `mr_sequential.cc`, `
 - Intermediate files will be operated on your distributed file system implemented in lab 3. If the file system's performance is bad, it *shall not pass the test* !
 
 ### Grading
-Before grading, we will first check your lab3 implementation.
+Before grading, we will first check your lab3 implementation using the grade script in lab3.
 If lab3's tests fail, you can only get half of the score of lab4.
 
 After you have implement part1 & part2, run the grading script:
@@ -86,7 +86,7 @@ After all above done:
 % make handin
 ```
 
-That should produce a file called lab2.tgz in the directory. Change the file name to your student id:
+That should produce a file called lab4.tgz in the directory. Change the file name to your student id:
 
 ```
 % mv lab4.tgz lab4_[your student id].tgz

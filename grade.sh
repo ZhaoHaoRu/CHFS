@@ -54,7 +54,7 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+10))
+			score=$((score+30))
 			echo "Passed part A (Word Count)"
 			#echo $score
 		fi
@@ -78,7 +78,7 @@ else
 				echo "FATAL: chfs_client DIED!"
 				exit
 		else
-			score=$((score+30))
+			score=$((score+70))
 			echo "Passed part B (Word Count with distributed MapReduce)"
 			#echo $score
 		fi
@@ -88,7 +88,7 @@ fi
 mr_wc_test
 
 # finally reaches here!
-if [ $score -eq 40 ];
+if [ $score -eq 100 ];
 then
 	echo "Lab4 passed"
 	echo "Passed all tests!"
