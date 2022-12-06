@@ -187,17 +187,13 @@ raft_group<state_machine, command>::raft_group(int num,
                       "cannot create dir " << std::string(storage_dir));
                raft_storage<command> *storage = new raft_storage<command>(dir_name);
                state_machine *state = new state_machine();
-               printf("get here line 190\n");
                auto client = create_rpc_clients(servers);
-               printf("get here line 192\n");
                raft<state_machine, command> *node =
                    new raft<state_machine, command>(servers[i], client, i, storage, state);
-              printf("get here line 195\n");
                nodes[i] = node;
                clients[i] = client;
                states[i] = state;
                storages[i] = storage;
-               printf("get here line 199\n");
            }
     printf("raft_group created-1\n");
     for (int i = 0; i < num; i++)

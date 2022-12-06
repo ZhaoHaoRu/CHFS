@@ -16,11 +16,15 @@ public:
     void restore(std::vector<log_entry<command>> &logs);
     void persist_metadata(int term, int vote_for);
     void restore_metadata(int &term, int &vote_for);
+    void persist_snapshot(int last_included_index, int last_included_term, std::vector<char> str, int data_size);
+    void restore_snapshot(int &last_included_index, int &last_included_term, std::vector<char> &str, int &data_size);
+
 private:
     std::mutex mtx;
     // Lab3: Your code here
     std::string log_path;
     std::string metadata_path;
+    std::string snapshot_path;
 };
 
 template <typename command>
@@ -29,6 +33,7 @@ raft_storage<command>::raft_storage(const std::string &dir) {
     std::unique_lock<std::mutex> lock(mtx);
     log_path = dir + "/log.bin";
     metadata_path = dir + "/metadata.bin";
+    snapshot_path = dir +"/snapshot.bin";
 }
 
 template <typename command>
@@ -56,14 +61,14 @@ void raft_storage<command>::persist(std::vector<log_entry<command>> &log_entries
         char *data = new char[total_size];
         memset(data, ' ', total_size);
         uint32_t tmp = log_entry.log_index;
-        printf("the log_entry.log_index: %d\n", log_entry.log_index);
+        // printf("the log_entry.log_index: %d\n", log_entry.log_index);
         memcpy(data, &tmp, sizeof(uint32_t));
         bias += sizeof(uint32_t);
         tmp = log_entry.term;
-        printf("the log_entry.term: %d\n", log_entry.term);
+        // printf("the log_entry.term: %d\n", log_entry.term);
         memcpy(data + bias, &tmp, sizeof(uint32_t));
         bias += sizeof(uint32_t);
-        printf("the cmd size: %d\n", cmd_size);
+        // printf("the cmd size: %d\n", cmd_size);
         tmp = cmd_size;
         memcpy(data + bias, &tmp, sizeof(uint32_t));
         bias += sizeof(uint32_t);
@@ -72,7 +77,7 @@ void raft_storage<command>::persist(std::vector<log_entry<command>> &log_entries
         log_entry.cmd.serialize(cmd_data, cmd_size);
         printf("the cmd data: %d\n", log_entry.cmd.value);
         memcpy(data + bias, cmd_data, cmd_size);
-        printf("the data: %s", data);
+        // printf("the data: %s", data);
         out_file.write(data, total_size);
         delete []data;
         delete []cmd_data;
@@ -95,13 +100,13 @@ void raft_storage<command>::restore(std::vector<log_entry<command>> &logs) {
     file.seekg(0,std::ios::beg);
     int count = 0;
     file.read(reinterpret_cast<char*>(&count), sizeof(int));
-    fprintf(stdout, "the file path: %s, the count: %d\n", log_path.c_str(), count);
+    // fprintf(stdout, "the file path: %s, the count: %d\n", log_path.c_str(), count);
     while(!file.eof() && i < count) {
         ++i;
         log_entry<command> new_log_entry;
         uint32_t size = 0;
         file.read(reinterpret_cast<char*>(&new_log_entry.log_index), sizeof(uint32_t));
-        fprintf(stdout, "the log log_index: %d\n", new_log_entry.log_index);
+        // fprintf(stdout, "the log log_index: %d\n", new_log_entry.log_index);
         file.read(reinterpret_cast<char*>(&new_log_entry.term), sizeof(uint32_t));
         fprintf(stdout, "the log term: %d\n", new_log_entry.term);
         file.read(reinterpret_cast<char*>(&size), sizeof(uint32_t));
@@ -159,4 +164,45 @@ void raft_storage<command>::restore_metadata(int &term, int &vote_for) {
     }
 }
 
+template <typename command>
+void raft_storage<command>::persist_snapshot(int last_included_index, int last_included_term, std::vector<char> str, int data_size) {
+    std::ofstream out_file(snapshot_path, std::ios::out | std::ios::binary);
+
+    if(!out_file) {
+        return;
+    }
+    int total_size = sizeof(int) * 3 + data_size;
+    int bias = 0;
+    char data[total_size] = {' '};
+    memcpy(data, &last_included_index, sizeof(int));
+    bias += sizeof(int);
+    memcpy(data + bias, &last_included_term, sizeof(int));
+    bias += sizeof(int);
+    memcpy(data + bias, &data_size, sizeof(int));
+    bias += sizeof(int);
+    memcpy(data + bias, str.data(), data_size);
+    out_file.write(data, total_size);
+
+    out_file.close();
+    return;
+}
+
+template <typename command>
+void raft_storage<command>::restore_snapshot(int &last_included_index, int &last_included_term, std::vector<char> &str, int &data_size) {
+    std::unique_lock<std::mutex> lock(mtx);
+    std::ifstream file(snapshot_path, std::ios::binary);
+
+    if(!file) {
+        return;
+    }   
+
+    file.read(reinterpret_cast<char*>(&last_included_index), sizeof(int));
+    file.read(reinterpret_cast<char*>(&last_included_term), sizeof(int));
+    file.read(reinterpret_cast<char*>(&data_size), sizeof(int));
+
+    ///@note avoid segmentation fault
+    str.resize(data_size);
+    file.read(const_cast<char*>(str.data()), data_size);
+    return;
+}
 #endif // raft_storage_h
