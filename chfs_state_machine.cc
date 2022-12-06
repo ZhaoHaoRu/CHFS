@@ -48,8 +48,6 @@ void chfs_command_raft::serialize(char *buf_out, int size) const {
     assert(bias + length <= size);
     memcpy(buf_out + bias, buf.c_str(), buf.size());
     bias += buf.size();
-    // serialize the attr
-    // TODO: maybe not need
     return;
 }
 
