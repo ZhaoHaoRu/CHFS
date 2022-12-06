@@ -99,4 +99,4 @@ fi
 ./stop.sh >/dev/null 2>&1
 
 echo ""
-echo "Score: "$score"/40"
+echo "Score: "$score"/100"
