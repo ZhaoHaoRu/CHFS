@@ -1,27 +1,29 @@
 # Lab 4: Map Reduce on Fault-tolerant Distributed Filesystem
 ### Getting started
 Before starting this lab, please back up all of your prior labs' solutions.
+```bash
+$ cd cse-lab
+$ git commit -a -m "upload lab3-sol"
+# Then, pull this lab from the repo:
 
-% cd cse-lab
-% git commit -a -m "upload lab3-sol"
-Then, pull this lab from the repo:
+$ git pull
+# Next, switch to the lab4 branch:
 
-% git pull
-Next, switch to the lab4 branch:
+$ git checkout lab4
+# Notice: lab4 is based on lab3.
 
-% git checkout lab4
-Notice: lab4 is based on lab3.
+# Please merge with branch lab3, and solve the conflicts.
 
-Please merge with branch lab3, and solve the conflicts.
-
-% git merge lab3
-After merging the conflicts, you should be able to compile the new project successfully:
+$ git merge lab3
+# After merging the conflicts, you should be able to compile the new project successfully:
 
 $ chmod -R o+w `pwd`
+
 $ sudo docker run -it --rm --privileged --cap-add=ALL -v `pwd`:/home/stu/cse-lab lqyuan980413/cselab_env:2022lab4
 /bin/bash
 $ cd cse-lab
 $ make clean && make
+```
 
 (Reference: MIT 6.824 Distributed Systems)
 
@@ -92,6 +94,6 @@ That should produce a file called lab4.tgz in the directory. Change the file nam
 % mv lab4.tgz lab4_[your student id].tgz
 ```
 
-Then upload **lab4_[your student id].tgz** file to [Canvas](https://oc.sjtu.edu.cn/courses/34449/assignments/115921) before the deadline.
+Then upload **lab4_[your student id].tgz** file to [Canvas](https://oc.sjtu.edu.cn/courses/49245/assignments/197178) before the deadline.
 
 You'll receive full credits if your code passes the same tests that we gave you, when we run your code on our machines.
