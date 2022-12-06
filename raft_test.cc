@@ -9,15 +9,20 @@ typedef raft_group<list_state_machine, list_command> list_raft_group;
 TEST_CASE(part1, leader_election, "Initial election") {
     int num_nodes = 3;
     list_raft_group *group = new list_raft_group(num_nodes);
-
+    
+    // TODO: add for debug
+    fprintf(stdout, "after init!\n");
+    fprintf(stdout, "check whether there is exact one leader in the group\n");
     // 1. check whether there is exact one leader in the group
     mssleep(300); // sleep 300 ms
     group->check_exact_one_leader();
 
+    fprintf(stdout, "check whether every one has the same term\n");
     // 2. check whether every one has the same term
     mssleep(2000); // sleep 2s
     int term1 = group->check_same_term();
 
+    fprintf(stdout, "wait for a few seconds and check whether the term is not changed\n");
     // 3. wait for a few seconds and check whether the term is not changed.
     mssleep(2000); // sleep 2s
     int term2 = group->check_same_term();
@@ -32,10 +37,12 @@ TEST_CASE(part1, re_election, "Election after network failure") {
     list_raft_group *group = new list_raft_group(num_nodes);
 
     // 1. check whether there is exact one leader in the group
+    fprintf(stdout, "check whether there is exact one leader in the group\n");
     mssleep(300); // sleep 300ms
     int leader1 = group->check_exact_one_leader();
 
     // 2. kill the leader
+    fprintf(stdout, "kill the leader\n");
     group->disable_node(leader1);
     mssleep(1000); // sleep 1s
     int leader2 = group->check_exact_one_leader();
@@ -45,6 +52,7 @@ TEST_CASE(part1, re_election, "Election after network failure") {
                    << "is killed, which should not be the new leader!");
 
     // 3. kill the second leader
+    fprintf(stdout, "kill the second leader\n");
     group->disable_node(leader2);
     mssleep(1000); // sleep 1s
     int leader3 = group->check_exact_one_leader();
@@ -53,14 +61,17 @@ TEST_CASE(part1, re_election, "Election after network failure") {
                    << "is killed, which should not be the new leader!");
 
     // 4. kill the third leader
+    fprintf(stdout, "kill the third leader\n");
     group->disable_node(leader3);
     mssleep(1000); // sleep 1s
 
     // 5. now, there are only 2 nodes left with no leader.
+    fprintf(stdout, "now, there are only 2 nodes left with no leader.\n");
     group->check_no_leader();
 
     // 6. resume a node
     group->enable_node(leader1);
+    fprintf(stdout, "resume a node\n");
     mssleep(1000);
     group->check_exact_one_leader();
 
@@ -114,11 +125,14 @@ TEST_CASE(part2, fail_no_agree, "Fail No Agreement") {
 
     // 3 of 5 followers disconnect
     int leader = group->check_exact_one_leader();
+    fprintf(stdout, "3 of 5 followers disconnect, the leader: %d\n", leader);
+    fprintf(stdout, "the disable server: %d, %d, %d\n", (leader + 1) % num_nodes, (leader + 2) % num_nodes, (leader + 3) % num_nodes);
     group->disable_node((leader + 1) % num_nodes);
     group->disable_node((leader + 2) % num_nodes);
     group->disable_node((leader + 3) % num_nodes);
 
     int temp_term, temp_index;
+    fprintf(stdout, "send new command: %d\n", leader);
     int is_leader = group->nodes[leader]->new_command(list_command(20), temp_term,
                                                       temp_index);
     ASSERT(is_leader,
@@ -132,11 +146,13 @@ TEST_CASE(part2, fail_no_agree, "Fail No Agreement") {
            "There is no majority, but index " << temp_index << " is committed");
 
     // repair
+    fprintf(stdout, "repair!\n");
     group->enable_node((leader + 1) % num_nodes);
     group->enable_node((leader + 2) % num_nodes);
     group->enable_node((leader + 3) % num_nodes);
 
     int leader2 = group->check_exact_one_leader();
+    fprintf(stdout, "send new command: %d\n", leader2);
     is_leader = group->nodes[leader2]->new_command(list_command(30), temp_term,
                                                    temp_index);
     ASSERT(is_leader, "leader2 reject the new command");
@@ -348,7 +364,7 @@ TEST_CASE(part2, rpc_count, "RPC counts aren't too high") {
     int leader = group->check_exact_one_leader();
 
     int total1 = group->rpc_count(-1);
-
+    fprintf(stderr, "the total rpc: %d\n", total1);
     ASSERT(total1 <= 30 && total1 >= 1,
            "too many or few RPCs (" << total1 << ") to elect initial leader");
 
@@ -424,7 +440,7 @@ TEST_CASE(part3, persist1, "Basic persistence") {
     list_raft_group *group = new list_raft_group(num_nodes);
     mssleep(100);
     group->append_new_command(11, num_nodes);
-
+    fprintf(stdout, "get line 442\n");
     for (int i = 0; i < num_nodes; i++) {
         group->restart(i);
     }
@@ -432,14 +448,16 @@ TEST_CASE(part3, persist1, "Basic persistence") {
         group->disable_node(i);
         group->enable_node(i);
     }
-
+    fprintf(stdout, "get line 450\n");
     group->append_new_command(12, num_nodes);
-
+    fprintf(stdout, "get line 452\n");
     int leader1 = group->check_exact_one_leader();
     group->disable_node(leader1);
+    fprintf(stdout, "get line 455\n");
     group->restart(leader1);
+     fprintf(stdout, "get line 457\n");
     group->enable_node(leader1);
-
+    fprintf(stdout, "get line 459\n");
     group->append_new_command(13, num_nodes);
 
     int leader2 = group->check_exact_one_leader();
@@ -447,16 +465,16 @@ TEST_CASE(part3, persist1, "Basic persistence") {
     group->append_new_command(14, num_nodes - 1);
     group->restart(leader2);
     group->enable_node(leader2);
-
+    fprintf(stdout, "get line 465\n");
     group->wait_commit(4, num_nodes,
                        -1); // wait for leader2 to join before killing i3
-
+    fprintf(stdout, "get line 468\n");
     int i3 = (group->check_exact_one_leader() + 1) % num_nodes;
     group->disable_node(i3);
     group->append_new_command(15, num_nodes - 1);
     group->restart(i3);
     group->enable_node(i3);
-
+    fprintf(stdout, "get line 474\n");
     group->append_new_command(16, num_nodes);
 
     delete group;
@@ -475,33 +493,34 @@ TEST_CASE(part3, persist2, "More persistence") {
 
         group->disable_node((leader1 + 1) % num_nodes);
         group->disable_node((leader1 + 2) % num_nodes);
-
+        fprintf(stdout, "get line 495, the disable node: %d, %d\n", (leader1 + 1) % num_nodes, (leader1 + 2) % num_nodes);
         group->append_new_command(10 + index, num_nodes - 2);
         index++;
-
+        fprintf(stdout, "get line 498\n");
         group->disable_node((leader1 + 0) % num_nodes);
         group->disable_node((leader1 + 3) % num_nodes);
         group->disable_node((leader1 + 4) % num_nodes);
-
+        fprintf(stdout, "get line 502, the disable node: %d, %d, %d\n", (leader1 + 0) % num_nodes, (leader1 + 3) % num_nodes, (leader1 + 4) % num_nodes);
         group->restart((leader1 + 1) % num_nodes);
         group->restart((leader1 + 2) % num_nodes);
         group->enable_node((leader1 + 1) % num_nodes);
         group->enable_node((leader1 + 2) % num_nodes);
-
+        fprintf(stdout, "get line 507, the enable node: %d, %d\n", (leader1 + 1) % num_nodes, (leader1 + 2) % num_nodes);
         mssleep(1000);
 
         group->restart((leader1 + 3) % num_nodes);
         group->enable_node((leader1 + 3) % num_nodes);
-
+        fprintf(stdout, "get line 512, the restart node: %d\n", (leader1 + 3) % num_nodes);
         group->append_new_command(10 + index, num_nodes - 2);
         index++;
-
+        fprintf(stdout, "get line 515\n");
         group->enable_node((leader1 + 0) % num_nodes);
         group->enable_node((leader1 + 4) % num_nodes);
+        fprintf(stdout, "get line 518, the enable node: %d, %d\n", (leader1 + 0) % num_nodes, (leader1 + 4) % num_nodes);
     }
     group->append_new_command(1000, num_nodes);
     group->wait_commit(index, num_nodes, -1);
-
+    fprintf(stdout, "get line 521\n");
     delete group;
 }
 
@@ -583,6 +602,7 @@ TEST_CASE(part3, unreliable_agree, "Agreement under unreliable network") {
     group->set_reliable(false);
     std::vector<std::thread *> workers;
     for (int iters = 1; iters < 50; iters++) {
+        fprintf(stdout, "iter: %d\n", iters);
         for (int j = 0; j < 4; j++) {
             std::thread *t = new std::thread(
                 [=]() { group->append_new_command((100 * iters) + j, 1); });

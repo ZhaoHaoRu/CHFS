@@ -179,7 +179,7 @@ raft_group<state_machine, command>::raft_group(int num,
     // ASSERT(ret == 0 || , "cannot rmdir " << ret);
     ASSERT(mkdir(storage_dir, 0777) >= 0,
            "cannot create dir " << std::string(storage_dir));
-    // printf("raft_group created-0\n");
+    printf("raft_group created-0\n");
            for (int i = 0; i < num; i++) {
                std::string dir_name(storage_dir);
                dir_name = dir_name + "/raft_storage_" + std::to_string(i);
@@ -187,18 +187,22 @@ raft_group<state_machine, command>::raft_group(int num,
                       "cannot create dir " << std::string(storage_dir));
                raft_storage<command> *storage = new raft_storage<command>(dir_name);
                state_machine *state = new state_machine();
+               printf("get here line 190\n");
                auto client = create_rpc_clients(servers);
+               printf("get here line 192\n");
                raft<state_machine, command> *node =
                    new raft<state_machine, command>(servers[i], client, i, storage, state);
+              printf("get here line 195\n");
                nodes[i] = node;
                clients[i] = client;
                states[i] = state;
                storages[i] = storage;
+               printf("get here line 199\n");
            }
-    // printf("raft_group created-1\n");
+    printf("raft_group created-1\n");
     for (int i = 0; i < num; i++)
         nodes[i]->start();
-    // printf("raft_group created\n");
+    printf("raft_group created\n");
 }
 
 template <typename state_machine, typename command>
@@ -232,7 +236,7 @@ int raft_group<state_machine, command>::check_exact_one_leader() {
       int term = -1;
       bool is_leader = node->is_leader(term);
       if (is_leader) {
-        ASSERT(term > 0, "term " << term << " should not have a leader.");
+        ASSERT(term > 0, "term " << term << " should not have a leader. the leader: " << node->my_id);
         ASSERT(term_leaders.find(term) == term_leaders.end(),
                "term " << term << " has more than one leader.");
         term_leaders[term] = j;
@@ -276,7 +280,7 @@ int raft_group<state_machine, command>::check_same_term() {
     if (current_term == -1)
       current_term = term;
     ASSERT(current_term == term,
-           "inconsistent term: " << current_term << ", " << term);
+           "inconsistent term: " << current_term << ", " << term << ", the node: " << i );
   }
   return current_term;
 }
@@ -374,6 +378,7 @@ int raft_group<state_machine, command>::append_new_command(
              check_start + std::chrono::seconds(2)) {
         int committed_server = num_committed(log_idx);
         // std::cout << "nun commited: " << committed_server << std::endl;
+        std::cout << "committed_server: " << committed_server << " expected_servers: " << expected_servers << " log_idx: " << log_idx<< std::endl;
         if (committed_server >= expected_servers) {
           // The log is committed!
           int commited_value = get_committed_value(log_idx);

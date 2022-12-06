@@ -641,7 +641,7 @@ rpcs::dispatch(djob_t *j)
 						}
 			VERIFY(rh.ret >= 0);
 
-			rep.pack_reply_header(rh);
+			rep.pack_reply_header(rh);												
 			rep.take_buf(&b1,&sz1);
 			
 			jsl_log(JSL_DBG_2,

@@ -127,6 +127,10 @@ sub checkcontent {
       $c2 .= $_;
     }
     close(F);
+    # print "\n My read string is: $c2";  
+    # print "\n My file string is: $files->{$name}";
+    # print "\n length of the file string is:", length($files->{$name});
+    # print "\n length of read string is:", length($c2), "\n";
     $files->{$name} eq $c2 or die "content of $f is incorrect\n";
 }
 

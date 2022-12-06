@@ -1,6 +1,7 @@
 #include "raft_state_machine.h"
 #include "rpc.h"
 #include "extent_server.h"
+#include <vector>
 
 class chfs_command_raft : public raft_command {
 public:
@@ -24,13 +25,17 @@ public:
         std::mutex mtx;             // protect the struct
         std::condition_variable cv; // notify the caller
     };
+
     // Lab3: your code here
     // You may add your own member variables if you need
     command_type cmd_tp;
     uint32_t type;
     extent_protocol::extentid_t id;
     std::string buf;
+    // extent_protocol::attr attr;
     std::shared_ptr<result> res;
+    // TODO: for consistent with list_state
+    int value;
 
     chfs_command_raft();
 
