@@ -137,7 +137,7 @@ public:
     // the data size
     int data_size;
     // raw bytes of the snapshot chunk, starting at offset
-    std::string data;
+    std::vector<char> data;
 
     install_snapshot_args(){}
 };

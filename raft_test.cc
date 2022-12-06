@@ -634,23 +634,27 @@ TEST_CASE(part4, basic_snapshot, "Basic snapshot") {
     int leader = group->check_exact_one_leader();
     int killed_node = (leader + 1) % num_nodes;
     group->disable_node(killed_node);
-    fprintf(stdout, "get line 637\n");
-    for (int i = 1; i < 1; i++)
+    // fprintf(stdout, "get line 637, the killed_node is %d\n", killed_node);
+    for (int i = 1; i < 100; i++)
         group->append_new_command(100 + i, num_nodes - 1);
-    printf("get herre!!!\n");
-    fprintf(stdout, "get line 640\n");
+    printf("get here!!!\n");
+    // fprintf(stdout, "get line 640\n");
     leader = group->check_exact_one_leader();
     int other_node = (leader + 1) % num_nodes;
     if (other_node == killed_node)
         other_node = (leader + 2) % num_nodes;
-    fprintf(stdout, "get line 643\n");
+    // fprintf(stdout, "get line 646\n");
     ASSERT(group->nodes[leader]->save_snapshot(), "leader cannot save snapshot");
+    // fprintf(stdout, "get line 648\n");
     ASSERT(group->nodes[other_node]->save_snapshot(),
            "follower cannot save snapshot");
+    // fprintf(stdout, "get line 651\n");
     mssleep(2000);
-    fprintf(stdout, "get line 647\n");
+    // fprintf(stdout, "get line 652, the leader is %d\n", leader);
     group->enable_node(killed_node);
+    // fprintf(stdout, "get line 654\n");
     leader = group->check_exact_one_leader();
+    // fprintf(stdout, "get line 657, the 657 leader is %d\n", leader);
     group->append_new_command(1024, num_nodes);
     ASSERT(group->states[killed_node]->num_append_logs < 90,
            "the snapshot does not work");
@@ -661,13 +665,20 @@ TEST_CASE(part4, restore_snapshot, "Restore snapshot after failure") {
     int num_nodes = 3;
     list_raft_group *group = new list_raft_group(num_nodes);
     int leader = group->check_exact_one_leader();
-    for (int i = 1; i < 100; i++)
+    fprintf(stdout, "get line 668, the leader is: %d\n", leader);
+    for (int i = 1; i < 5; i++)
         group->append_new_command(100 + i, num_nodes - 1);
+    fprintf(stdout, "get line 671\n");
     leader = group->check_exact_one_leader();
+    fprintf(stdout, "get line 672, the leader is: %d\n", leader);
     ASSERT(group->nodes[leader]->save_snapshot(), "leader cannot save snapshot");
+    fprintf(stdout, "get line 674\n");
     mssleep(2000);
+    fprintf(stdout, "get line 676\n");
     group->restart(leader);
+    fprintf(stdout, "get line 678\n");
     group->append_new_command(1024, num_nodes);
+    fprintf(stdout, "get line 680\n");
     ASSERT(group->states[leader]->num_append_logs < 90,
            "the snapshot does not work");
     delete group;

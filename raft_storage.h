@@ -16,8 +16,8 @@ public:
     void restore(std::vector<log_entry<command>> &logs);
     void persist_metadata(int term, int vote_for);
     void restore_metadata(int &term, int &vote_for);
-    void persist_snapshot(int last_included_index, int last_included_term, std::string str, int data_size);
-    void restore_snapshot(int &last_included_index, int &last_included_term, std::string &str, int &data_size);
+    void persist_snapshot(int last_included_index, int last_included_term, std::vector<char> str, int data_size);
+    void restore_snapshot(int &last_included_index, int &last_included_term, std::vector<char> &str, int &data_size);
 
 private:
     std::mutex mtx;
@@ -68,14 +68,14 @@ void raft_storage<command>::persist(std::vector<log_entry<command>> &log_entries
         // printf("the log_entry.term: %d\n", log_entry.term);
         memcpy(data + bias, &tmp, sizeof(uint32_t));
         bias += sizeof(uint32_t);
-        printf("the cmd size: %d\n", cmd_size);
+        // printf("the cmd size: %d\n", cmd_size);
         tmp = cmd_size;
         memcpy(data + bias, &tmp, sizeof(uint32_t));
         bias += sizeof(uint32_t);
         char *cmd_data = new char[cmd_size];
         memset(cmd_data, ' ', cmd_size);
         log_entry.cmd.serialize(cmd_data, cmd_size);
-        // printf("the cmd data: %d\n", log_entry.cmd.value);
+        printf("the cmd data: %d\n", log_entry.cmd.value);
         memcpy(data + bias, cmd_data, cmd_size);
         // printf("the data: %s", data);
         out_file.write(data, total_size);
@@ -165,7 +165,7 @@ void raft_storage<command>::restore_metadata(int &term, int &vote_for) {
 }
 
 template <typename command>
-void raft_storage<command>::persist_snapshot(int last_included_index, int last_included_term, std::string str, int data_size) {
+void raft_storage<command>::persist_snapshot(int last_included_index, int last_included_term, std::vector<char> str, int data_size) {
     std::ofstream out_file(snapshot_path, std::ios::out | std::ios::binary);
 
     if(!out_file) {
@@ -180,7 +180,7 @@ void raft_storage<command>::persist_snapshot(int last_included_index, int last_i
     bias += sizeof(int);
     memcpy(data + bias, &data_size, sizeof(int));
     bias += sizeof(int);
-    memcpy(data + bias, str.c_str(), data_size);
+    memcpy(data + bias, str.data(), data_size);
     out_file.write(data, total_size);
 
     out_file.close();
@@ -188,7 +188,7 @@ void raft_storage<command>::persist_snapshot(int last_included_index, int last_i
 }
 
 template <typename command>
-void raft_storage<command>::restore_snapshot(int &last_included_index, int &last_included_term, std::string &str, int &data_size) {
+void raft_storage<command>::restore_snapshot(int &last_included_index, int &last_included_term, std::vector<char> &str, int &data_size) {
     std::unique_lock<std::mutex> lock(mtx);
     std::ifstream file(snapshot_path, std::ios::binary);
 
