@@ -1,4 +1,27 @@
 # Lab 4: Map Reduce on Fault-tolerant Distributed Filesystem
+### Getting started
+Before starting this lab, please back up all of your prior labs' solutions.
+
+% cd cse-lab
+% git commit -a -m "upload lab3-sol"
+Then, pull this lab from the repo:
+
+% git pull
+Next, switch to the lab4 branch:
+
+% git checkout lab4
+Notice: lab4 is based on lab3.
+
+Please merge with branch lab3, and solve the conflicts.
+
+% git merge lab3
+After merging the conflicts, you should be able to compile the new project successfully:
+
+$ chmod -R o+w `pwd`
+$ sudo docker run -it --rm --privileged --cap-add=ALL -v `pwd`:/home/stu/cse-lab lqyuan980413/cselab_env:2022lab4
+/bin/bash
+$ cd cse-lab
+$ make clean && make
 
 (Reference: MIT 6.824 Distributed Systems)
 
@@ -34,9 +57,11 @@ There are four files added for this part: `mr_protocol.h`, `mr_sequential.cc`, `
 - The coordinator, as an RPC server, should be concurrent; hence please don't forget to lock the shared data.
 - The Map part of your workers can use a hash function to distribute the intermediate key-values to different files intended for different Reduce tasks.
 - A reasonable naming convention for intermediate files is mr-X-Y, where X is the Map task number, and Y is the reduce task number. The worker's map task code will need a way to store intermediate key/value pairs in files in a way that can be correctly read back during reduce tasks.
-- Intermediate files will be operated on your distributed file system implemented in lab 1-3. If the file system's performance is bad, it *shall not pass the test* !
+- Intermediate files will be operated on your distributed file system implemented in lab 3. If the file system's performance is bad, it *shall not pass the test* !
 
 ### Grading
+Before grading, we will first check your lab3 implementation.
+If lab3's tests fail, you can only get half of the score of lab4.
 
 After you have implement part1 & part2, run the grading script:
 
@@ -48,7 +73,7 @@ Passed part B (Word Count with distributed MapReduce)
 Lab4 passed
 
 Passed all tests!
-Score: 40/40
+Score: 100/100
 ```
 
 We will test your MapReduce following the evaluation criteria above.
