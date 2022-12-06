@@ -199,6 +199,9 @@ void raft_storage<command>::restore_snapshot(int &last_included_index, int &last
     file.read(reinterpret_cast<char*>(&last_included_index), sizeof(int));
     file.read(reinterpret_cast<char*>(&last_included_term), sizeof(int));
     file.read(reinterpret_cast<char*>(&data_size), sizeof(int));
+
+    ///@note avoid segmentation fault
+    str.resize(data_size);
     file.read(const_cast<char*>(str.data()), data_size);
     return;
 }

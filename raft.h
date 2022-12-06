@@ -184,7 +184,10 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
     role(follower) {
     thread_pool = new ThrPool(32);
 
+    RAFT_LOG("begin new");
+
     // Register the rpcs.
+    // assert(rpc_server);
     rpc_server->reg(raft_rpc_opcodes::op_request_vote, this, &raft::request_vote);
     rpc_server->reg(raft_rpc_opcodes::op_append_entries, this, &raft::append_entries);
     rpc_server->reg(raft_rpc_opcodes::op_install_snapshot, this, &raft::install_snapshot);
@@ -194,6 +197,7 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
     client_count = rpc_clients.size();
 
     // restore from the log
+    // assert(storage);
     storage->restore(log);
     storage->restore_metadata(current_term, vote_for);
 
@@ -201,6 +205,9 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
     int data_size = 0, last_included_index = 0, last_included_term = 0;
     std::vector<char> str;
     storage->restore_snapshot(last_included_index, last_included_term, str, data_size);
+
+    // TODO: add for debug
+    RAFT_LOG("after restore");
 
     // add the dummy log if empty
     if(log.empty()) {
@@ -214,6 +221,9 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
     commit_index = 0;
     last_applied = 0;
 
+    // TODO: add for debug
+    // assert(log.size() > 0);
+
     // if have snapshot
     if(data_size != 0) {
         RAFT_LOG("the data size: %d", data_size);
@@ -222,7 +232,7 @@ raft<state_machine, command>::raft(rpcs *server, std::vector<rpcc *> clients, in
         log[0].log_index = last_included_index;
         log[0].term = last_included_term;
         RAFT_LOG("the str length: ", str.size());
-        assert(str.size() == data_size);
+        // assert(str.size() == data_size);
         state->apply_snapshot(str);
     }
     
@@ -300,7 +310,11 @@ bool raft<state_machine, command>::new_command(command cmd, int &term, int &inde
     }
 
     // append new command to the leader's log
-    term = current_term; 
+    term = current_term;
+
+    // FIXME: add for debug
+    // assert(log.size() > 0); 
+
     index = log[log.size() - 1].log_index + 1;   // the log is not growing and growing 
     // index = log.size();     // the log is growing and growing
     log_entry<command> new_entry(cmd, index, term);
@@ -316,6 +330,7 @@ bool raft<state_machine, command>::save_snapshot() {
     std::unique_lock<std::mutex> lock(mtx);
     // get the lastapplied log index and term
     int last_applied_index = last_applied - log[0].log_index;
+    // assert(log.size() > last_applied_index);
     int last_included_index = log[last_applied_index].log_index;
     int last_included_term = log[last_applied_index].term;
 
@@ -338,13 +353,14 @@ template <typename state_machine, typename command>
 bool raft<state_machine, command>::handle_snapshot(int last_included_index, int last_included_term, std::vector<char> data, int data_size) {
     // Lab3: Your code here
     // if don't use
+    // assert(log.size() > 0);
     if(last_included_index <= log[0].log_index || last_included_term <= log[0].term) {
         RAFT_LOG("the snapshot not used\n");
         return false;
     }
     // discard any existing or partial snapshot with a smaller index
     int n = log.size();
-    assert(n > 0);
+    // assert(n > 0);
     std::vector<log_entry<command>> new_log;
     // the dummy log always reserve
     new_log.emplace_back(log[0]);
@@ -393,6 +409,9 @@ template <typename state_machine, typename command>
 int raft<state_machine, command>::request_vote(request_vote_args args, request_vote_reply &reply) {
     // Lab3: Your code here
     std::unique_lock<std::mutex> lock(mtx);
+
+    // TODO: add for debug
+    // assert(log.size() > 0);
     
     // update last_log_index and last_log_term
     if(!log.empty()) {
@@ -477,6 +496,8 @@ int raft<state_machine, command>::append_entries(append_entries_args<command> ar
     }
 
     reply.term = current_term;
+    // TODO: add for debug
+    // assert(log.size() > 0);
     last_log_index = log[log.size() - 1].log_index;
     last_term = log[log.size() - 1].term;
 
@@ -517,6 +538,8 @@ int raft<state_machine, command>::append_entries(append_entries_args<command> ar
     // whose term matches prevLogTerm 
     RAFT_LOG("the arg.prev_log_index: %d, last_log_index: %d, arg.prev_log_term: %d, last_term: %d", arg.prev_log_index, last_log_index, arg.prev_log_term, last_term);
     
+    // TODO: add for debug
+    // assert(get_true_index(arg.prev_log_index) < log.size());
     int this_prev_log_term = log[get_true_index(arg.prev_log_index)].term; 
     if(arg.prev_log_index > last_log_index || arg.prev_log_term != this_prev_log_term) {
         reply.success = false;
@@ -562,7 +585,8 @@ template <typename state_machine, typename command>
 void raft<state_machine, command>::handle_append_entries_reply(int node, const append_entries_args<command> &arg, const append_entries_reply &reply) {
     // Lab3: Your code here
     std::unique_lock<std::mutex> lock(mtx);
-    assert(node >= 0 && node < client_count);
+    // assert(node >= 0 && node < client_count);
+    // assert(node < match_index.size());
 
     clock = std::chrono::steady_clock::now();
 
@@ -590,6 +614,9 @@ void raft<state_machine, command>::handle_append_entries_reply(int node, const a
         // judge majority index (must for current term)
         int majority_index = get_majority_same_index();
         int index_pos = get_true_index(majority_index);
+
+        // TODO: add for debug
+        // assert(index_pos < log.size());
         RAFT_LOG("the majority index: %d, log[majority_index].term: %d, commit_index: %d", majority_index, log[index_pos].term, commit_index);
         if(log[index_pos].term == current_term && majority_index > commit_index) {
             commit_index = majority_index;
@@ -597,6 +624,9 @@ void raft<state_machine, command>::handle_append_entries_reply(int node, const a
     } else {
         // If AppendEntries fails because of log inconsistency: decrement nextIndex and retry
         int prev_index = get_true_index(arg.prev_log_index);
+
+        // TODO: add for debug
+        // assert(prev_index < log.size());
         while(prev_index > 0 && log[prev_index].term == arg.prev_log_term) {
             RAFT_LOG("the prev_index: %d, log[prev_index].term: %d, arg.prev_log_term: %d", prev_index, log[prev_index].term, arg.prev_log_term);
             --prev_index;
@@ -628,6 +658,7 @@ int raft<state_machine, command>::install_snapshot(install_snapshot_args args, i
         current_term = args.term;
         reply.term = current_term;
         bool ret = handle_snapshot(args.last_included_index, args.last_included_term, args.data, args.data_size);
+        // assert(log.size() > 0);
         RAFT_LOG("after snapshot the last log index: %d, the last log term: %d, the log size: %d", log[log.size() - 1].log_index, log[log.size() - 1].term, log.size());
         if (!ret) {
             RAFT_LOG("something wrong happened when install snapshot");
@@ -640,6 +671,7 @@ template <typename state_machine, typename command>
 void raft<state_machine, command>::handle_install_snapshot_reply(int node, const install_snapshot_args &arg, const install_snapshot_reply &reply) {
     // Lab3: Your code here
     std::unique_lock<std::mutex> lock(mtx);
+    // assert(node >= 0 && node < next_index.size());
     if (reply.term > current_term) {
         current_term = reply.term;
         init_follower();
@@ -732,6 +764,8 @@ void raft<state_machine, command>::run_background_election() {
             if(n != 0) {
                 last_log_index = log[n - 1].log_index;
                 last_term = log[n - 1].term;
+            } else {
+                RAFT_LOG("the log size error!");
             }
 
             // generate the request
@@ -774,6 +808,10 @@ void raft<state_machine, command>::run_background_commit() {
         }
 
         for(int i = 0; i < client_count; ++i) {
+
+            // TODO: add for debug
+            // assert(i < match_index.size());
+
             // TODO: maybe need to modify
             if(match_index[i] - log[0].log_index > (int)log.size()) {
                 RAFT_LOG("node: %d, the match_index: %d, the log[0].log_index: %d, the log.size: %d", i, match_index[i], log[0].log_index, log.size());
@@ -803,6 +841,8 @@ void raft<state_machine, command>::run_background_commit() {
             }
 
             args.prev_log_index = next_index[i] - 1;
+
+            // assert(get_true_index(args.prev_log_index) >=0 && get_true_index(args.prev_log_index) < log.size());
             args.prev_log_term = log[get_true_index(args.prev_log_index)].term;
             RAFT_LOG("the receiver: %d, the args.prev_log_index: %d, the args.prev_log_term: %d", i, args.prev_log_index, args.prev_log_term);
            
@@ -838,6 +878,10 @@ void raft<state_machine, command>::run_background_apply() {
         while(commit_index > last_applied) {
             ++last_applied;
             RAFT_LOG("the client %d apply the log index: %d the term: %d, the apply value: %d", my_id, log[get_true_index(last_applied)].log_index, log[get_true_index(last_applied)].term, log[get_true_index(last_applied)].cmd.value);
+            
+            // TODO: add for debug
+            int tmp = get_true_index(last_applied);
+            // assert(tmp >= 0 && tmp < log.size());
             state->apply_log(log[get_true_index(last_applied)].cmd);
         }
         lock.unlock();
@@ -913,6 +957,8 @@ int raft<state_machine, command>::get_majority_same_index() {
 template <typename state_machine, typename command>
 void raft<state_machine, command>::send_heartbeat() {
     std::vector<log_entry<command>> empty_entries;
+
+    // assert(log.size() > 0);
     last_log_index = log[log.size() - 1].log_index;
     last_term = log[log.size() - 1].term;
     append_entries_args<command> heartbeat_args(current_term, leader_id, last_log_index, last_term, empty_entries, commit_index);
@@ -929,7 +975,7 @@ void raft<state_machine, command>::send_heartbeat() {
 
 template <typename state_machine, typename command>
 int raft<state_machine, command>::get_true_index(int index) {
-    assert(index >= log[0].log_index);
+    // assert(index >= log[0].log_index);
     int true_index = index - log[0].log_index;
     return true_index;
 }

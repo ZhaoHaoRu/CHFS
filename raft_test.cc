@@ -666,7 +666,7 @@ TEST_CASE(part4, restore_snapshot, "Restore snapshot after failure") {
     list_raft_group *group = new list_raft_group(num_nodes);
     int leader = group->check_exact_one_leader();
     fprintf(stdout, "get line 668, the leader is: %d\n", leader);
-    for (int i = 1; i < 5; i++)
+    for (int i = 1; i < 100; i++)
         group->append_new_command(100 + i, num_nodes - 1);
     fprintf(stdout, "get line 671\n");
     leader = group->check_exact_one_leader();
