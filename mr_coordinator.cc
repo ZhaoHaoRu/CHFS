@@ -53,11 +53,11 @@ mr_protocol::status Coordinator::askTask(int, mr_protocol::AskTaskResponse &repl
 	// Lab4 : Your code goes here.
 
 	int file_size = files.size();
-	// cerr << "check asktask request" << endl;
+
 	// check whether need map
 	if (!isFinishedMap()) {
 		this->mtx.lock();
-		// cerr << "get line 57" << endl;
+
 		for (int i = 0; i < file_size; ++i) {
 			if (!mapTasks[i].isAssigned) {
 				reply.task_type = mr_tasktype::MAP;
@@ -65,8 +65,7 @@ mr_protocol::status Coordinator::askTask(int, mr_protocol::AskTaskResponse &repl
 				reply.file_name = files[i];
 				mapTasks[i].isAssigned = true;
 				++assignedMapCount;
-				cout << "the assignedMapCount: " << assignedMapCount << std::endl;
-				cerr << "assgin map work" << endl;
+		
 				this->mtx.unlock();
 				return mr_protocol::OK;
 			} 
@@ -80,7 +79,7 @@ mr_protocol::status Coordinator::askTask(int, mr_protocol::AskTaskResponse &repl
 				reply.index = i;
 				reply.file_name = files[i];
 				reduceTasks[i].isAssigned = true;
-				cerr << "assgin reduce work" << endl;
+
 				this->mtx.unlock();
 				return mr_protocol::OK;
 			} 
@@ -99,8 +98,6 @@ mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &succe
 	int file_size = files.size();
 	success = false;
 
-	cerr << "get work " << index << "submit, " << "filesize: " << file_size << ", taskType: " << taskType << endl;
-
 	if (index < 0 || index >= file_size) {
 		return mr_protocol::OK;
 	}
@@ -110,7 +107,6 @@ mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &succe
 		success = true;
 		mapTasks[index].isCompleted = true;
 		++completedMapCount;
-		cerr << "completedMapCount: " << completedMapCount << endl;
 	} else if (taskType == mr_tasktype::REDUCE) {
 		success = true;
 		reduceTasks[index].isCompleted = true;
@@ -118,13 +114,10 @@ mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &succe
 		if (this->completedReduceCount >= long(this->reduceTasks.size())) {
 			// write to the file for test
 			if(!isFinished) {
-				cerr << "generate the result" << endl;
 				generateResult();
-				cerr << "generate the result end" << endl;
 			}
 			isFinished = true;
 		}
-		cerr << "completedReduceCount: " << completedMapCount << endl;
 	}
 
 	this->mtx.unlock();

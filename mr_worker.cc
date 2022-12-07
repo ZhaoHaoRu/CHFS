@@ -56,7 +56,6 @@ vector<KeyVal> Map(const string &filename, const string &content)
     std::size_t file_size = content.size();
 
     // different from paper, also do some reduce work
-	// cerr << "get line 48" << endl;
     for (std::size_t i = 0; i < file_size; ++i) {
         if (isalpha(content[i])) {
             if (!in_word) {
@@ -93,18 +92,15 @@ vector<KeyVal> Map(const string &filename, const string &content)
         }
     }
 
-	// cerr << "get line 86" << endl;
     // generate the result
     for (auto elem : word_map) {
         KeyVal new_key_val;
         new_key_val.key = elem.first;
         new_key_val.val = to_string(elem.second);
 
-        // std::cout << "key: " << new_key_val.key <<  " val: " << new_key_val.val << std::endl;
         result.emplace_back(new_key_val);
     }
 
-	// cerr << "get line 97" << endl;
     return result;
 }
 
@@ -206,20 +202,6 @@ void Worker::doMap(int index, vector<string> &filenames)
 void Worker::doReduce(int index)
 {
 	// Lab4: Your code goes here.
-
-	// write to the output file
-	// if(intermediate.empty()) {
-	// 	return;
-	// }
-	// string output_filename = rawdir + "mr-out-" + to_string(index);
-	// ofstream out_file(output_filename);
-	// cerr << "begin to write into the out file" << endl;
-	// cout << "intermediate: "  << index << '\n' << intermediate << endl;
-	// out_file << intermediate;
-	// cerr << "write end" << endl;
-	// LOG("the intermediate in index %d is %s\n", index, intermediate.data());
-	// intermediate.clear();
-	// out_file.close();
 	return;
 }
 
@@ -247,22 +229,17 @@ void Worker::doWork()
 		mr_protocol::AskTaskResponse response;
 		mr_protocol::status ret = this->cl->call(mr_protocol::asktask, 0, response);
 		if (ret != mr_protocol::OK) {
-			// cerr << "asktask RPC failed: " << "the ret value: " << ret << endl;
 			continue; 
 		}
 
 		if (response.task_type == mr_tasktype::MAP) {
-			cerr << "worker do map\n";
 			vector<string> filenames;
 			filenames.emplace_back(response.file_name);
 
 			doMap(response.index, filenames);
-			cerr << "worker submit map " << response.index << endl;
 			doSubmit(mr_tasktype::MAP, response.index);
 		} else if (response.task_type == mr_tasktype::REDUCE) {
-			cerr << "worker do reduce\n";
 			doReduce(response.index);
-			cerr << "worker submit reduce " << response.index << endl;
 			doSubmit(mr_tasktype::REDUCE, response.index);
 		} else {
 			sleep(1);

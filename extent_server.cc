@@ -57,7 +57,6 @@ int extent_server::get(extent_protocol::extentid_t id, std::string &buf)
 
 int extent_server::getattr(extent_protocol::extentid_t id, extent_protocol::attr &a)
 {
-  // printf("extent_server: getattr %lld\n", id);
 
   id &= 0x7fffffff;
   
