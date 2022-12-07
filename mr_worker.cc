@@ -45,7 +45,6 @@ vector<KeyVal> Map(const string &filename, const string &content)
     std::size_t file_size = content.size();
 
     // different from paper, also do some reduce work
-	cerr << "get line 48" << endl;
     for (std::size_t i = 0; i < file_size; ++i) {
         if (isalpha(content[i])) {
             if (!in_word) {
@@ -82,18 +81,14 @@ vector<KeyVal> Map(const string &filename, const string &content)
         }
     }
 
-	cerr << "get line 86" << endl;
     // generate the result
     for (auto elem : word_map) {
         KeyVal new_key_val;
         new_key_val.key = elem.first;
         new_key_val.val = to_string(elem.second);
 
-        // std::cout << "key: " << new_key_val.key <<  " val: " << new_key_val.val << std::endl;
         result.emplace_back(new_key_val);
     }
-
-	cerr << "get line 97" << endl;
     return result;
 }
 
@@ -167,10 +162,8 @@ void Worker::doMap(int index, string &filename)
 	string content;
 
 	// Read the whole file into the buffer
-	cerr << "Read the whole file into the buffer, the filename: " << filename << endl;
 	getline(ifstream(filename), content, '\0');
 	vector<KeyVal> ret = mapf(filename, content);
-	cerr << "finish mapf" << endl;
 
 	// distribute the intermediate key-values to different files intended for different Reduce tasks
 	for(auto elem : ret) {
@@ -179,11 +172,8 @@ void Worker::doMap(int index, string &filename)
 		intermediate[hash_val].emplace_back(elem);
 	}	
 
-	cerr << "begin to write intermediate_file" << endl;
 	for (int i = 0; i < REDUCER_COUNT; ++i) {
-		cerr << "the index: " << index << " " << "the intermediate number: " << i << endl;
 		string intermediate_filename = basedir + "mr-" + to_string(index) + "-" + to_string(i);
-		cerr << "the intermediate_filename: " << intermediate_filename << endl;
 		// TODO: whether need to trunc?
 		std::ofstream out_file(intermediate_filename);
 		std::string new_content;
@@ -193,18 +183,13 @@ void Worker::doMap(int index, string &filename)
 			continue;
 		}
 
-		cerr << "begin to generate new content" << endl;
 		for (auto elem : intermediate[i]) {
 			new_content = new_content + elem.key + ' ' + elem.val + '\n';
 		}
 
-		cerr << "get the new_content" << endl;
 		out_file << new_content;
-		cerr << "write to outfile" << endl;
 		out_file.close();
-		cerr << "outfile close" << endl;
 	}
-	cerr << "finish domap" << endl;
 }
 
 void Worker::doReduce(int index)
@@ -212,7 +197,8 @@ void Worker::doReduce(int index)
 	// Lab4: Your code goes here.
 	string intermediate_filename, line, key, val, output_filename;
 	map<string, uint64_t> word_map;
-	int i = 0, pos = 0;
+	int i = 0;
+	std::size_t pos = 0;
 	uint64_t raw_val;
 
 	while (true) {
@@ -226,7 +212,7 @@ void Worker::doReduce(int index)
 				pos = line.find(' ');
 
 				if (pos == std::string::npos) {
-					cout << "not found" << endl;
+					cerr << "not found" << endl;
 				} else {
 					key = line.substr(0, pos);
 					val = line.substr(pos + 1);
@@ -283,14 +269,10 @@ void Worker::doWork()
 		}
 
 		if (response.task_type == mr_tasktype::MAP) {
-			cerr << "worker do map\n";
 			doMap(response.index, response.file_name);
-			cerr << "worker submit map " << response.index << endl;
 			doSubmit(mr_tasktype::MAP, response.index);
 		} else if (response.task_type == mr_tasktype::REDUCE) {
-			cerr << "worker do reduce\n";
 			doReduce(response.index);
-			cerr << "worker submit reduce " << response.index << endl;
 			doSubmit(mr_tasktype::REDUCE, response.index);
 		} else {
 			usleep(5000);
