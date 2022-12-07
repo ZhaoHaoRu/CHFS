@@ -77,7 +77,6 @@ void chfs_command_raft::deserialize(const char *buf_in, int size) {
 marshall &operator<<(marshall &m, const chfs_command_raft &cmd) {
     // Lab3: Your code here
     m << (int)cmd.cmd_tp << cmd.type << cmd.id << cmd.buf;
-    printf("get here!");
     return m;
 }
 
@@ -86,7 +85,6 @@ unmarshall &operator>>(unmarshall &u, chfs_command_raft &cmd) {
     int temp = 0;
     u >> temp >> cmd.type >> cmd.id >> cmd.buf;
     cmd.cmd_tp = chfs_command_raft::command_type(temp);
-    printf("get here, line 90");
     return u;
 }
 
@@ -113,6 +111,7 @@ void chfs_state_machine::apply_log(raft_command &cmd) {
                 break;
             case chfs_command_raft::command_type::CMD_GETA:
                 ret = es.getattr(chfs_cmd.id, chfs_cmd.res->attr);
+                assert(ret == extent_protocol::OK);
                 printf("get attr id: %lld, chfs_cmd.res->attr: %d\n", chfs_cmd.id, chfs_cmd.res->attr.type);
                 break;
             case chfs_command_raft::command_type::CMD_RMV:

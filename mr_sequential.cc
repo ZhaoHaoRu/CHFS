@@ -7,9 +7,22 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <algorithm>
+#include <cctype>
 
 using namespace std;
+
+#define DEBUG
+
+#ifdef DEBUG
+  #define LOG(format, args...) do {   \
+    FILE* debug_log = fopen("sequential.log", "a+");  \
+    fprintf(debug_log, "%d, %s: ", __LINE__, __func__); \
+    fprintf(debug_log, format, ##args); \
+    fclose(debug_log);\
+  } while (0)
+#endif
 
 typedef struct {
     string key;
@@ -28,7 +41,64 @@ vector<KeyVal> Map(const string &filename, const string &content)
 {
     // Your code goes here
     // Hints: split contents into an array of words.
+    vector<KeyVal> result;
+    unordered_map<std::string, uint64_t> word_map;
 
+    std::size_t begin_pos = 0;
+    bool in_word = false;
+    std::string word;
+
+    // suppose the file is not too long
+    std::size_t file_size = content.size();
+
+    // different from paper, also do some reduce work
+    for (std::size_t i = 0; i < file_size; ++i) {
+        if (isalpha(content[i])) {
+            if (!in_word) {
+                in_word = true;
+                begin_pos = i;
+            }
+        } else {
+            if (in_word) {
+                in_word = false;
+                word = content.substr(begin_pos, i - begin_pos);
+                begin_pos = i + 1;
+
+                if(!word.empty()) {
+                    if (word_map.count(word)) {
+                        word_map[word] += 1;
+                    } else {
+                        word_map[word] = 1;
+                    }
+                }
+            }
+        }
+    } 
+
+    // handle the tail word
+    if (begin_pos != file_size && in_word) {
+        word = content.substr(begin_pos);
+
+        if (!word.empty() && isalpha(word[0])) {
+            if (word_map.count(word)) {
+                word_map[word] += 1;
+            } else {
+                word_map[word] = 1;
+            }
+        }
+    }
+
+    // generate the result
+    for (auto elem : word_map) {
+        KeyVal new_key_val;
+        new_key_val.key = elem.first;
+        new_key_val.val = to_string(elem.second);
+
+        // std::cout << "key: " << new_key_val.key <<  " val: " << new_key_val.val << std::endl;
+        result.emplace_back(new_key_val);
+    }
+
+    return result;
 }
 
 //
@@ -40,7 +110,12 @@ string Reduce(const string &key, const vector <string> &values)
 {
     // Your code goes here
     // Hints: return the number of occurrences of the word.
+    uint64_t count = 0;
+    for (auto val : values) {
+        count += std::stoul(val);
+    }
 
+    return to_string(count);
 }
 
 int main(int argc, char ** argv)

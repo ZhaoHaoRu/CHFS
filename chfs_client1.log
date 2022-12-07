@@ -10,333 +10,424 @@ max_readahead=0x00020000
    max_background=0
    congestion_threshold=0
    unique: 2, success, outsize: 40
-unique: 4, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 4, error: -2 (No such file or directory), outsize: 16
-unique: 6, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 2 is a file
-getattr 0000000000000002 1
-isfile: 2 is a file
-getfile 0000000000000002
-getfile 0000000000000002 -> sz 0
-   getattr -> 0
-   unique: 6, success, outsize: 160
-OK: create returns.
-unique: 8, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 27372
-   unique: 8, error: -38 (Function not implemented), outsize: 16
-unique: 10, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 27372
-isfile: 2 is a file
-getattr 0000000000000002 1
-isfile: 2 is a file
-getfile 0000000000000002
-getfile 0000000000000002 -> sz 0
-   getattr -> 0
-   unique: 10, success, outsize: 120
-unique: 12, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 27372
-   unique: 12, error: -38 (Function not implemented), outsize: 16
-unique: 14, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
-   unique: 14, success, outsize: 16
-unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 16, error: -2 (No such file or directory), outsize: 16
-unique: 18, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 3 is a file
-getattr 0000000000000003 1
-isfile: 3 is a file
-getfile 0000000000000003
-getfile 0000000000000003 -> sz 0
-   getattr -> 0
-   unique: 18, success, outsize: 160
-OK: create returns.
-unique: 20, opcode: IOCTL (39), nodeid: 3, insize: 72, pid: 27372
-   unique: 20, error: -38 (Function not implemented), outsize: 16
-unique: 22, opcode: GETATTR (3), nodeid: 3, insize: 56, pid: 27372
-isfile: 3 is a file
-getattr 0000000000000003 1
-isfile: 3 is a file
-getfile 0000000000000003
-getfile 0000000000000003 -> sz 0
-   getattr -> 0
+unique: 4, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 635
+   unique: 4, success, outsize: 32
+unique: 6, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394061 1670394061 1670394061
+   unique: 6, success, outsize: 120
+unique: 8, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 635
+isfile: 1 is a dir
+want to check dir parent inode: 1
+   unique: 8, success, outsize: 16
+unique: 10, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 10, success, outsize: 16
+unique: 12, opcode: LOOKUP (1), nodeid: 1, insize: 42, pid: 636
+want to look up :*, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 12, error: -2 (No such file or directory), outsize: 16
+unique: 14, opcode: LOOKUP (1), nodeid: 1, insize: 42, pid: 636
+want to look up :*, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 14, error: -2 (No such file or directory), outsize: 16
+unique: 16, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 16, success, outsize: 120
+unique: 18, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 635
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 20, success, outsize: 120
+unique: 22, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 637
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
    unique: 22, success, outsize: 120
-unique: 24, opcode: RELEASE (18), nodeid: 3, insize: 64, pid: 0
-   unique: 24, success, outsize: 16
-unique: 26, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 26, error: -2 (No such file or directory), outsize: 16
-unique: 28, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 4 is a file
-getattr 0000000000000004 1
-isfile: 4 is a file
-getfile 0000000000000004
-getfile 0000000000000004 -> sz 0
+unique: 24, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 651
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 24, success, outsize: 120
+unique: 26, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 652
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 26, success, outsize: 120
+unique: 28, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 653
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 28, success, outsize: 120
+unique: 30, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 654
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394066 1670394061 1670394061
+   unique: 30, success, outsize: 120
+unique: 32, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-0-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 32, error: -2 (No such file or directory), outsize: 16
+unique: 34, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-0-0, the type: 2
+want to create file: mr-0-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-0-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 0
    getattr -> 0
-   unique: 28, success, outsize: 160
+   unique: 34, success, outsize: 160
 OK: create returns.
-unique: 30, opcode: IOCTL (39), nodeid: 4, insize: 72, pid: 27372
-   unique: 30, error: -38 (Function not implemented), outsize: 16
-unique: 32, opcode: GETATTR (3), nodeid: 4, insize: 56, pid: 27372
-isfile: 4 is a file
-getattr 0000000000000004 1
-isfile: 4 is a file
-getfile 0000000000000004
-getfile 0000000000000004 -> sz 0
-   getattr -> 0
-   unique: 32, success, outsize: 120
-unique: 34, opcode: RELEASE (18), nodeid: 4, insize: 64, pid: 0
-   unique: 34, success, outsize: 16
-unique: 36, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
+unique: 36, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-1-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
    unique: 36, error: -2 (No such file or directory), outsize: 16
-unique: 38, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 5 is a file
-getattr 0000000000000005 1
-isfile: 5 is a file
-getfile 0000000000000005
-getfile 0000000000000005 -> sz 0
+unique: 38, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 655
+   unique: 38, error: -38 (Function not implemented), outsize: 16
+unique: 40, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-1-0, the type: 2
+want to create file: mr-1-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-1-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 3 is a file
+getattr 0000000000000003 1
+isfile: 3 is a file
+getfile 0000000000000003
+getfile 0000000000000003 -> sz 0
    getattr -> 0
-   unique: 38, success, outsize: 160
+   unique: 40, success, outsize: 160
 OK: create returns.
-unique: 40, opcode: IOCTL (39), nodeid: 5, insize: 72, pid: 27372
-   unique: 40, error: -38 (Function not implemented), outsize: 16
-unique: 42, opcode: GETATTR (3), nodeid: 5, insize: 56, pid: 27372
-isfile: 5 is a file
-getattr 0000000000000005 1
-isfile: 5 is a file
-getfile 0000000000000005
-getfile 0000000000000005 -> sz 0
+unique: 42, opcode: WRITE (16), nodeid: 2, insize: 2138, pid: 655
+   unique: 42, success, outsize: 24
+unique: 44, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-2-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 44, error: -2 (No such file or directory), outsize: 16
+unique: 46, opcode: WRITE (16), nodeid: 3, insize: 3011, pid: 658
+   unique: 46, success, outsize: 24
+unique: 48, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 655
+   unique: 48, error: -38 (Function not implemented), outsize: 16
+unique: 50, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 660
+create helper: 1, the name: mr-2-0, the type: 2
+want to create file: mr-2-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-2-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 4 is a file
+getattr 0000000000000004 1
+isfile: 4 is a file
+getfile 0000000000000004
+getfile 0000000000000004 -> sz 0
    getattr -> 0
-   unique: 42, success, outsize: 120
-unique: 44, opcode: RELEASE (18), nodeid: 5, insize: 64, pid: 0
-   unique: 44, success, outsize: 16
-unique: 46, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 46, error: -2 (No such file or directory), outsize: 16
-unique: 48, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 6 is a file
-getattr 0000000000000006 1
-isfile: 6 is a file
-getfile 0000000000000006
-getfile 0000000000000006 -> sz 0
-   getattr -> 0
-   unique: 48, success, outsize: 160
+   unique: 50, success, outsize: 160
 OK: create returns.
-unique: 50, opcode: IOCTL (39), nodeid: 6, insize: 72, pid: 27372
-   unique: 50, error: -38 (Function not implemented), outsize: 16
-unique: 52, opcode: GETATTR (3), nodeid: 6, insize: 56, pid: 27372
-isfile: 6 is a file
-getattr 0000000000000006 1
-isfile: 6 is a file
-getfile 0000000000000006
-getfile 0000000000000006 -> sz 0
-   getattr -> 0
-   unique: 52, success, outsize: 120
-unique: 54, opcode: RELEASE (18), nodeid: 6, insize: 64, pid: 0
+unique: 52, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 52, success, outsize: 16
+unique: 54, opcode: RELEASE (18), nodeid: 3, insize: 64, pid: 0
    unique: 54, success, outsize: 16
-unique: 56, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
+unique: 56, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-3-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
    unique: 56, error: -2 (No such file or directory), outsize: 16
-unique: 58, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 7 is a file
-getattr 0000000000000007 1
-isfile: 7 is a file
-getfile 0000000000000007
-getfile 0000000000000007 -> sz 0
+unique: 58, opcode: WRITE (16), nodeid: 4, insize: 1428, pid: 660
+   unique: 58, success, outsize: 24
+unique: 60, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 662
+create helper: 1, the name: mr-3-0, the type: 2
+want to create file: mr-3-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-3-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 5 is a file
+getattr 0000000000000005 1
+isfile: 5 is a file
+getfile 0000000000000005
+getfile 0000000000000005 -> sz 0
    getattr -> 0
-   unique: 58, success, outsize: 160
+   unique: 60, success, outsize: 160
 OK: create returns.
-unique: 60, opcode: IOCTL (39), nodeid: 7, insize: 72, pid: 27372
-   unique: 60, error: -38 (Function not implemented), outsize: 16
-unique: 62, opcode: GETATTR (3), nodeid: 7, insize: 56, pid: 27372
-isfile: 7 is a file
-getattr 0000000000000007 1
-isfile: 7 is a file
-getfile 0000000000000007
-getfile 0000000000000007 -> sz 0
-   getattr -> 0
-   unique: 62, success, outsize: 120
-unique: 64, opcode: RELEASE (18), nodeid: 7, insize: 64, pid: 0
-   unique: 64, success, outsize: 16
-unique: 66, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 66, error: -2 (No such file or directory), outsize: 16
-unique: 68, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 8 is a file
-getattr 0000000000000008 1
-isfile: 8 is a file
-getfile 0000000000000008
-getfile 0000000000000008 -> sz 0
+unique: 62, opcode: RELEASE (18), nodeid: 4, insize: 64, pid: 0
+   unique: 62, success, outsize: 16
+unique: 64, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-0-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 64, error: -2 (No such file or directory), outsize: 16
+unique: 66, opcode: WRITE (16), nodeid: 5, insize: 3224, pid: 662
+   unique: 66, success, outsize: 24
+unique: 68, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-0-1, the type: 2
+want to create file: mr-0-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-0-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 6 is a file
+getattr 0000000000000006 1
+isfile: 6 is a file
+getfile 0000000000000006
+getfile 0000000000000006 -> sz 0
    getattr -> 0
    unique: 68, success, outsize: 160
 OK: create returns.
-unique: 70, opcode: IOCTL (39), nodeid: 8, insize: 72, pid: 27372
-   unique: 70, error: -38 (Function not implemented), outsize: 16
-unique: 72, opcode: GETATTR (3), nodeid: 8, insize: 56, pid: 27372
+unique: 70, opcode: RELEASE (18), nodeid: 5, insize: 64, pid: 0
+   unique: 70, success, outsize: 16
+unique: 72, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-1-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 72, error: -2 (No such file or directory), outsize: 16
+unique: 74, opcode: WRITE (16), nodeid: 6, insize: 2109, pid: 655
+   unique: 74, success, outsize: 24
+unique: 76, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-1-1, the type: 2
+want to create file: mr-1-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-1-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 7 is a file
+getattr 0000000000000007 1
+isfile: 7 is a file
+getfile 0000000000000007
+getfile 0000000000000007 -> sz 0
+   getattr -> 0
+   unique: 76, success, outsize: 160
+OK: create returns.
+unique: 78, opcode: RELEASE (18), nodeid: 6, insize: 64, pid: 0
+   unique: 78, success, outsize: 16
+unique: 80, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-2-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 80, error: -2 (No such file or directory), outsize: 16
+unique: 82, opcode: WRITE (16), nodeid: 7, insize: 3266, pid: 658
+   unique: 82, success, outsize: 24
+unique: 84, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 660
+create helper: 1, the name: mr-2-1, the type: 2
+want to create file: mr-2-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-2-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 8 is a file
 getattr 0000000000000008 1
 isfile: 8 is a file
 getfile 0000000000000008
 getfile 0000000000000008 -> sz 0
    getattr -> 0
-   unique: 72, success, outsize: 120
-unique: 74, opcode: RELEASE (18), nodeid: 8, insize: 64, pid: 0
-   unique: 74, success, outsize: 16
-unique: 76, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 76, error: -2 (No such file or directory), outsize: 16
-unique: 78, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
+   unique: 84, success, outsize: 160
+OK: create returns.
+unique: 86, opcode: RELEASE (18), nodeid: 7, insize: 64, pid: 0
+   unique: 86, success, outsize: 16
+unique: 88, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-3-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 88, error: -2 (No such file or directory), outsize: 16
+unique: 90, opcode: WRITE (16), nodeid: 8, insize: 1506, pid: 660
+   unique: 90, success, outsize: 24
+unique: 92, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 662
+create helper: 1, the name: mr-3-1, the type: 2
+want to create file: mr-3-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-3-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 9 is a file
 getattr 0000000000000009 1
 isfile: 9 is a file
 getfile 0000000000000009
 getfile 0000000000000009 -> sz 0
    getattr -> 0
-   unique: 78, success, outsize: 160
+   unique: 92, success, outsize: 160
 OK: create returns.
-unique: 80, opcode: IOCTL (39), nodeid: 9, insize: 72, pid: 27372
-   unique: 80, error: -38 (Function not implemented), outsize: 16
-unique: 82, opcode: GETATTR (3), nodeid: 9, insize: 56, pid: 27372
-isfile: 9 is a file
-getattr 0000000000000009 1
-isfile: 9 is a file
-getfile 0000000000000009
-getfile 0000000000000009 -> sz 0
-   getattr -> 0
-   unique: 82, success, outsize: 120
-unique: 84, opcode: RELEASE (18), nodeid: 9, insize: 64, pid: 0
-   unique: 84, success, outsize: 16
-unique: 86, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
-   unique: 86, error: -2 (No such file or directory), outsize: 16
-unique: 88, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 10 is a file
-getattr 000000000000000a 1
-isfile: 10 is a file
-getfile 000000000000000a
-getfile 000000000000000a -> sz 0
-   getattr -> 0
-   unique: 88, success, outsize: 160
-OK: create returns.
-unique: 90, opcode: IOCTL (39), nodeid: 10, insize: 72, pid: 27372
-   unique: 90, error: -38 (Function not implemented), outsize: 16
-unique: 92, opcode: GETATTR (3), nodeid: 10, insize: 56, pid: 27372
-isfile: 10 is a file
-getattr 000000000000000a 1
-isfile: 10 is a file
-getfile 000000000000000a
-getfile 000000000000000a -> sz 0
-   getattr -> 0
-   unique: 92, success, outsize: 120
-unique: 94, opcode: RELEASE (18), nodeid: 10, insize: 64, pid: 0
+unique: 94, opcode: RELEASE (18), nodeid: 8, insize: 64, pid: 0
    unique: 94, success, outsize: 16
-unique: 96, opcode: LOOKUP (1), nodeid: 1, insize: 99, pid: 27372
+unique: 96, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-0-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
    unique: 96, error: -2 (No such file or directory), outsize: 16
-unique: 98, opcode: CREATE (35), nodeid: 1, insize: 115, pid: 27372
-isfile: 11 is a file
-getattr 000000000000000b 1
-isfile: 11 is a file
-getfile 000000000000000b
-getfile 000000000000000b -> sz 0
+unique: 98, opcode: WRITE (16), nodeid: 9, insize: 3457, pid: 662
+   unique: 98, success, outsize: 24
+unique: 100, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-0-2, the type: 2
+want to create file: mr-0-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-0-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 10 is a file
+getattr 000000000000000a 1
+isfile: 10 is a file
+getfile 000000000000000a
+getfile 000000000000000a -> sz 0
    getattr -> 0
-   unique: 98, success, outsize: 160
+   unique: 100, success, outsize: 160
 OK: create returns.
-unique: 100, opcode: IOCTL (39), nodeid: 11, insize: 72, pid: 27372
-   unique: 100, error: -38 (Function not implemented), outsize: 16
-unique: 102, opcode: GETATTR (3), nodeid: 11, insize: 56, pid: 27372
+unique: 102, opcode: RELEASE (18), nodeid: 9, insize: 64, pid: 0
+   unique: 102, success, outsize: 16
+unique: 104, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-1-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 104, error: -2 (No such file or directory), outsize: 16
+unique: 106, opcode: WRITE (16), nodeid: 10, insize: 2151, pid: 655
+   unique: 106, success, outsize: 24
+unique: 108, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-1-2, the type: 2
+want to create file: mr-1-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-1-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 11 is a file
 getattr 000000000000000b 1
 isfile: 11 is a file
 getfile 000000000000000b
 getfile 000000000000000b -> sz 0
-   getattr -> 0
-   unique: 102, success, outsize: 120
-unique: 104, opcode: RELEASE (18), nodeid: 11, insize: 64, pid: 0
-   unique: 104, success, outsize: 16
-unique: 106, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 106, error: -2 (No such file or directory), outsize: 16
-unique: 108, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 12 is a file
-getattr 000000000000000c 1
-isfile: 12 is a file
-getfile 000000000000000c
-getfile 000000000000000c -> sz 0
    getattr -> 0
    unique: 108, success, outsize: 160
 OK: create returns.
-unique: 110, opcode: IOCTL (39), nodeid: 12, insize: 72, pid: 27372
-   unique: 110, error: -38 (Function not implemented), outsize: 16
-unique: 112, opcode: GETATTR (3), nodeid: 12, insize: 56, pid: 27372
+unique: 110, opcode: RELEASE (18), nodeid: 10, insize: 64, pid: 0
+   unique: 110, success, outsize: 16
+unique: 112, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-2-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 112, error: -2 (No such file or directory), outsize: 16
+unique: 114, opcode: WRITE (16), nodeid: 11, insize: 3329, pid: 658
+   unique: 114, success, outsize: 24
+unique: 116, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 660
+create helper: 1, the name: mr-2-2, the type: 2
+want to create file: mr-2-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-2-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 12 is a file
 getattr 000000000000000c 1
 isfile: 12 is a file
 getfile 000000000000000c
 getfile 000000000000000c -> sz 0
    getattr -> 0
-   unique: 112, success, outsize: 120
-unique: 114, opcode: RELEASE (18), nodeid: 12, insize: 64, pid: 0
-   unique: 114, success, outsize: 16
-unique: 116, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 116, error: -2 (No such file or directory), outsize: 16
-unique: 118, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
+   unique: 116, success, outsize: 160
+OK: create returns.
+unique: 118, opcode: RELEASE (18), nodeid: 11, insize: 64, pid: 0
+   unique: 118, success, outsize: 16
+unique: 120, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-3-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 120, error: -2 (No such file or directory), outsize: 16
+unique: 122, opcode: WRITE (16), nodeid: 12, insize: 1465, pid: 660
+   unique: 122, success, outsize: 24
+unique: 124, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 662
+create helper: 1, the name: mr-3-2, the type: 2
+want to create file: mr-3-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-3-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 13 is a file
 getattr 000000000000000d 1
 isfile: 13 is a file
 getfile 000000000000000d
 getfile 000000000000000d -> sz 0
    getattr -> 0
-   unique: 118, success, outsize: 160
+   unique: 124, success, outsize: 160
 OK: create returns.
-unique: 120, opcode: IOCTL (39), nodeid: 13, insize: 72, pid: 27372
-   unique: 120, error: -38 (Function not implemented), outsize: 16
-unique: 122, opcode: GETATTR (3), nodeid: 13, insize: 56, pid: 27372
-isfile: 13 is a file
-getattr 000000000000000d 1
-isfile: 13 is a file
-getfile 000000000000000d
-getfile 000000000000000d -> sz 0
-   getattr -> 0
-   unique: 122, success, outsize: 120
-unique: 124, opcode: RELEASE (18), nodeid: 13, insize: 64, pid: 0
-   unique: 124, success, outsize: 16
-unique: 126, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 126, error: -2 (No such file or directory), outsize: 16
-unique: 128, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
+unique: 126, opcode: RELEASE (18), nodeid: 12, insize: 64, pid: 0
+   unique: 126, success, outsize: 16
+unique: 128, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-0-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 128, error: -2 (No such file or directory), outsize: 16
+unique: 130, opcode: WRITE (16), nodeid: 13, insize: 3379, pid: 662
+   unique: 130, success, outsize: 24
+unique: 132, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-0-3, the type: 2
+want to create file: mr-0-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-0-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 14 is a file
 getattr 000000000000000e 1
 isfile: 14 is a file
 getfile 000000000000000e
 getfile 000000000000000e -> sz 0
    getattr -> 0
-   unique: 128, success, outsize: 160
+   unique: 132, success, outsize: 160
 OK: create returns.
-unique: 130, opcode: IOCTL (39), nodeid: 14, insize: 72, pid: 27372
-   unique: 130, error: -38 (Function not implemented), outsize: 16
-unique: 132, opcode: GETATTR (3), nodeid: 14, insize: 56, pid: 27372
-isfile: 14 is a file
-getattr 000000000000000e 1
-isfile: 14 is a file
-getfile 000000000000000e
-getfile 000000000000000e -> sz 0
-   getattr -> 0
-   unique: 132, success, outsize: 120
-unique: 134, opcode: RELEASE (18), nodeid: 14, insize: 64, pid: 0
+unique: 134, opcode: RELEASE (18), nodeid: 13, insize: 64, pid: 0
    unique: 134, success, outsize: 16
-unique: 136, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
+unique: 136, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-1-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
    unique: 136, error: -2 (No such file or directory), outsize: 16
-unique: 138, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
+unique: 138, opcode: WRITE (16), nodeid: 14, insize: 2084, pid: 655
+   unique: 138, success, outsize: 24
+unique: 140, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-1-3, the type: 2
+want to create file: mr-1-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-1-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 15 is a file
 getattr 000000000000000f 1
 isfile: 15 is a file
 getfile 000000000000000f
 getfile 000000000000000f -> sz 0
    getattr -> 0
-   unique: 138, success, outsize: 160
+   unique: 140, success, outsize: 160
 OK: create returns.
-unique: 140, opcode: IOCTL (39), nodeid: 15, insize: 72, pid: 27372
-   unique: 140, error: -38 (Function not implemented), outsize: 16
-unique: 142, opcode: GETATTR (3), nodeid: 15, insize: 56, pid: 27372
-isfile: 15 is a file
-getattr 000000000000000f 1
-isfile: 15 is a file
-getfile 000000000000000f
-getfile 000000000000000f -> sz 0
-   getattr -> 0
-   unique: 142, success, outsize: 120
-unique: 144, opcode: RELEASE (18), nodeid: 15, insize: 64, pid: 0
-   unique: 144, success, outsize: 16
-unique: 146, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 146, error: -2 (No such file or directory), outsize: 16
-unique: 148, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
+unique: 142, opcode: RELEASE (18), nodeid: 14, insize: 64, pid: 0
+   unique: 142, success, outsize: 16
+unique: 144, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-2-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 144, error: -2 (No such file or directory), outsize: 16
+unique: 146, opcode: WRITE (16), nodeid: 15, insize: 3317, pid: 658
+   unique: 146, success, outsize: 24
+unique: 148, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 660
+create helper: 1, the name: mr-2-3, the type: 2
+want to create file: mr-2-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-2-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 16 is a file
 getattr 0000000000000010 1
 isfile: 16 is a file
@@ -345,819 +436,1760 @@ getfile 0000000000000010 -> sz 0
    getattr -> 0
    unique: 148, success, outsize: 160
 OK: create returns.
-unique: 150, opcode: IOCTL (39), nodeid: 16, insize: 72, pid: 27372
-   unique: 150, error: -38 (Function not implemented), outsize: 16
-unique: 152, opcode: GETATTR (3), nodeid: 16, insize: 56, pid: 27372
+unique: 150, opcode: RELEASE (18), nodeid: 15, insize: 64, pid: 0
+   unique: 150, success, outsize: 16
+unique: 152, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-3-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 152, error: -2 (No such file or directory), outsize: 16
+unique: 154, opcode: WRITE (16), nodeid: 16, insize: 1391, pid: 660
+   unique: 154, success, outsize: 24
+unique: 156, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 662
+create helper: 1, the name: mr-3-3, the type: 2
+want to create file: mr-3-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-3-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 17 is a file
+getattr 0000000000000011 1
+isfile: 17 is a file
+getfile 0000000000000011
+getfile 0000000000000011 -> sz 0
+   getattr -> 0
+   unique: 156, success, outsize: 160
+OK: create returns.
+unique: 158, opcode: RELEASE (18), nodeid: 16, insize: 64, pid: 0
+   unique: 158, success, outsize: 16
+unique: 160, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-4-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 160, error: -2 (No such file or directory), outsize: 16
+unique: 162, opcode: WRITE (16), nodeid: 17, insize: 3291, pid: 662
+   unique: 162, success, outsize: 24
+unique: 164, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-4-0, the type: 2
+want to create file: mr-4-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-4-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 18 is a file
+getattr 0000000000000012 1
+isfile: 18 is a file
+getfile 0000000000000012
+getfile 0000000000000012 -> sz 0
+   getattr -> 0
+   unique: 164, success, outsize: 160
+OK: create returns.
+unique: 166, opcode: RELEASE (18), nodeid: 17, insize: 64, pid: 0
+   unique: 166, success, outsize: 16
+unique: 168, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-5-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 168, error: -2 (No such file or directory), outsize: 16
+unique: 170, opcode: WRITE (16), nodeid: 18, insize: 3040, pid: 655
+   unique: 170, success, outsize: 24
+unique: 172, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-5-0, the type: 2
+want to create file: mr-5-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-5-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 19 is a file
+getattr 0000000000000013 1
+isfile: 19 is a file
+getfile 0000000000000013
+getfile 0000000000000013 -> sz 0
+   getattr -> 0
+   unique: 172, success, outsize: 160
+OK: create returns.
+unique: 174, opcode: RELEASE (18), nodeid: 18, insize: 64, pid: 0
+   unique: 174, success, outsize: 16
+unique: 176, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-4-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 176, error: -2 (No such file or directory), outsize: 16
+unique: 178, opcode: WRITE (16), nodeid: 19, insize: 1150, pid: 658
+   unique: 178, success, outsize: 24
+unique: 180, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-4-1, the type: 2
+want to create file: mr-4-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-4-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 20 is a file
+getattr 0000000000000014 1
+isfile: 20 is a file
+getfile 0000000000000014
+getfile 0000000000000014 -> sz 0
+   getattr -> 0
+   unique: 180, success, outsize: 160
+OK: create returns.
+unique: 182, opcode: RELEASE (18), nodeid: 19, insize: 64, pid: 0
+   unique: 182, success, outsize: 16
+unique: 184, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-5-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 184, error: -2 (No such file or directory), outsize: 16
+unique: 186, opcode: WRITE (16), nodeid: 20, insize: 2898, pid: 655
+   unique: 186, success, outsize: 24
+unique: 188, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-5-1, the type: 2
+want to create file: mr-5-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-5-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 21 is a file
+getattr 0000000000000015 1
+isfile: 21 is a file
+getfile 0000000000000015
+getfile 0000000000000015 -> sz 0
+   getattr -> 0
+   unique: 188, success, outsize: 160
+OK: create returns.
+unique: 190, opcode: RELEASE (18), nodeid: 20, insize: 64, pid: 0
+   unique: 190, success, outsize: 16
+unique: 192, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-4-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 192, error: -2 (No such file or directory), outsize: 16
+unique: 194, opcode: WRITE (16), nodeid: 21, insize: 1696, pid: 658
+   unique: 194, success, outsize: 24
+unique: 196, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-4-2, the type: 2
+want to create file: mr-4-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-4-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 22 is a file
+getattr 0000000000000016 1
+isfile: 22 is a file
+getfile 0000000000000016
+getfile 0000000000000016 -> sz 0
+   getattr -> 0
+   unique: 196, success, outsize: 160
+OK: create returns.
+unique: 198, opcode: RELEASE (18), nodeid: 21, insize: 64, pid: 0
+   unique: 198, success, outsize: 16
+unique: 200, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-5-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 200, error: -2 (No such file or directory), outsize: 16
+unique: 202, opcode: WRITE (16), nodeid: 22, insize: 3005, pid: 655
+   unique: 202, success, outsize: 24
+unique: 204, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-5-2, the type: 2
+want to create file: mr-5-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-5-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 23 is a file
+getattr 0000000000000017 1
+isfile: 23 is a file
+getfile 0000000000000017
+getfile 0000000000000017 -> sz 0
+   getattr -> 0
+   unique: 204, success, outsize: 160
+OK: create returns.
+unique: 206, opcode: RELEASE (18), nodeid: 22, insize: 64, pid: 0
+   unique: 206, success, outsize: 16
+unique: 208, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-4-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 208, error: -2 (No such file or directory), outsize: 16
+unique: 210, opcode: WRITE (16), nodeid: 23, insize: 1282, pid: 658
+   unique: 210, success, outsize: 24
+unique: 212, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 655
+create helper: 1, the name: mr-4-3, the type: 2
+want to create file: mr-4-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-4-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 24 is a file
+getattr 0000000000000018 1
+isfile: 24 is a file
+getfile 0000000000000018
+getfile 0000000000000018 -> sz 0
+   getattr -> 0
+   unique: 212, success, outsize: 160
+OK: create returns.
+unique: 214, opcode: RELEASE (18), nodeid: 23, insize: 64, pid: 0
+   unique: 214, success, outsize: 16
+unique: 216, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-5-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 216, error: -2 (No such file or directory), outsize: 16
+unique: 218, opcode: WRITE (16), nodeid: 24, insize: 2670, pid: 655
+   unique: 218, success, outsize: 24
+unique: 220, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 658
+create helper: 1, the name: mr-5-3, the type: 2
+want to create file: mr-5-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-5-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 25 is a file
+getattr 0000000000000019 1
+isfile: 25 is a file
+getfile 0000000000000019
+getfile 0000000000000019 -> sz 0
+   getattr -> 0
+   unique: 220, success, outsize: 160
+OK: create returns.
+unique: 222, opcode: RELEASE (18), nodeid: 24, insize: 64, pid: 0
+   unique: 222, success, outsize: 16
+unique: 224, opcode: WRITE (16), nodeid: 25, insize: 1372, pid: 658
+   unique: 224, success, outsize: 24
+unique: 226, opcode: RELEASE (18), nodeid: 25, insize: 64, pid: 0
+   unique: 226, success, outsize: 16
+unique: 228, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-0-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 2058
+   getattr -> 2058
+   unique: 228, success, outsize: 144
+unique: 230, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-0-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 10 is a file
+getattr 000000000000000a 1
+isfile: 10 is a file
+getfile 000000000000000a
+getfile 000000000000000a -> sz 2071
+   getattr -> 2071
+   unique: 230, success, outsize: 144
+unique: 232, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-0-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 14 is a file
+getattr 000000000000000e 1
+isfile: 14 is a file
+getfile 000000000000000e
+getfile 000000000000000e -> sz 2004
+   getattr -> 2004
+   unique: 232, success, outsize: 144
+unique: 234, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-0-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 6 is a file
+getattr 0000000000000006 1
+isfile: 6 is a file
+getfile 0000000000000006
+getfile 0000000000000006 -> sz 2029
+   getattr -> 2029
+   unique: 234, success, outsize: 144
+unique: 236, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 658
+   unique: 236, success, outsize: 32
+unique: 238, opcode: OPEN (14), nodeid: 10, insize: 48, pid: 662
+   unique: 238, success, outsize: 32
+unique: 240, opcode: OPEN (14), nodeid: 14, insize: 48, pid: 660
+   unique: 240, success, outsize: 32
+unique: 242, opcode: OPEN (14), nodeid: 6, insize: 48, pid: 655
+   unique: 242, success, outsize: 32
+unique: 244, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 658
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 2058
+   getattr -> 2058
+   unique: 244, success, outsize: 120
+unique: 246, opcode: GETATTR (3), nodeid: 10, insize: 56, pid: 662
+isfile: 10 is a file
+getattr 000000000000000a 1
+isfile: 10 is a file
+getfile 000000000000000a
+getfile 000000000000000a -> sz 2071
+   getattr -> 2071
+   unique: 246, success, outsize: 120
+unique: 248, opcode: GETATTR (3), nodeid: 14, insize: 56, pid: 660
+isfile: 14 is a file
+getattr 000000000000000e 1
+isfile: 14 is a file
+getfile 000000000000000e
+getfile 000000000000000e -> sz 2004
+   getattr -> 2004
+   unique: 248, success, outsize: 120
+unique: 250, opcode: GETATTR (3), nodeid: 6, insize: 56, pid: 655
+isfile: 6 is a file
+getattr 0000000000000006 1
+isfile: 6 is a file
+getfile 0000000000000006
+getfile 0000000000000006 -> sz 2029
+   getattr -> 2029
+   unique: 250, success, outsize: 120
+unique: 252, opcode: READ (15), nodeid: 2, insize: 80, pid: 658
+   unique: 252, success, outsize: 2074
+unique: 254, opcode: READ (15), nodeid: 10, insize: 80, pid: 662
+   unique: 254, success, outsize: 2087
+unique: 256, opcode: READ (15), nodeid: 14, insize: 80, pid: 660
+   unique: 256, success, outsize: 2020
+unique: 258, opcode: READ (15), nodeid: 6, insize: 80, pid: 655
+   unique: 258, success, outsize: 2045
+unique: 260, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 658
+isfile: 2 is a file
+getattr 0000000000000002 1
+isfile: 2 is a file
+getfile 0000000000000002
+getfile 0000000000000002 -> sz 2058
+   getattr -> 2058
+   unique: 260, success, outsize: 120
+unique: 262, opcode: GETATTR (3), nodeid: 10, insize: 56, pid: 662
+isfile: 10 is a file
+getattr 000000000000000a 1
+isfile: 10 is a file
+getfile 000000000000000a
+getfile 000000000000000a -> sz 2071
+   getattr -> 2071
+   unique: 262, success, outsize: 120
+unique: 264, opcode: GETATTR (3), nodeid: 14, insize: 56, pid: 660
+isfile: 14 is a file
+getattr 000000000000000e 1
+isfile: 14 is a file
+getfile 000000000000000e
+getfile 000000000000000e -> sz 2004
+   getattr -> 2004
+   unique: 264, success, outsize: 120
+unique: 266, opcode: GETATTR (3), nodeid: 6, insize: 56, pid: 655
+isfile: 6 is a file
+getattr 0000000000000006 1
+isfile: 6 is a file
+getfile 0000000000000006
+getfile 0000000000000006 -> sz 2029
+   getattr -> 2029
+   unique: 266, success, outsize: 120
+unique: 268, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 268, success, outsize: 16
+unique: 270, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-1-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 3 is a file
+getattr 0000000000000003 1
+isfile: 3 is a file
+getfile 0000000000000003
+getfile 0000000000000003 -> sz 2931
+   getattr -> 2931
+   unique: 270, success, outsize: 144
+unique: 272, opcode: RELEASE (18), nodeid: 10, insize: 64, pid: 0
+   unique: 272, success, outsize: 16
+unique: 274, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-1-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 11 is a file
+getattr 000000000000000b 1
+isfile: 11 is a file
+getfile 000000000000000b
+getfile 000000000000000b -> sz 3249
+   getattr -> 3249
+   unique: 274, success, outsize: 144
+unique: 276, opcode: RELEASE (18), nodeid: 14, insize: 64, pid: 0
+   unique: 276, success, outsize: 16
+unique: 278, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-1-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 15 is a file
+getattr 000000000000000f 1
+isfile: 15 is a file
+getfile 000000000000000f
+getfile 000000000000000f -> sz 3237
+   getattr -> 3237
+   unique: 278, success, outsize: 144
+unique: 280, opcode: RELEASE (18), nodeid: 6, insize: 64, pid: 0
+   unique: 280, success, outsize: 16
+unique: 282, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-1-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 7 is a file
+getattr 0000000000000007 1
+isfile: 7 is a file
+getfile 0000000000000007
+getfile 0000000000000007 -> sz 3186
+   getattr -> 3186
+   unique: 282, success, outsize: 144
+unique: 284, opcode: OPEN (14), nodeid: 3, insize: 48, pid: 658
+   unique: 284, success, outsize: 32
+unique: 286, opcode: OPEN (14), nodeid: 11, insize: 48, pid: 662
+   unique: 286, success, outsize: 32
+unique: 288, opcode: OPEN (14), nodeid: 15, insize: 48, pid: 660
+   unique: 288, success, outsize: 32
+unique: 290, opcode: OPEN (14), nodeid: 7, insize: 48, pid: 655
+   unique: 290, success, outsize: 32
+unique: 292, opcode: GETATTR (3), nodeid: 3, insize: 56, pid: 658
+isfile: 3 is a file
+getattr 0000000000000003 1
+isfile: 3 is a file
+getfile 0000000000000003
+getfile 0000000000000003 -> sz 2931
+   getattr -> 2931
+   unique: 292, success, outsize: 120
+unique: 294, opcode: GETATTR (3), nodeid: 11, insize: 56, pid: 662
+isfile: 11 is a file
+getattr 000000000000000b 1
+isfile: 11 is a file
+getfile 000000000000000b
+getfile 000000000000000b -> sz 3249
+   getattr -> 3249
+   unique: 294, success, outsize: 120
+unique: 296, opcode: GETATTR (3), nodeid: 15, insize: 56, pid: 660
+isfile: 15 is a file
+getattr 000000000000000f 1
+isfile: 15 is a file
+getfile 000000000000000f
+getfile 000000000000000f -> sz 3237
+   getattr -> 3237
+   unique: 296, success, outsize: 120
+unique: 298, opcode: GETATTR (3), nodeid: 7, insize: 56, pid: 655
+isfile: 7 is a file
+getattr 0000000000000007 1
+isfile: 7 is a file
+getfile 0000000000000007
+getfile 0000000000000007 -> sz 3186
+   getattr -> 3186
+   unique: 298, success, outsize: 120
+unique: 300, opcode: READ (15), nodeid: 3, insize: 80, pid: 658
+   unique: 300, success, outsize: 2947
+unique: 302, opcode: READ (15), nodeid: 11, insize: 80, pid: 662
+   unique: 302, success, outsize: 3265
+unique: 304, opcode: READ (15), nodeid: 15, insize: 80, pid: 660
+   unique: 304, success, outsize: 3253
+unique: 306, opcode: READ (15), nodeid: 7, insize: 80, pid: 655
+   unique: 306, success, outsize: 3202
+unique: 308, opcode: GETATTR (3), nodeid: 3, insize: 56, pid: 658
+isfile: 3 is a file
+getattr 0000000000000003 1
+isfile: 3 is a file
+getfile 0000000000000003
+getfile 0000000000000003 -> sz 2931
+   getattr -> 2931
+   unique: 308, success, outsize: 120
+unique: 310, opcode: GETATTR (3), nodeid: 11, insize: 56, pid: 662
+isfile: 11 is a file
+getattr 000000000000000b 1
+isfile: 11 is a file
+getfile 000000000000000b
+getfile 000000000000000b -> sz 3249
+   getattr -> 3249
+   unique: 310, success, outsize: 120
+unique: 312, opcode: GETATTR (3), nodeid: 15, insize: 56, pid: 660
+isfile: 15 is a file
+getattr 000000000000000f 1
+isfile: 15 is a file
+getfile 000000000000000f
+getfile 000000000000000f -> sz 3237
+   getattr -> 3237
+   unique: 312, success, outsize: 120
+unique: 314, opcode: GETATTR (3), nodeid: 7, insize: 56, pid: 655
+isfile: 7 is a file
+getattr 0000000000000007 1
+isfile: 7 is a file
+getfile 0000000000000007
+getfile 0000000000000007 -> sz 3186
+   getattr -> 3186
+   unique: 314, success, outsize: 120
+unique: 316, opcode: RELEASE (18), nodeid: 3, insize: 64, pid: 0
+   unique: 316, success, outsize: 16
+unique: 318, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-2-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 4 is a file
+getattr 0000000000000004 1
+isfile: 4 is a file
+getfile 0000000000000004
+getfile 0000000000000004 -> sz 1348
+   getattr -> 1348
+   unique: 318, success, outsize: 144
+unique: 320, opcode: RELEASE (18), nodeid: 11, insize: 64, pid: 0
+   unique: 320, success, outsize: 16
+unique: 322, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-2-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 12 is a file
+getattr 000000000000000c 1
+isfile: 12 is a file
+getfile 000000000000000c
+getfile 000000000000000c -> sz 1385
+   getattr -> 1385
+   unique: 322, success, outsize: 144
+unique: 324, opcode: RELEASE (18), nodeid: 15, insize: 64, pid: 0
+   unique: 324, success, outsize: 16
+unique: 326, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-2-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
 isfile: 16 is a file
 getattr 0000000000000010 1
 isfile: 16 is a file
 getfile 0000000000000010
-getfile 0000000000000010 -> sz 0
-   getattr -> 0
-   unique: 152, success, outsize: 120
-unique: 154, opcode: RELEASE (18), nodeid: 16, insize: 64, pid: 0
-   unique: 154, success, outsize: 16
-unique: 156, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 156, error: -2 (No such file or directory), outsize: 16
-unique: 158, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 17 is a file
-getattr 0000000000000011 1
-isfile: 17 is a file
-getfile 0000000000000011
-getfile 0000000000000011 -> sz 0
-   getattr -> 0
-   unique: 158, success, outsize: 160
-OK: create returns.
-unique: 160, opcode: IOCTL (39), nodeid: 17, insize: 72, pid: 27372
-   unique: 160, error: -38 (Function not implemented), outsize: 16
-unique: 162, opcode: GETATTR (3), nodeid: 17, insize: 56, pid: 27372
-isfile: 17 is a file
-getattr 0000000000000011 1
-isfile: 17 is a file
-getfile 0000000000000011
-getfile 0000000000000011 -> sz 0
-   getattr -> 0
-   unique: 162, success, outsize: 120
-unique: 164, opcode: RELEASE (18), nodeid: 17, insize: 64, pid: 0
-   unique: 164, success, outsize: 16
-unique: 166, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 166, error: -2 (No such file or directory), outsize: 16
-unique: 168, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 18 is a file
-getattr 0000000000000012 1
-isfile: 18 is a file
-getfile 0000000000000012
-getfile 0000000000000012 -> sz 0
-   getattr -> 0
-   unique: 168, success, outsize: 160
-OK: create returns.
-unique: 170, opcode: IOCTL (39), nodeid: 18, insize: 72, pid: 27372
-   unique: 170, error: -38 (Function not implemented), outsize: 16
-unique: 172, opcode: GETATTR (3), nodeid: 18, insize: 56, pid: 27372
-isfile: 18 is a file
-getattr 0000000000000012 1
-isfile: 18 is a file
-getfile 0000000000000012
-getfile 0000000000000012 -> sz 0
-   getattr -> 0
-   unique: 172, success, outsize: 120
-unique: 174, opcode: RELEASE (18), nodeid: 18, insize: 64, pid: 0
-   unique: 174, success, outsize: 16
-unique: 176, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 176, error: -2 (No such file or directory), outsize: 16
-unique: 178, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 19 is a file
-getattr 0000000000000013 1
-isfile: 19 is a file
-getfile 0000000000000013
-getfile 0000000000000013 -> sz 0
-   getattr -> 0
-   unique: 178, success, outsize: 160
-OK: create returns.
-unique: 180, opcode: IOCTL (39), nodeid: 19, insize: 72, pid: 27372
-   unique: 180, error: -38 (Function not implemented), outsize: 16
-unique: 182, opcode: GETATTR (3), nodeid: 19, insize: 56, pid: 27372
-isfile: 19 is a file
-getattr 0000000000000013 1
-isfile: 19 is a file
-getfile 0000000000000013
-getfile 0000000000000013 -> sz 0
-   getattr -> 0
-   unique: 182, success, outsize: 120
-unique: 184, opcode: RELEASE (18), nodeid: 19, insize: 64, pid: 0
-   unique: 184, success, outsize: 16
-unique: 186, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 186, error: -2 (No such file or directory), outsize: 16
-unique: 188, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 20 is a file
-getattr 0000000000000014 1
-isfile: 20 is a file
-getfile 0000000000000014
-getfile 0000000000000014 -> sz 0
-   getattr -> 0
-   unique: 188, success, outsize: 160
-OK: create returns.
-unique: 190, opcode: IOCTL (39), nodeid: 20, insize: 72, pid: 27372
-   unique: 190, error: -38 (Function not implemented), outsize: 16
-unique: 192, opcode: GETATTR (3), nodeid: 20, insize: 56, pid: 27372
-isfile: 20 is a file
-getattr 0000000000000014 1
-isfile: 20 is a file
-getfile 0000000000000014
-getfile 0000000000000014 -> sz 0
-   getattr -> 0
-   unique: 192, success, outsize: 120
-unique: 194, opcode: RELEASE (18), nodeid: 20, insize: 64, pid: 0
-   unique: 194, success, outsize: 16
-unique: 196, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 196, error: -2 (No such file or directory), outsize: 16
-unique: 198, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 21 is a file
-getattr 0000000000000015 1
-isfile: 21 is a file
-getfile 0000000000000015
-getfile 0000000000000015 -> sz 0
-   getattr -> 0
-   unique: 198, success, outsize: 160
-OK: create returns.
-unique: 200, opcode: IOCTL (39), nodeid: 21, insize: 72, pid: 27372
-   unique: 200, error: -38 (Function not implemented), outsize: 16
-unique: 202, opcode: GETATTR (3), nodeid: 21, insize: 56, pid: 27372
-isfile: 21 is a file
-getattr 0000000000000015 1
-isfile: 21 is a file
-getfile 0000000000000015
-getfile 0000000000000015 -> sz 0
-   getattr -> 0
-   unique: 202, success, outsize: 120
-unique: 204, opcode: RELEASE (18), nodeid: 21, insize: 64, pid: 0
-   unique: 204, success, outsize: 16
-unique: 206, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 206, error: -2 (No such file or directory), outsize: 16
-unique: 208, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 22 is a file
-getattr 0000000000000016 1
-isfile: 22 is a file
-getfile 0000000000000016
-getfile 0000000000000016 -> sz 0
-   getattr -> 0
-   unique: 208, success, outsize: 160
-OK: create returns.
-unique: 210, opcode: IOCTL (39), nodeid: 22, insize: 72, pid: 27372
-   unique: 210, error: -38 (Function not implemented), outsize: 16
-unique: 212, opcode: GETATTR (3), nodeid: 22, insize: 56, pid: 27372
-isfile: 22 is a file
-getattr 0000000000000016 1
-isfile: 22 is a file
-getfile 0000000000000016
-getfile 0000000000000016 -> sz 0
-   getattr -> 0
-   unique: 212, success, outsize: 120
-unique: 214, opcode: RELEASE (18), nodeid: 22, insize: 64, pid: 0
-   unique: 214, success, outsize: 16
-unique: 216, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 216, error: -2 (No such file or directory), outsize: 16
-unique: 218, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 23 is a file
-getattr 0000000000000017 1
-isfile: 23 is a file
-getfile 0000000000000017
-getfile 0000000000000017 -> sz 0
-   getattr -> 0
-   unique: 218, success, outsize: 160
-OK: create returns.
-unique: 220, opcode: IOCTL (39), nodeid: 23, insize: 72, pid: 27372
-   unique: 220, error: -38 (Function not implemented), outsize: 16
-unique: 222, opcode: GETATTR (3), nodeid: 23, insize: 56, pid: 27372
-isfile: 23 is a file
-getattr 0000000000000017 1
-isfile: 23 is a file
-getfile 0000000000000017
-getfile 0000000000000017 -> sz 0
-   getattr -> 0
-   unique: 222, success, outsize: 120
-unique: 224, opcode: RELEASE (18), nodeid: 23, insize: 64, pid: 0
-   unique: 224, success, outsize: 16
-unique: 226, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 226, error: -2 (No such file or directory), outsize: 16
-unique: 228, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 24 is a file
-getattr 0000000000000018 1
-isfile: 24 is a file
-getfile 0000000000000018
-getfile 0000000000000018 -> sz 0
-   getattr -> 0
-   unique: 228, success, outsize: 160
-OK: create returns.
-unique: 230, opcode: IOCTL (39), nodeid: 24, insize: 72, pid: 27372
-   unique: 230, error: -38 (Function not implemented), outsize: 16
-unique: 232, opcode: GETATTR (3), nodeid: 24, insize: 56, pid: 27372
-isfile: 24 is a file
-getattr 0000000000000018 1
-isfile: 24 is a file
-getfile 0000000000000018
-getfile 0000000000000018 -> sz 0
-   getattr -> 0
-   unique: 232, success, outsize: 120
-unique: 234, opcode: RELEASE (18), nodeid: 24, insize: 64, pid: 0
-   unique: 234, success, outsize: 16
-unique: 236, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 236, error: -2 (No such file or directory), outsize: 16
-unique: 238, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 25 is a file
-getattr 0000000000000019 1
-isfile: 25 is a file
-getfile 0000000000000019
-getfile 0000000000000019 -> sz 0
-   getattr -> 0
-   unique: 238, success, outsize: 160
-OK: create returns.
-unique: 240, opcode: IOCTL (39), nodeid: 25, insize: 72, pid: 27372
-   unique: 240, error: -38 (Function not implemented), outsize: 16
-unique: 242, opcode: GETATTR (3), nodeid: 25, insize: 56, pid: 27372
-isfile: 25 is a file
-getattr 0000000000000019 1
-isfile: 25 is a file
-getfile 0000000000000019
-getfile 0000000000000019 -> sz 0
-   getattr -> 0
-   unique: 242, success, outsize: 120
-unique: 244, opcode: RELEASE (18), nodeid: 25, insize: 64, pid: 0
-   unique: 244, success, outsize: 16
-unique: 246, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 246, error: -2 (No such file or directory), outsize: 16
-unique: 248, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 26 is a file
-getattr 000000000000001a 1
-isfile: 26 is a file
-getfile 000000000000001a
-getfile 000000000000001a -> sz 0
-   getattr -> 0
-   unique: 248, success, outsize: 160
-OK: create returns.
-unique: 250, opcode: IOCTL (39), nodeid: 26, insize: 72, pid: 27372
-   unique: 250, error: -38 (Function not implemented), outsize: 16
-unique: 252, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 27372
-isfile: 26 is a file
-getattr 000000000000001a 1
-isfile: 26 is a file
-getfile 000000000000001a
-getfile 000000000000001a -> sz 0
-   getattr -> 0
-   unique: 252, success, outsize: 120
-unique: 254, opcode: RELEASE (18), nodeid: 26, insize: 64, pid: 0
-   unique: 254, success, outsize: 16
-unique: 256, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 256, error: -2 (No such file or directory), outsize: 16
-unique: 258, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 27 is a file
-getattr 000000000000001b 1
-isfile: 27 is a file
-getfile 000000000000001b
-getfile 000000000000001b -> sz 0
-   getattr -> 0
-   unique: 258, success, outsize: 160
-OK: create returns.
-unique: 260, opcode: IOCTL (39), nodeid: 27, insize: 72, pid: 27372
-   unique: 260, error: -38 (Function not implemented), outsize: 16
-unique: 262, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 27372
-isfile: 27 is a file
-getattr 000000000000001b 1
-isfile: 27 is a file
-getfile 000000000000001b
-getfile 000000000000001b -> sz 0
-   getattr -> 0
-   unique: 262, success, outsize: 120
-unique: 264, opcode: RELEASE (18), nodeid: 27, insize: 64, pid: 0
-   unique: 264, success, outsize: 16
-unique: 266, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 266, error: -2 (No such file or directory), outsize: 16
-unique: 268, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 28 is a file
-getattr 000000000000001c 1
-isfile: 28 is a file
-getfile 000000000000001c
-getfile 000000000000001c -> sz 0
-   getattr -> 0
-   unique: 268, success, outsize: 160
-OK: create returns.
-unique: 270, opcode: IOCTL (39), nodeid: 28, insize: 72, pid: 27372
-   unique: 270, error: -38 (Function not implemented), outsize: 16
-unique: 272, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 27372
-isfile: 28 is a file
-getattr 000000000000001c 1
-isfile: 28 is a file
-getfile 000000000000001c
-getfile 000000000000001c -> sz 0
-   getattr -> 0
-   unique: 272, success, outsize: 120
-unique: 274, opcode: RELEASE (18), nodeid: 28, insize: 64, pid: 0
-   unique: 274, success, outsize: 16
-unique: 276, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 276, error: -2 (No such file or directory), outsize: 16
-unique: 278, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 29 is a file
-getattr 000000000000001d 1
-isfile: 29 is a file
-getfile 000000000000001d
-getfile 000000000000001d -> sz 0
-   getattr -> 0
-   unique: 278, success, outsize: 160
-OK: create returns.
-unique: 280, opcode: IOCTL (39), nodeid: 29, insize: 72, pid: 27372
-   unique: 280, error: -38 (Function not implemented), outsize: 16
-unique: 282, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 27372
-isfile: 29 is a file
-getattr 000000000000001d 1
-isfile: 29 is a file
-getfile 000000000000001d
-getfile 000000000000001d -> sz 0
-   getattr -> 0
-   unique: 282, success, outsize: 120
-unique: 284, opcode: RELEASE (18), nodeid: 29, insize: 64, pid: 0
-   unique: 284, success, outsize: 16
-unique: 286, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 286, error: -2 (No such file or directory), outsize: 16
-unique: 288, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 30 is a file
-getattr 000000000000001e 1
-isfile: 30 is a file
-getfile 000000000000001e
-getfile 000000000000001e -> sz 0
-   getattr -> 0
-   unique: 288, success, outsize: 160
-OK: create returns.
-unique: 290, opcode: IOCTL (39), nodeid: 30, insize: 72, pid: 27372
-   unique: 290, error: -38 (Function not implemented), outsize: 16
-unique: 292, opcode: GETATTR (3), nodeid: 30, insize: 56, pid: 27372
-isfile: 30 is a file
-getattr 000000000000001e 1
-isfile: 30 is a file
-getfile 000000000000001e
-getfile 000000000000001e -> sz 0
-   getattr -> 0
-   unique: 292, success, outsize: 120
-unique: 294, opcode: RELEASE (18), nodeid: 30, insize: 64, pid: 0
-   unique: 294, success, outsize: 16
-unique: 296, opcode: LOOKUP (1), nodeid: 1, insize: 100, pid: 27372
-   unique: 296, error: -2 (No such file or directory), outsize: 16
-unique: 298, opcode: CREATE (35), nodeid: 1, insize: 116, pid: 27372
-isfile: 31 is a file
-getattr 000000000000001f 1
-isfile: 31 is a file
-getfile 000000000000001f
-getfile 000000000000001f -> sz 0
-   getattr -> 0
-   unique: 298, success, outsize: 160
-OK: create returns.
-unique: 300, opcode: IOCTL (39), nodeid: 31, insize: 72, pid: 27372
-   unique: 300, error: -38 (Function not implemented), outsize: 16
-unique: 302, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 27372
-isfile: 31 is a file
-getattr 000000000000001f 1
-isfile: 31 is a file
-getfile 000000000000001f
-getfile 000000000000001f -> sz 0
-   getattr -> 0
-   unique: 302, success, outsize: 120
-unique: 304, opcode: RELEASE (18), nodeid: 31, insize: 64, pid: 0
-   unique: 304, success, outsize: 16
-unique: 306, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-   unique: 306, error: -2 (No such file or directory), outsize: 16
-unique: 308, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
-   unique: 308, success, outsize: 160
-OK: create returns.
-unique: 310, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 310, error: -38 (Function not implemented), outsize: 16
-unique: 312, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
-   unique: 312, success, outsize: 120
-unique: 314, opcode: GETXATTR (22), nodeid: 32, insize: 68, pid: 27372
-   unique: 314, error: -38 (Function not implemented), outsize: 16
-unique: 316, opcode: WRITE (16), nodeid: 32, insize: 680, pid: 27372
-   unique: 316, success, outsize: 24
-unique: 318, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 318, success, outsize: 16
-unique: 320, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 320, success, outsize: 144
-unique: 322, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 322, success, outsize: 32
-unique: 324, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 324, error: -38 (Function not implemented), outsize: 16
-unique: 326, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 326, success, outsize: 120
-unique: 328, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 328, success, outsize: 120
-unique: 330, opcode: READ (15), nodeid: 32, insize: 80, pid: 27372
-   unique: 330, success, outsize: 616
-unique: 332, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 332, success, outsize: 120
-unique: 334, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 334, success, outsize: 16
-unique: 336, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-   unique: 336, error: -2 (No such file or directory), outsize: 16
-unique: 338, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 0
-   getattr -> 0
-   unique: 338, success, outsize: 160
-OK: create returns.
-unique: 340, opcode: IOCTL (39), nodeid: 33, insize: 72, pid: 27372
-   unique: 340, error: -38 (Function not implemented), outsize: 16
-unique: 342, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 0
-   getattr -> 0
+getfile 0000000000000010 -> sz 1311
+   getattr -> 1311
+   unique: 326, success, outsize: 144
+unique: 328, opcode: RELEASE (18), nodeid: 7, insize: 64, pid: 0
+   unique: 328, success, outsize: 16
+unique: 330, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-2-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 8 is a file
+getattr 0000000000000008 1
+isfile: 8 is a file
+getfile 0000000000000008
+getfile 0000000000000008 -> sz 1426
+   getattr -> 1426
+   unique: 330, success, outsize: 144
+unique: 332, opcode: OPEN (14), nodeid: 4, insize: 48, pid: 658
+   unique: 332, success, outsize: 32
+unique: 334, opcode: OPEN (14), nodeid: 12, insize: 48, pid: 662
+   unique: 334, success, outsize: 32
+unique: 336, opcode: OPEN (14), nodeid: 16, insize: 48, pid: 660
+   unique: 336, success, outsize: 32
+unique: 338, opcode: OPEN (14), nodeid: 8, insize: 48, pid: 655
+   unique: 338, success, outsize: 32
+unique: 340, opcode: GETATTR (3), nodeid: 4, insize: 56, pid: 658
+isfile: 4 is a file
+getattr 0000000000000004 1
+isfile: 4 is a file
+getfile 0000000000000004
+getfile 0000000000000004 -> sz 1348
+   getattr -> 1348
+   unique: 340, success, outsize: 120
+unique: 342, opcode: GETATTR (3), nodeid: 12, insize: 56, pid: 662
+isfile: 12 is a file
+getattr 000000000000000c 1
+isfile: 12 is a file
+getfile 000000000000000c
+getfile 000000000000000c -> sz 1385
+   getattr -> 1385
    unique: 342, success, outsize: 120
-unique: 344, opcode: WRITE (16), nodeid: 33, insize: 491, pid: 27372
-   unique: 344, success, outsize: 24
-unique: 346, opcode: RELEASE (18), nodeid: 33, insize: 64, pid: 0
-   unique: 346, success, outsize: 16
-unique: 348, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 348, success, outsize: 144
-unique: 350, opcode: OPEN (14), nodeid: 33, insize: 48, pid: 27372
-   unique: 350, success, outsize: 32
-unique: 352, opcode: IOCTL (39), nodeid: 33, insize: 72, pid: 27372
-   unique: 352, error: -38 (Function not implemented), outsize: 16
-unique: 354, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 354, success, outsize: 120
-unique: 356, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
+unique: 344, opcode: GETATTR (3), nodeid: 16, insize: 56, pid: 660
+isfile: 16 is a file
+getattr 0000000000000010 1
+isfile: 16 is a file
+getfile 0000000000000010
+getfile 0000000000000010 -> sz 1311
+   getattr -> 1311
+   unique: 344, success, outsize: 120
+unique: 346, opcode: GETATTR (3), nodeid: 8, insize: 56, pid: 655
+isfile: 8 is a file
+getattr 0000000000000008 1
+isfile: 8 is a file
+getfile 0000000000000008
+getfile 0000000000000008 -> sz 1426
+   getattr -> 1426
+   unique: 346, success, outsize: 120
+unique: 348, opcode: READ (15), nodeid: 4, insize: 80, pid: 658
+   unique: 348, success, outsize: 1364
+unique: 350, opcode: READ (15), nodeid: 12, insize: 80, pid: 662
+   unique: 350, success, outsize: 1401
+unique: 352, opcode: READ (15), nodeid: 16, insize: 80, pid: 660
+   unique: 352, success, outsize: 1327
+unique: 354, opcode: READ (15), nodeid: 8, insize: 80, pid: 655
+   unique: 354, success, outsize: 1442
+unique: 356, opcode: GETATTR (3), nodeid: 4, insize: 56, pid: 658
+isfile: 4 is a file
+getattr 0000000000000004 1
+isfile: 4 is a file
+getfile 0000000000000004
+getfile 0000000000000004 -> sz 1348
+   getattr -> 1348
    unique: 356, success, outsize: 120
-unique: 358, opcode: READ (15), nodeid: 33, insize: 80, pid: 27372
-   unique: 358, success, outsize: 427
-unique: 360, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
+unique: 358, opcode: GETATTR (3), nodeid: 12, insize: 56, pid: 662
+isfile: 12 is a file
+getattr 000000000000000c 1
+isfile: 12 is a file
+getfile 000000000000000c
+getfile 000000000000000c -> sz 1385
+   getattr -> 1385
+   unique: 358, success, outsize: 120
+unique: 360, opcode: GETATTR (3), nodeid: 16, insize: 56, pid: 660
+isfile: 16 is a file
+getattr 0000000000000010 1
+isfile: 16 is a file
+getfile 0000000000000010
+getfile 0000000000000010 -> sz 1311
+   getattr -> 1311
    unique: 360, success, outsize: 120
-unique: 362, opcode: RELEASE (18), nodeid: 33, insize: 64, pid: 0
-   unique: 362, success, outsize: 16
-unique: 364, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 364, success, outsize: 144
-unique: 366, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 366, success, outsize: 32
-unique: 368, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 368, error: -38 (Function not implemented), outsize: 16
-unique: 370, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 370, success, outsize: 120
-unique: 372, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 372, success, outsize: 120
-unique: 374, opcode: READ (15), nodeid: 32, insize: 80, pid: 27372
-   unique: 374, success, outsize: 616
-unique: 376, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 376, success, outsize: 120
-unique: 378, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 378, success, outsize: 16
-unique: 380, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 600
-   getattr -> 600
-   unique: 380, success, outsize: 144
-unique: 382, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
+unique: 362, opcode: GETATTR (3), nodeid: 8, insize: 56, pid: 655
+isfile: 8 is a file
+getattr 0000000000000008 1
+isfile: 8 is a file
+getfile 0000000000000008
+getfile 0000000000000008 -> sz 1426
+   getattr -> 1426
+   unique: 362, success, outsize: 120
+unique: 364, opcode: RELEASE (18), nodeid: 4, insize: 64, pid: 0
+   unique: 364, success, outsize: 16
+unique: 366, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-3-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 5 is a file
+getattr 0000000000000005 1
+isfile: 5 is a file
+getfile 0000000000000005
+getfile 0000000000000005 -> sz 3144
+   getattr -> 3144
+   unique: 366, success, outsize: 144
+unique: 368, opcode: RELEASE (18), nodeid: 12, insize: 64, pid: 0
+   unique: 368, success, outsize: 16
+unique: 370, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-3-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 13 is a file
+getattr 000000000000000d 1
+isfile: 13 is a file
+getfile 000000000000000d
+getfile 000000000000000d -> sz 3299
+   getattr -> 3299
+   unique: 370, success, outsize: 144
+unique: 372, opcode: RELEASE (18), nodeid: 16, insize: 64, pid: 0
+   unique: 372, success, outsize: 16
+unique: 374, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-3-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 17 is a file
+getattr 0000000000000011 1
+isfile: 17 is a file
+getfile 0000000000000011
+getfile 0000000000000011 -> sz 3211
+   getattr -> 3211
+   unique: 374, success, outsize: 144
+unique: 376, opcode: RELEASE (18), nodeid: 8, insize: 64, pid: 0
+   unique: 376, success, outsize: 16
+unique: 378, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-3-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 9 is a file
+getattr 0000000000000009 1
+isfile: 9 is a file
+getfile 0000000000000009
+getfile 0000000000000009 -> sz 3377
+   getattr -> 3377
+   unique: 378, success, outsize: 144
+unique: 380, opcode: OPEN (14), nodeid: 5, insize: 48, pid: 658
+   unique: 380, success, outsize: 32
+unique: 382, opcode: OPEN (14), nodeid: 13, insize: 48, pid: 662
    unique: 382, success, outsize: 32
-unique: 384, opcode: SETATTR (4), nodeid: 32, insize: 128, pid: 27372
-fuseserver_setattr 0x8
-   fuseserver_setattr set size to 0
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
-   unique: 384, success, outsize: 120
-unique: 386, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 386, error: -38 (Function not implemented), outsize: 16
-unique: 388, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
+unique: 384, opcode: OPEN (14), nodeid: 17, insize: 48, pid: 660
+   unique: 384, success, outsize: 32
+unique: 386, opcode: OPEN (14), nodeid: 9, insize: 48, pid: 655
+   unique: 386, success, outsize: 32
+unique: 388, opcode: GETATTR (3), nodeid: 5, insize: 56, pid: 658
+isfile: 5 is a file
+getattr 0000000000000005 1
+isfile: 5 is a file
+getfile 0000000000000005
+getfile 0000000000000005 -> sz 3144
+   getattr -> 3144
    unique: 388, success, outsize: 120
-unique: 390, opcode: WRITE (16), nodeid: 32, insize: 355, pid: 27372
-   unique: 390, success, outsize: 24
-unique: 392, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 392, success, outsize: 16
-unique: 394, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 275
-   getattr -> 275
-   unique: 394, success, outsize: 144
-unique: 396, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 396, success, outsize: 32
-unique: 398, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 398, error: -38 (Function not implemented), outsize: 16
-unique: 400, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 275
-   getattr -> 275
-   unique: 400, success, outsize: 120
-unique: 402, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 275
-   getattr -> 275
-   unique: 402, success, outsize: 120
-unique: 404, opcode: READ (15), nodeid: 32, insize: 80, pid: 27372
-   unique: 404, success, outsize: 291
-unique: 406, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 275
-   getattr -> 275
+unique: 390, opcode: GETATTR (3), nodeid: 13, insize: 56, pid: 662
+isfile: 13 is a file
+getattr 000000000000000d 1
+isfile: 13 is a file
+getfile 000000000000000d
+getfile 000000000000000d -> sz 3299
+   getattr -> 3299
+   unique: 390, success, outsize: 120
+unique: 392, opcode: GETATTR (3), nodeid: 17, insize: 56, pid: 660
+isfile: 17 is a file
+getattr 0000000000000011 1
+isfile: 17 is a file
+getfile 0000000000000011
+getfile 0000000000000011 -> sz 3211
+   getattr -> 3211
+   unique: 392, success, outsize: 120
+unique: 394, opcode: GETATTR (3), nodeid: 9, insize: 56, pid: 655
+isfile: 9 is a file
+getattr 0000000000000009 1
+isfile: 9 is a file
+getfile 0000000000000009
+getfile 0000000000000009 -> sz 3377
+   getattr -> 3377
+   unique: 394, success, outsize: 120
+unique: 396, opcode: READ (15), nodeid: 5, insize: 80, pid: 658
+   unique: 396, success, outsize: 3160
+unique: 398, opcode: READ (15), nodeid: 13, insize: 80, pid: 662
+   unique: 398, success, outsize: 3315
+unique: 400, opcode: READ (15), nodeid: 17, insize: 80, pid: 660
+   unique: 400, success, outsize: 3227
+unique: 402, opcode: READ (15), nodeid: 9, insize: 80, pid: 655
+   unique: 402, success, outsize: 3393
+unique: 404, opcode: GETATTR (3), nodeid: 5, insize: 56, pid: 658
+isfile: 5 is a file
+getattr 0000000000000005 1
+isfile: 5 is a file
+getfile 0000000000000005
+getfile 0000000000000005 -> sz 3144
+   getattr -> 3144
+   unique: 404, success, outsize: 120
+unique: 406, opcode: GETATTR (3), nodeid: 13, insize: 56, pid: 662
+isfile: 13 is a file
+getattr 000000000000000d 1
+isfile: 13 is a file
+getfile 000000000000000d
+getfile 000000000000000d -> sz 3299
+   getattr -> 3299
    unique: 406, success, outsize: 120
-unique: 408, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 408, success, outsize: 16
-unique: 410, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 410, success, outsize: 144
-unique: 412, opcode: OPEN (14), nodeid: 33, insize: 48, pid: 27372
-   unique: 412, success, outsize: 32
-unique: 414, opcode: IOCTL (39), nodeid: 33, insize: 72, pid: 27372
-   unique: 414, error: -38 (Function not implemented), outsize: 16
-unique: 416, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 416, success, outsize: 120
-unique: 418, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 418, success, outsize: 120
-unique: 420, opcode: READ (15), nodeid: 33, insize: 80, pid: 27372
-   unique: 420, success, outsize: 427
-unique: 422, opcode: GETATTR (3), nodeid: 33, insize: 56, pid: 27372
-isfile: 33 is a file
-getattr 0000000000000021 1
-isfile: 33 is a file
-getfile 0000000000000021
-getfile 0000000000000021 -> sz 411
-   getattr -> 411
-   unique: 422, success, outsize: 120
-unique: 424, opcode: RELEASE (18), nodeid: 33, insize: 64, pid: 0
+unique: 408, opcode: GETATTR (3), nodeid: 17, insize: 56, pid: 660
+isfile: 17 is a file
+getattr 0000000000000011 1
+isfile: 17 is a file
+getfile 0000000000000011
+getfile 0000000000000011 -> sz 3211
+   getattr -> 3211
+   unique: 408, success, outsize: 120
+unique: 410, opcode: GETATTR (3), nodeid: 9, insize: 56, pid: 655
+isfile: 9 is a file
+getattr 0000000000000009 1
+isfile: 9 is a file
+getfile 0000000000000009
+getfile 0000000000000009 -> sz 3377
+   getattr -> 3377
+   unique: 410, success, outsize: 120
+unique: 412, opcode: RELEASE (18), nodeid: 5, insize: 64, pid: 0
+   unique: 412, success, outsize: 16
+unique: 414, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-4-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 18 is a file
+getattr 0000000000000012 1
+isfile: 18 is a file
+getfile 0000000000000012
+getfile 0000000000000012 -> sz 2960
+   getattr -> 2960
+   unique: 414, success, outsize: 144
+unique: 416, opcode: RELEASE (18), nodeid: 13, insize: 64, pid: 0
+   unique: 416, success, outsize: 16
+unique: 418, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-4-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 22 is a file
+getattr 0000000000000016 1
+isfile: 22 is a file
+getfile 0000000000000016
+getfile 0000000000000016 -> sz 2925
+   getattr -> 2925
+   unique: 418, success, outsize: 144
+unique: 420, opcode: RELEASE (18), nodeid: 17, insize: 64, pid: 0
+   unique: 420, success, outsize: 16
+unique: 422, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-4-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 24 is a file
+getattr 0000000000000018 1
+isfile: 24 is a file
+getfile 0000000000000018
+getfile 0000000000000018 -> sz 2590
+   getattr -> 2590
+   unique: 422, success, outsize: 144
+unique: 424, opcode: RELEASE (18), nodeid: 9, insize: 64, pid: 0
    unique: 424, success, outsize: 16
-unique: 426, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 275
-   getattr -> 275
+unique: 426, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-4-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 20 is a file
+getattr 0000000000000014 1
+isfile: 20 is a file
+getfile 0000000000000014
+getfile 0000000000000014 -> sz 2818
+   getattr -> 2818
    unique: 426, success, outsize: 144
-unique: 428, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
+unique: 428, opcode: OPEN (14), nodeid: 18, insize: 48, pid: 658
    unique: 428, success, outsize: 32
-unique: 430, opcode: SETATTR (4), nodeid: 32, insize: 128, pid: 27372
-fuseserver_setattr 0x8
-   fuseserver_setattr set size to 0
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
-   unique: 430, success, outsize: 120
-unique: 432, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 432, error: -38 (Function not implemented), outsize: 16
-unique: 434, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 0
-   getattr -> 0
-   unique: 434, success, outsize: 120
-unique: 436, opcode: WRITE (16), nodeid: 32, insize: 899, pid: 27372
-   unique: 436, success, outsize: 24
-unique: 438, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 438, success, outsize: 16
-unique: 440, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 819
-   getattr -> 819
-   unique: 440, success, outsize: 144
-unique: 442, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 442, success, outsize: 32
-unique: 444, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 444, error: -38 (Function not implemented), outsize: 16
-unique: 446, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 819
-   getattr -> 819
-   unique: 446, success, outsize: 120
-unique: 448, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 819
-   getattr -> 819
-   unique: 448, success, outsize: 120
-unique: 450, opcode: WRITE (16), nodeid: 32, insize: 1105, pid: 27372
-   unique: 450, success, outsize: 24
-unique: 452, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 452, success, outsize: 16
-unique: 454, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 454, success, outsize: 144
-unique: 456, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 456, success, outsize: 32
-unique: 458, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 458, error: -38 (Function not implemented), outsize: 16
-unique: 460, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 460, success, outsize: 120
-unique: 462, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 462, success, outsize: 120
-unique: 464, opcode: READ (15), nodeid: 32, insize: 80, pid: 27372
-   unique: 464, success, outsize: 1860
-unique: 466, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 466, success, outsize: 120
-unique: 468, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
+unique: 430, opcode: OPEN (14), nodeid: 22, insize: 48, pid: 662
+   unique: 430, success, outsize: 32
+unique: 432, opcode: OPEN (14), nodeid: 24, insize: 48, pid: 660
+   unique: 432, success, outsize: 32
+unique: 434, opcode: OPEN (14), nodeid: 20, insize: 48, pid: 655
+   unique: 434, success, outsize: 32
+unique: 436, opcode: GETATTR (3), nodeid: 18, insize: 56, pid: 658
+isfile: 18 is a file
+getattr 0000000000000012 1
+isfile: 18 is a file
+getfile 0000000000000012
+getfile 0000000000000012 -> sz 2960
+   getattr -> 2960
+   unique: 436, success, outsize: 120
+unique: 438, opcode: GETATTR (3), nodeid: 22, insize: 56, pid: 662
+isfile: 22 is a file
+getattr 0000000000000016 1
+isfile: 22 is a file
+getfile 0000000000000016
+getfile 0000000000000016 -> sz 2925
+   getattr -> 2925
+   unique: 438, success, outsize: 120
+unique: 440, opcode: GETATTR (3), nodeid: 24, insize: 56, pid: 660
+isfile: 24 is a file
+getattr 0000000000000018 1
+isfile: 24 is a file
+getfile 0000000000000018
+getfile 0000000000000018 -> sz 2590
+   getattr -> 2590
+   unique: 440, success, outsize: 120
+unique: 442, opcode: GETATTR (3), nodeid: 20, insize: 56, pid: 655
+isfile: 20 is a file
+getattr 0000000000000014 1
+isfile: 20 is a file
+getfile 0000000000000014
+getfile 0000000000000014 -> sz 2818
+   getattr -> 2818
+   unique: 442, success, outsize: 120
+unique: 444, opcode: READ (15), nodeid: 18, insize: 80, pid: 658
+   unique: 444, success, outsize: 2976
+unique: 446, opcode: READ (15), nodeid: 22, insize: 80, pid: 662
+   unique: 446, success, outsize: 2941
+unique: 448, opcode: READ (15), nodeid: 24, insize: 80, pid: 660
+   unique: 448, success, outsize: 2606
+unique: 450, opcode: READ (15), nodeid: 20, insize: 80, pid: 655
+   unique: 450, success, outsize: 2834
+unique: 452, opcode: GETATTR (3), nodeid: 18, insize: 56, pid: 658
+isfile: 18 is a file
+getattr 0000000000000012 1
+isfile: 18 is a file
+getfile 0000000000000012
+getfile 0000000000000012 -> sz 2960
+   getattr -> 2960
+   unique: 452, success, outsize: 120
+unique: 454, opcode: GETATTR (3), nodeid: 22, insize: 56, pid: 662
+isfile: 22 is a file
+getattr 0000000000000016 1
+isfile: 22 is a file
+getfile 0000000000000016
+getfile 0000000000000016 -> sz 2925
+   getattr -> 2925
+   unique: 454, success, outsize: 120
+unique: 456, opcode: GETATTR (3), nodeid: 24, insize: 56, pid: 660
+isfile: 24 is a file
+getattr 0000000000000018 1
+isfile: 24 is a file
+getfile 0000000000000018
+getfile 0000000000000018 -> sz 2590
+   getattr -> 2590
+   unique: 456, success, outsize: 120
+unique: 458, opcode: GETATTR (3), nodeid: 20, insize: 56, pid: 655
+isfile: 20 is a file
+getattr 0000000000000014 1
+isfile: 20 is a file
+getfile 0000000000000014
+getfile 0000000000000014 -> sz 2818
+   getattr -> 2818
+   unique: 458, success, outsize: 120
+unique: 460, opcode: RELEASE (18), nodeid: 18, insize: 64, pid: 0
+   unique: 460, success, outsize: 16
+unique: 462, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-5-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 19 is a file
+getattr 0000000000000013 1
+isfile: 19 is a file
+getfile 0000000000000013
+getfile 0000000000000013 -> sz 1070
+   getattr -> 1070
+   unique: 462, success, outsize: 144
+unique: 464, opcode: RELEASE (18), nodeid: 22, insize: 64, pid: 0
+   unique: 464, success, outsize: 16
+unique: 466, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-5-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 23 is a file
+getattr 0000000000000017 1
+isfile: 23 is a file
+getfile 0000000000000017
+getfile 0000000000000017 -> sz 1202
+   getattr -> 1202
+   unique: 466, success, outsize: 144
+unique: 468, opcode: RELEASE (18), nodeid: 24, insize: 64, pid: 0
    unique: 468, success, outsize: 16
-unique: 470, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
+unique: 470, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-5-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 25 is a file
+getattr 0000000000000019 1
+isfile: 25 is a file
+getfile 0000000000000019
+getfile 0000000000000019 -> sz 1292
+   getattr -> 1292
    unique: 470, success, outsize: 144
-unique: 472, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 472, success, outsize: 32
-unique: 474, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 474, error: -38 (Function not implemented), outsize: 16
-unique: 476, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 476, success, outsize: 120
-unique: 478, opcode: WRITE (16), nodeid: 32, insize: 97, pid: 27372
-   unique: 478, success, outsize: 24
-unique: 480, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 480, success, outsize: 16
-unique: 482, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 482, success, outsize: 144
-unique: 484, opcode: OPEN (14), nodeid: 32, insize: 48, pid: 27372
-   unique: 484, success, outsize: 32
-unique: 486, opcode: IOCTL (39), nodeid: 32, insize: 72, pid: 27372
-   unique: 486, error: -38 (Function not implemented), outsize: 16
-unique: 488, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
+unique: 472, opcode: RELEASE (18), nodeid: 20, insize: 64, pid: 0
+   unique: 472, success, outsize: 16
+unique: 474, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-5-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 21 is a file
+getattr 0000000000000015 1
+isfile: 21 is a file
+getfile 0000000000000015
+getfile 0000000000000015 -> sz 1616
+   getattr -> 1616
+   unique: 474, success, outsize: 144
+unique: 476, opcode: OPEN (14), nodeid: 19, insize: 48, pid: 658
+   unique: 476, success, outsize: 32
+unique: 478, opcode: OPEN (14), nodeid: 23, insize: 48, pid: 662
+   unique: 478, success, outsize: 32
+unique: 480, opcode: OPEN (14), nodeid: 25, insize: 48, pid: 660
+   unique: 480, success, outsize: 32
+unique: 482, opcode: OPEN (14), nodeid: 21, insize: 48, pid: 655
+   unique: 482, success, outsize: 32
+unique: 484, opcode: GETATTR (3), nodeid: 19, insize: 56, pid: 658
+isfile: 19 is a file
+getattr 0000000000000013 1
+isfile: 19 is a file
+getfile 0000000000000013
+getfile 0000000000000013 -> sz 1070
+   getattr -> 1070
+   unique: 484, success, outsize: 120
+unique: 486, opcode: GETATTR (3), nodeid: 23, insize: 56, pid: 662
+isfile: 23 is a file
+getattr 0000000000000017 1
+isfile: 23 is a file
+getfile 0000000000000017
+getfile 0000000000000017 -> sz 1202
+   getattr -> 1202
+   unique: 486, success, outsize: 120
+unique: 488, opcode: GETATTR (3), nodeid: 25, insize: 56, pid: 660
+isfile: 25 is a file
+getattr 0000000000000019 1
+isfile: 25 is a file
+getfile 0000000000000019
+getfile 0000000000000019 -> sz 1292
+   getattr -> 1292
    unique: 488, success, outsize: 120
-unique: 490, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
+unique: 490, opcode: GETATTR (3), nodeid: 21, insize: 56, pid: 655
+isfile: 21 is a file
+getattr 0000000000000015 1
+isfile: 21 is a file
+getfile 0000000000000015
+getfile 0000000000000015 -> sz 1616
+   getattr -> 1616
    unique: 490, success, outsize: 120
-unique: 492, opcode: READ (15), nodeid: 32, insize: 80, pid: 27372
-   unique: 492, success, outsize: 1860
-unique: 494, opcode: GETATTR (3), nodeid: 32, insize: 56, pid: 27372
-isfile: 32 is a file
-getattr 0000000000000020 1
-isfile: 32 is a file
-getfile 0000000000000020
-getfile 0000000000000020 -> sz 1844
-   getattr -> 1844
-   unique: 494, success, outsize: 120
-unique: 496, opcode: RELEASE (18), nodeid: 32, insize: 64, pid: 0
-   unique: 496, success, outsize: 16
-unique: 498, opcode: LOOKUP (1), nodeid: 1, insize: 50, pid: 27372
-   unique: 498, error: -2 (No such file or directory), outsize: 16
-fuse: failed to unmount /home/stu/cse-lab/chfs1: Invalid argument
+unique: 492, opcode: READ (15), nodeid: 19, insize: 80, pid: 658
+   unique: 492, success, outsize: 1086
+unique: 494, opcode: READ (15), nodeid: 23, insize: 80, pid: 662
+   unique: 494, success, outsize: 1218
+unique: 496, opcode: READ (15), nodeid: 25, insize: 80, pid: 660
+   unique: 496, success, outsize: 1308
+unique: 498, opcode: READ (15), nodeid: 21, insize: 80, pid: 655
+   unique: 498, success, outsize: 1632
+unique: 500, opcode: GETATTR (3), nodeid: 19, insize: 56, pid: 658
+isfile: 19 is a file
+getattr 0000000000000013 1
+isfile: 19 is a file
+getfile 0000000000000013
+getfile 0000000000000013 -> sz 1070
+   getattr -> 1070
+   unique: 500, success, outsize: 120
+unique: 502, opcode: GETATTR (3), nodeid: 23, insize: 56, pid: 662
+isfile: 23 is a file
+getattr 0000000000000017 1
+isfile: 23 is a file
+getfile 0000000000000017
+getfile 0000000000000017 -> sz 1202
+   getattr -> 1202
+   unique: 502, success, outsize: 120
+unique: 504, opcode: GETATTR (3), nodeid: 25, insize: 56, pid: 660
+isfile: 25 is a file
+getattr 0000000000000019 1
+isfile: 25 is a file
+getfile 0000000000000019
+getfile 0000000000000019 -> sz 1292
+   getattr -> 1292
+   unique: 504, success, outsize: 120
+unique: 506, opcode: GETATTR (3), nodeid: 21, insize: 56, pid: 655
+isfile: 21 is a file
+getattr 0000000000000015 1
+isfile: 21 is a file
+getfile 0000000000000015
+getfile 0000000000000015 -> sz 1616
+   getattr -> 1616
+   unique: 506, success, outsize: 120
+unique: 508, opcode: RELEASE (18), nodeid: 19, insize: 64, pid: 0
+   unique: 508, success, outsize: 16
+unique: 510, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-6-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 510, error: -2 (No such file or directory), outsize: 16
+unique: 512, opcode: RELEASE (18), nodeid: 23, insize: 64, pid: 0
+   unique: 512, success, outsize: 16
+unique: 514, opcode: RELEASE (18), nodeid: 25, insize: 64, pid: 0
+   unique: 514, success, outsize: 16
+unique: 516, opcode: RELEASE (18), nodeid: 21, insize: 64, pid: 0
+   unique: 516, success, outsize: 16
+unique: 518, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 662
+want to look up :mr-6-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 518, error: -2 (No such file or directory), outsize: 16
+unique: 520, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 660
+want to look up :mr-6-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 520, error: -2 (No such file or directory), outsize: 16
+unique: 522, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 655
+want to look up :mr-6-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 522, error: -2 (No such file or directory), outsize: 16
+unique: 524, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 658
+want to look up :mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 524, error: -2 (No such file or directory), outsize: 16
+unique: 526, opcode: CREATE (35), nodeid: 1, insize: 65, pid: 658
+create helper: 1, the name: mr-out-0, the type: 2
+want to create file: mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 0
+   getattr -> 0
+   unique: 526, success, outsize: 160
+OK: create returns.
+unique: 528, opcode: WRITE (16), nodeid: 26, insize: 4176, pid: 658
+   unique: 528, success, outsize: 24
+unique: 530, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 662
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 530, error: -2 (No such file or directory), outsize: 16
+unique: 532, opcode: WRITE (16), nodeid: 26, insize: 4176, pid: 658
+   unique: 532, success, outsize: 24
+unique: 534, opcode: CREATE (35), nodeid: 1, insize: 65, pid: 662
+create helper: 1, the name: mr-out-2, the type: 2
+want to create file: mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 0
+   getattr -> 0
+   unique: 534, success, outsize: 160
+OK: create returns.
+unique: 536, opcode: WRITE (16), nodeid: 26, insize: 1382, pid: 658
+   unique: 536, success, outsize: 24
+unique: 538, opcode: WRITE (16), nodeid: 27, insize: 4176, pid: 662
+   unique: 538, success, outsize: 24
+unique: 540, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 660
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 540, error: -2 (No such file or directory), outsize: 16
+unique: 542, opcode: RELEASE (18), nodeid: 26, insize: 64, pid: 0
+   unique: 542, success, outsize: 16
+unique: 544, opcode: WRITE (16), nodeid: 27, insize: 4176, pid: 662
+   unique: 544, success, outsize: 24
+unique: 546, opcode: CREATE (35), nodeid: 1, insize: 65, pid: 660
+create helper: 1, the name: mr-out-3, the type: 2
+want to create file: mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 0
+   getattr -> 0
+   unique: 546, success, outsize: 160
+OK: create returns.
+unique: 548, opcode: WRITE (16), nodeid: 27, insize: 1893, pid: 662
+   unique: 548, success, outsize: 24
+unique: 550, opcode: WRITE (16), nodeid: 28, insize: 4176, pid: 660
+   unique: 550, success, outsize: 24
+unique: 552, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 655
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 552, error: -2 (No such file or directory), outsize: 16
+unique: 554, opcode: RELEASE (18), nodeid: 27, insize: 64, pid: 0
+   unique: 554, success, outsize: 16
+unique: 556, opcode: WRITE (16), nodeid: 28, insize: 4176, pid: 660
+   unique: 556, success, outsize: 24
+unique: 558, opcode: CREATE (35), nodeid: 1, insize: 65, pid: 655
+create helper: 1, the name: mr-out-1, the type: 2
+want to create file: mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 0
+   getattr -> 0
+   unique: 558, success, outsize: 160
+OK: create returns.
+unique: 560, opcode: WRITE (16), nodeid: 28, insize: 1605, pid: 660
+   unique: 560, success, outsize: 24
+unique: 562, opcode: WRITE (16), nodeid: 29, insize: 4176, pid: 655
+   unique: 562, success, outsize: 24
+unique: 564, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 658
+want to look up :mr-0-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 564, error: -2 (No such file or directory), outsize: 16
+unique: 566, opcode: RELEASE (18), nodeid: 28, insize: 64, pid: 0
+   unique: 566, success, outsize: 16
+unique: 568, opcode: WRITE (16), nodeid: 29, insize: 4176, pid: 655
+   unique: 568, success, outsize: 24
+unique: 570, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 658
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 570, error: -2 (No such file or directory), outsize: 16
+unique: 572, opcode: WRITE (16), nodeid: 29, insize: 1929, pid: 655
+   unique: 572, success, outsize: 24
+unique: 574, opcode: CREATE (35), nodeid: 1, insize: 65, pid: 658
+create helper: 1, the name: mr-out-4, the type: 2
+want to create file: mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 574, success, outsize: 160
+OK: create returns.
+unique: 576, opcode: RELEASE (18), nodeid: 29, insize: 64, pid: 0
+   unique: 576, success, outsize: 16
+unique: 578, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 664
+   unique: 578, success, outsize: 32
+unique: 580, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 665
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394173 1670394173 1670394173
+   unique: 580, success, outsize: 120
+unique: 582, opcode: RELEASE (18), nodeid: 30, insize: 64, pid: 0
+   unique: 582, success, outsize: 16
+unique: 584, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 664
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394173 1670394173 1670394173
+   unique: 584, success, outsize: 120
+unique: 586, opcode: LOOKUP (1), nodeid: 1, insize: 50, pid: 665
+want to look up :mr-wc-all, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+   unique: 586, error: -2 (No such file or directory), outsize: 16
+unique: 588, opcode: CREATE (35), nodeid: 1, insize: 66, pid: 665
+create helper: 1, the name: mr-wc-all, the type: 2
+want to create file: mr-wc-all, the parent inode: 1
+want to check dir parent inode: 1
+want to look up :mr-wc-all, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 0
+   getattr -> 0
+   unique: 588, success, outsize: 160
+OK: create returns.
+unique: 590, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 665
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 0
+   getattr -> 0
+   unique: 590, success, outsize: 120
+unique: 592, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 664
+isfile: 1 is a dir
+want to check dir parent inode: 1
+   unique: 592, success, outsize: 984
+unique: 594, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 664
+isfile: 1 is a dir
+want to check dir parent inode: 1
+   unique: 594, success, outsize: 16
+unique: 596, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 596, success, outsize: 16
+unique: 598, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 664
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394177 1670394176 1670394176
+   unique: 598, success, outsize: 120
+unique: 600, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 600, success, outsize: 144
+unique: 602, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 664
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 602, success, outsize: 120
+unique: 604, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 604, success, outsize: 144
+unique: 606, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 606, success, outsize: 144
+unique: 608, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 664
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 608, success, outsize: 120
+unique: 610, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 610, success, outsize: 144
+unique: 612, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 612, success, outsize: 144
+unique: 614, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 664
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 614, success, outsize: 120
+unique: 616, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 616, success, outsize: 144
+unique: 618, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 618, success, outsize: 144
+unique: 620, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 664
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 620, success, outsize: 120
+unique: 622, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 622, success, outsize: 144
+unique: 624, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 624, success, outsize: 144
+unique: 626, opcode: GETATTR (3), nodeid: 30, insize: 56, pid: 664
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 626, success, outsize: 120
+unique: 628, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 628, success, outsize: 144
+unique: 630, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-0, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 630, success, outsize: 144
+unique: 632, opcode: OPEN (14), nodeid: 26, insize: 48, pid: 664
+   unique: 632, success, outsize: 32
+unique: 634, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 664
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 634, success, outsize: 120
+unique: 636, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 636, success, outsize: 144
+unique: 638, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 664
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 638, success, outsize: 120
+unique: 640, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 640, success, outsize: 144
+unique: 642, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 664
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 642, success, outsize: 120
+unique: 644, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 644, success, outsize: 144
+unique: 646, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 664
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 646, success, outsize: 120
+unique: 648, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 648, success, outsize: 144
+unique: 650, opcode: GETATTR (3), nodeid: 30, insize: 56, pid: 664
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 650, success, outsize: 120
+unique: 652, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 664
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 652, success, outsize: 120
+unique: 654, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 664
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 654, success, outsize: 120
+unique: 656, opcode: READ (15), nodeid: 26, insize: 80, pid: 664
+   unique: 656, success, outsize: 9510
+unique: 658, opcode: GETATTR (3), nodeid: 26, insize: 56, pid: 664
+isfile: 26 is a file
+getattr 000000000000001a 1
+isfile: 26 is a file
+getfile 000000000000001a
+getfile 000000000000001a -> sz 9494
+   getattr -> 9494
+   unique: 658, success, outsize: 120
+unique: 660, opcode: RELEASE (18), nodeid: 26, insize: 64, pid: 0
+   unique: 660, success, outsize: 16
+unique: 662, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-1, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 662, success, outsize: 144
+unique: 664, opcode: OPEN (14), nodeid: 29, insize: 48, pid: 664
+   unique: 664, success, outsize: 32
+unique: 666, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 664
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 666, success, outsize: 120
+unique: 668, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 664
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 668, success, outsize: 120
+unique: 670, opcode: READ (15), nodeid: 29, insize: 80, pid: 664
+   unique: 670, success, outsize: 10057
+unique: 672, opcode: GETATTR (3), nodeid: 29, insize: 56, pid: 664
+isfile: 29 is a file
+getattr 000000000000001d 1
+isfile: 29 is a file
+getfile 000000000000001d
+getfile 000000000000001d -> sz 10041
+   getattr -> 10041
+   unique: 672, success, outsize: 120
+unique: 674, opcode: RELEASE (18), nodeid: 29, insize: 64, pid: 0
+   unique: 674, success, outsize: 16
+unique: 676, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-2, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 676, success, outsize: 144
+unique: 678, opcode: OPEN (14), nodeid: 27, insize: 48, pid: 664
+   unique: 678, success, outsize: 32
+unique: 680, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 664
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 680, success, outsize: 120
+unique: 682, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 664
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 682, success, outsize: 120
+unique: 684, opcode: READ (15), nodeid: 27, insize: 80, pid: 664
+   unique: 684, success, outsize: 10021
+unique: 686, opcode: GETATTR (3), nodeid: 27, insize: 56, pid: 664
+isfile: 27 is a file
+getattr 000000000000001b 1
+isfile: 27 is a file
+getfile 000000000000001b
+getfile 000000000000001b -> sz 10005
+   getattr -> 10005
+   unique: 686, success, outsize: 120
+unique: 688, opcode: RELEASE (18), nodeid: 27, insize: 64, pid: 0
+   unique: 688, success, outsize: 16
+unique: 690, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-3, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 690, success, outsize: 144
+unique: 692, opcode: OPEN (14), nodeid: 28, insize: 48, pid: 664
+   unique: 692, success, outsize: 32
+unique: 694, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 664
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 694, success, outsize: 120
+unique: 696, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 664
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 696, success, outsize: 120
+unique: 698, opcode: READ (15), nodeid: 28, insize: 80, pid: 664
+   unique: 698, success, outsize: 9733
+unique: 700, opcode: GETATTR (3), nodeid: 28, insize: 56, pid: 664
+isfile: 28 is a file
+getattr 000000000000001c 1
+isfile: 28 is a file
+getfile 000000000000001c
+getfile 000000000000001c -> sz 9717
+   getattr -> 9717
+   unique: 700, success, outsize: 120
+unique: 702, opcode: RELEASE (18), nodeid: 28, insize: 64, pid: 0
+   unique: 702, success, outsize: 16
+unique: 704, opcode: LOOKUP (1), nodeid: 1, insize: 49, pid: 664
+want to look up :mr-out-4, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 704, success, outsize: 144
+unique: 706, opcode: OPEN (14), nodeid: 30, insize: 48, pid: 664
+   unique: 706, success, outsize: 32
+unique: 708, opcode: GETATTR (3), nodeid: 30, insize: 56, pid: 664
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 708, success, outsize: 120
+unique: 710, opcode: GETATTR (3), nodeid: 30, insize: 56, pid: 664
+isfile: 30 is a file
+getattr 000000000000001e 1
+isfile: 30 is a file
+getfile 000000000000001e
+getfile 000000000000001e -> sz 0
+   getattr -> 0
+   unique: 710, success, outsize: 120
+unique: 712, opcode: READ (15), nodeid: 30, insize: 80, pid: 664
+   unique: 712, success, outsize: 16
+unique: 714, opcode: RELEASE (18), nodeid: 30, insize: 64, pid: 0
+   unique: 714, success, outsize: 16
+unique: 716, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 665
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 0
+   getattr -> 0
+   unique: 716, success, outsize: 120
+unique: 718, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 718, success, outsize: 24
+unique: 720, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 720, success, outsize: 24
+unique: 722, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 722, success, outsize: 24
+unique: 724, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 724, success, outsize: 24
+unique: 726, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 726, success, outsize: 24
+unique: 728, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 728, success, outsize: 24
+unique: 730, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 730, success, outsize: 24
+unique: 732, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 732, success, outsize: 24
+unique: 734, opcode: WRITE (16), nodeid: 31, insize: 4176, pid: 665
+   unique: 734, success, outsize: 24
+unique: 736, opcode: WRITE (16), nodeid: 31, insize: 2473, pid: 665
+   unique: 736, success, outsize: 24
+unique: 738, opcode: RELEASE (18), nodeid: 31, insize: 64, pid: 0
+   unique: 738, success, outsize: 16
+unique: 740, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394203 1670394176 1670394176
+   unique: 740, success, outsize: 120
+unique: 742, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394203 1670394176 1670394176
+   unique: 742, success, outsize: 120
+unique: 744, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 667
+   unique: 744, success, outsize: 32
+unique: 746, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 746, success, outsize: 16
+unique: 748, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 635
+getattr 0000000000000001 0
+isfile: 1 is a dir
+getdir 0000000000000001
+   getattr -> 1670394203 1670394176 1670394176
+   unique: 748, success, outsize: 120
+unique: 750, opcode: LOOKUP (1), nodeid: 1, insize: 50, pid: 676
+want to look up :mr-wc-all, the parent inode: 1
+want to check dir parent inode: 1
+want to check dir parent inode: 1
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 39257
+   getattr -> 39257
+   unique: 750, success, outsize: 144
+unique: 752, opcode: OPEN (14), nodeid: 31, insize: 48, pid: 676
+   unique: 752, success, outsize: 32
+unique: 754, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 676
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 39257
+   getattr -> 39257
+   unique: 754, success, outsize: 120
+unique: 756, opcode: READ (15), nodeid: 31, insize: 80, pid: 676
+   unique: 756, success, outsize: 16400
+unique: 758, opcode: READ (15), nodeid: 31, insize: 80, pid: 676
+   unique: 758, success, outsize: 22889
+unique: 760, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 676
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 39257
+   getattr -> 39257
+   unique: 760, success, outsize: 120
+unique: 762, opcode: GETATTR (3), nodeid: 31, insize: 56, pid: 676
+isfile: 31 is a file
+getattr 000000000000001f 1
+isfile: 31 is a file
+getfile 000000000000001f
+getfile 000000000000001f -> sz 39257
+   getattr -> 39257
+   unique: 762, success, outsize: 120
+unique: 764, opcode: RELEASE (18), nodeid: 31, insize: 64, pid: 0
+   unique: 764, success, outsize: 16

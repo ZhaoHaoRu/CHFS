@@ -5,12 +5,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <unordered_map>
 #include <dirent.h>
 
 #include <mutex>
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
 
 #include "rpc.h"
 #include "mr_protocol.h"
@@ -32,7 +34,67 @@ struct KeyVal {
 vector<KeyVal> Map(const string &filename, const string &content)
 {
 	// Copy your code from mr_sequential.cc here.
+	vector<KeyVal> result;
+    unordered_map<std::string, uint64_t> word_map;
 
+    std::size_t begin_pos = 0;
+    bool in_word = false;
+    std::string word;
+
+    // suppose the file is not too long
+    std::size_t file_size = content.size();
+
+    // different from paper, also do some reduce work
+	cerr << "get line 48" << endl;
+    for (std::size_t i = 0; i < file_size; ++i) {
+        if (isalpha(content[i])) {
+            if (!in_word) {
+                in_word = true;
+                begin_pos = i;
+            }
+        } else {
+            if (in_word) {
+                in_word = false;
+                word = content.substr(begin_pos, i - begin_pos);
+                begin_pos = i + 1;
+
+                if(!word.empty()) {
+                    if (word_map.count(word)) {
+                        word_map[word] += 1;
+                    } else {
+                        word_map[word] = 1;
+                    }
+                }
+            }
+        }
+    } 
+
+    // handle the tail word
+    if (begin_pos != file_size && in_word) {
+        word = content.substr(begin_pos);
+
+        if (!word.empty() && isalpha(word[0])) {
+            if (word_map.count(word)) {
+                word_map[word] += 1;
+            } else {
+                word_map[word] = 1;
+            }
+        }
+    }
+
+	cerr << "get line 86" << endl;
+    // generate the result
+    for (auto elem : word_map) {
+        KeyVal new_key_val;
+        new_key_val.key = elem.first;
+        new_key_val.val = to_string(elem.second);
+
+        // std::cout << "key: " << new_key_val.key <<  " val: " << new_key_val.val << std::endl;
+        result.emplace_back(new_key_val);
+    }
+
+	cerr << "get line 97" << endl;
+    return result;
 }
 
 //
@@ -43,7 +105,12 @@ vector<KeyVal> Map(const string &filename, const string &content)
 string Reduce(const string &key, const vector < string > &values)
 {
     // Copy your code from mr_sequential.cc here.
+	uint64_t count = 0;
+    for (auto val : values) {
+        count += std::stoul(val);
+    }
 
+    return to_string(count);
 }
 
 
@@ -57,9 +124,10 @@ public:
 	void doWork();
 
 private:
-	void doMap(int index, const vector<string> &filenames);
+	void doMap(int index, string &filename);
 	void doReduce(int index);
 	void doSubmit(mr_tasktype taskType, int index);
+	int hash(string str);
 
 	mutex mtx;
 	int id;
@@ -85,16 +153,105 @@ Worker::Worker(const string &dst, const string &dir, MAPF mf, REDUCEF rf)
 	}
 }
 
-void Worker::doMap(int index, const vector<string> &filenames)
+int Worker::hash(string str)
+{
+	std::size_t str_hash = std::hash<std::string>{}(str);
+	return str_hash % REDUCER_COUNT;
+}
+
+void Worker::doMap(int index, string &filename)
 {
 	// Lab4: Your code goes here.
 
+	vector<vector<KeyVal>> intermediate(REDUCER_COUNT);
+	string content;
+
+	// Read the whole file into the buffer
+	cerr << "Read the whole file into the buffer, the filename: " << filename << endl;
+	getline(ifstream(filename), content, '\0');
+	vector<KeyVal> ret = mapf(filename, content);
+	cerr << "finish mapf" << endl;
+
+	// distribute the intermediate key-values to different files intended for different Reduce tasks
+	for(auto elem : ret) {
+		int hash_val = this->hash(elem.key);
+		assert(hash_val >= 0 && hash_val < REDUCER_COUNT);
+		intermediate[hash_val].emplace_back(elem);
+	}	
+
+	cerr << "begin to write intermediate_file" << endl;
+	for (int i = 0; i < REDUCER_COUNT; ++i) {
+		cerr << "the index: " << index << " " << "the intermediate number: " << i << endl;
+		string intermediate_filename = basedir + "mr-" + to_string(index) + "-" + to_string(i);
+		cerr << "the intermediate_filename: " << intermediate_filename << endl;
+		// TODO: whether need to trunc?
+		std::ofstream out_file(intermediate_filename);
+		std::string new_content;
+
+		if(!out_file) {
+			cerr << "the out file wrong: " << intermediate_filename << endl;
+			continue;
+		}
+
+		cerr << "begin to generate new content" << endl;
+		for (auto elem : intermediate[i]) {
+			new_content = new_content + elem.key + ' ' + elem.val + '\n';
+		}
+
+		cerr << "get the new_content" << endl;
+		out_file << new_content;
+		cerr << "write to outfile" << endl;
+		out_file.close();
+		cerr << "outfile close" << endl;
+	}
+	cerr << "finish domap" << endl;
 }
 
 void Worker::doReduce(int index)
 {
 	// Lab4: Your code goes here.
+	string intermediate_filename, line, key, val, output_filename;
+	map<string, uint64_t> word_map;
+	int i = 0, pos = 0;
+	uint64_t raw_val;
 
+	while (true) {
+		intermediate_filename = basedir + "mr-" + to_string(i) + "-" + to_string(index);
+		std::ifstream file(intermediate_filename);
+		++i;
+
+		if(file) {
+			file.seekg(0,std::ios::beg);
+			while(getline(file, line)) {
+				pos = line.find(' ');
+
+				if (pos == std::string::npos) {
+					cout << "not found" << endl;
+				} else {
+					key = line.substr(0, pos);
+					val = line.substr(pos + 1);
+					raw_val = stoul(val);
+
+					word_map[key] += raw_val;
+				}	
+			}
+			file.close();
+		} else {
+			file.close();
+			break;
+		}
+	}
+
+	// write to the output file
+	string content;
+	for (auto elem : word_map) {
+		content = content + elem.first + ' ' + to_string(elem.second) + '\n';
+	}
+
+	output_filename = basedir + "/mr-out-" + to_string(index);
+	ofstream out_file(output_filename);
+	out_file << content;
+	out_file.close();
 }
 
 void Worker::doSubmit(mr_tasktype taskType, int index)
@@ -102,7 +259,7 @@ void Worker::doSubmit(mr_tasktype taskType, int index)
 	bool b;
 	mr_protocol::status ret = this->cl->call(mr_protocol::submittask, taskType, index, b);
 	if (ret != mr_protocol::OK) {
-		fprintf(stderr, "submit task failed\n");
+		fprintf(stderr, "submit task failed: ret %d\n", ret);
 		exit(-1);
 	}
 }
@@ -118,7 +275,26 @@ void Worker::doWork()
 		// if mr_tasktype::REDUCE, then doReduce and doSubmit
 		// if mr_tasktype::NONE, meaning currently no work is needed, then sleep
 		//
+		mr_protocol::AskTaskResponse response;
+		mr_protocol::status ret = this->cl->call(mr_protocol::asktask, 0, response);
+		if (ret != mr_protocol::OK) {
+			// cerr << "asktask RPC failed: " << "the ret value: " << ret << endl;
+			continue; 
+		}
 
+		if (response.task_type == mr_tasktype::MAP) {
+			cerr << "worker do map\n";
+			doMap(response.index, response.file_name);
+			cerr << "worker submit map " << response.index << endl;
+			doSubmit(mr_tasktype::MAP, response.index);
+		} else if (response.task_type == mr_tasktype::REDUCE) {
+			cerr << "worker do reduce\n";
+			doReduce(response.index);
+			cerr << "worker submit reduce " << response.index << endl;
+			doSubmit(mr_tasktype::REDUCE, response.index);
+		} else {
+			usleep(5000);
+		}
 	}
 }
 

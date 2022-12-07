@@ -254,6 +254,7 @@ fuseserver_createhelper(fuse_ino_t parent, const char *name,
     e->generation = 0;
 
     chfs_client::inum inum;
+    printf("create helper: %ld, the name: %s, the type: %d\n", parent, name, type);
     if ( type == extent_protocol::T_FILE )
 		ret = chfs->create(parent, name, mode, inum);
 	else 
@@ -271,7 +272,7 @@ fuseserver_create(fuse_req_t req, fuse_ino_t parent, const char *name,
 {
     struct fuse_entry_param e;
     chfs_client::status ret;
-    if( (ret = fuseserver_createhelper( parent, name, mode, &e, extent_protocol::T_FILE)) == chfs_client::OK ) {
+    if( (ret = fuseserver_createhelper(parent, name, mode, &e, extent_protocol::T_FILE)) == chfs_client::OK ) {
         fuse_reply_create(req, &e, fi);
         printf("OK: create returns.\n");
     } else {

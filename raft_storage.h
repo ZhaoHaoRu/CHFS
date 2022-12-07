@@ -75,7 +75,7 @@ void raft_storage<command>::persist(std::vector<log_entry<command>> &log_entries
         char *cmd_data = new char[cmd_size];
         memset(cmd_data, ' ', cmd_size);
         log_entry.cmd.serialize(cmd_data, cmd_size);
-        printf("the cmd data: %d\n", log_entry.cmd.value);
+        // printf("the cmd data: %d\n", log_entry.cmd.value);
         memcpy(data + bias, cmd_data, cmd_size);
         // printf("the data: %s", data);
         out_file.write(data, total_size);

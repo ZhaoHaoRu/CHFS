@@ -49,12 +49,74 @@ private:
 mr_protocol::status Coordinator::askTask(int, mr_protocol::AskTaskResponse &reply) {
 	// Lab4 : Your code goes here.
 
+	int file_size = files.size();
+	// cerr << "check asktask request" << endl;
+	// check whether need map
+	if (!isFinishedMap()) {
+		this->mtx.lock();
+		cerr << "get line 57" << endl;
+		for (int i = 0; i < file_size; ++i) {
+			if (!mapTasks[i].isAssigned) {
+				reply.task_type = mr_tasktype::MAP;
+				reply.index = i;
+				reply.file_name = files[i];
+				mapTasks[i].isAssigned = true;
+				cerr << "assgin map work" << endl;
+				this->mtx.unlock();
+				return mr_protocol::OK;
+			} 
+		}
+		this->mtx.unlock();
+	} else if (!isFinishedReduce()) {
+		this->mtx.lock();
+		for (int i = 0; i < file_size; ++i) {
+			if (!reduceTasks[i].isAssigned) {
+				reply.task_type = mr_tasktype::REDUCE;
+				reply.index = i;
+				reply.file_name = files[i];
+				reduceTasks[i].isAssigned = true;
+				cerr << "assgin reduce work" << endl;
+				this->mtx.unlock();
+				return mr_protocol::OK;
+			} 
+		}
+		this->mtx.unlock();
+	}
+
+	reply.task_type = mr_tasktype::NONE;
 	return mr_protocol::OK;
 }
 
 mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &success) {
 	// Lab4 : Your code goes here.
+	this->mtx.lock();
 
+	int file_size = files.size();
+	success = false;
+
+	cerr << "get work " << index << "submit, " << "filesize: " << file_size << ", taskType: " << taskType << endl;
+
+	if (index < 0 || index >= file_size) {
+		return mr_protocol::OK;
+	}
+
+	
+	if (taskType == mr_tasktype::MAP) {
+		success = true;
+		mapTasks[index].isCompleted = true;
+		++completedMapCount;
+		cerr << "completedMapCount: " << completedMapCount << endl;
+	} else if (taskType == mr_tasktype::REDUCE) {
+		success = true;
+		reduceTasks[index].isCompleted = true;
+		++completedReduceCount;
+		if (this->completedReduceCount >= long(this->reduceTasks.size())) {
+			isFinished = true;
+		}
+		cerr << "completedReduceCount: " << completedMapCount << endl;
+	}
+
+	this->mtx.unlock();
 	return mr_protocol::OK;
 }
 
@@ -149,6 +211,8 @@ int main(int argc, char *argv[])
 	// Lab4: Your code here.
 	// Hints: Register "askTask" and "submitTask" as RPC handlers here
 	// 
+	server.reg(mr_protocol::rpc_numbers::asktask, &c, &Coordinator::askTask);
+	server.reg(mr_protocol::rpc_numbers::submittask, &c, &Coordinator::submitTask);
 
 	while(!c.Done()) {
 		sleep(1);

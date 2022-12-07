@@ -27,6 +27,9 @@ public:
 
 	struct AskTaskResponse {
 		// Lab4: Your definition here.
+		int index;
+		int task_type;
+		std::string file_name;
 	};
 
 	struct AskTaskRequest {
@@ -40,8 +43,23 @@ public:
 	struct SubmitTaskRequest {
 		// Lab4: Your definition here.
 	};
-
 };
+
+marshall &operator<<(marshall &m, const mr_protocol::AskTaskResponse &args) {
+    // Lab3: Your code here
+    m = m << args.index;
+    m = m << args.task_type;
+	m = m << args.file_name;
+    return m;
+}
+
+unmarshall &operator>>(unmarshall &u, mr_protocol::AskTaskResponse &args) {
+    // Lab3: Your code here
+	u = u >> args.index;
+	u = u >> args.task_type;
+	u = u >> args.file_name;
+    return u;
+}
 
 #endif
 

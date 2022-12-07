@@ -7,6 +7,17 @@
 #include <time.h>
 #include <assert.h>
 
+#define DEBUG
+
+#ifdef DEBUG
+  #define LOG(format, args...) do {   \
+    FILE* debug_log = fopen("inode_manager.log", "a+");  \
+    fprintf(debug_log, "%d, %s: ", __LINE__, __func__); \
+    fprintf(debug_log, format, ##args); \
+    fclose(debug_log);\
+  } while (0)
+#endif
+
 // disk layer -----------------------------------------
 
 disk::disk()
@@ -112,6 +123,7 @@ inode_manager::inode_manager()
   bm = new block_manager();
   _last_alloced = 0;
   uint32_t root_dir = alloc_inode(extent_protocol::T_DIR);
+  printf("the root dir is %d\n", root_dir);
   _last_alloced = root_dir;
   if (root_dir != 1) {
     exit(0);
@@ -408,11 +420,15 @@ inode_manager::get_attr(uint32_t inum, extent_protocol::attr &a)
    * note: get the attributes of inode inum.
    * you can refer to "struct attr" in extent_protocol.h
    */
-  if(inum > INODE_NUM)
+  if(inum > INODE_NUM) {
+    printf("the inum too big: %d\n", inum);
     return;
+  }
   struct inode* node = get_inode(inum);
-  if(node == nullptr)
+  if(node == nullptr) {
+    printf("the inode is nullptr: %d\n", inum);
     return;
+  }
   a.type = node->type;
   a.atime = node->atime;
   a.ctime = node->ctime;

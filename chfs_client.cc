@@ -172,11 +172,14 @@ chfs_client::setattr(inum ino, size_t size)
 int chfs_client::check_dir_inode(inum parent, extent_protocol::attr& a) {
     int r = OK;
      // the information stored in inode
+    printf("want to check dir parent inode: %lld\n", parent);
     if(ec->getattr(parent, a) != extent_protocol::OK) {
+        printf("the extent client getattr error\n");
         return IOERR;
     }
     // check whether it is a dir
     if(a.type != extent_protocol::T_DIR) {
+        printf("the file type is not dir\n");
         return IOERR;
     }
     return r;
@@ -192,13 +195,16 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
      * after create file or dir, you must remember to modify the parent infomation.
      */
     extent_protocol::attr a;
+    printf("want to create file: %s, the parent inode: %lld\n", name, parent);
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
+        printf("check parent dircetory error when want to create new file\n");
         return IOERR;
     }
     bool found = false;
     // check whether the file already exist
     if(lookup(parent, name, found, ino_out) != OK) {
+        printf("lookup error when want to create new file\n");
         return IOERR;
     }
     if(found) {
@@ -206,6 +212,7 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     }
     // create a new file
     if(ec->create(extent_protocol::T_FILE, ino_out) != OK) {
+        printf("create error when want to create new file\n");
         return IOERR;
     } 
     // Create an empty extent for ino.(how to do? I don't know)
@@ -213,12 +220,14 @@ chfs_client::create(inum parent, const char *name, mode_t mode, inum &ino_out)
     // my format for directories: inum/name/inum/name...inum/name/
     std::string buf;
     if(ec->get(parent, buf) != extent_protocol::OK) {
+        printf("get error when want to create new file\n");
         return IOERR;
     }
     std::string ino_str = filename(ino_out);
     std::string inum_name_pair = ino_str + "/" + name + "/";
     buf += inum_name_pair;
     if(ec->put(parent, buf) != extent_protocol::OK) {
+        printf("put error when want to create new file\n");
         return IOERR;
     }
     return r;
@@ -235,6 +244,7 @@ chfs_client::mkdir(inum parent, const char *name, mode_t mode, inum &ino_out)
      * after create file or dir, you must remember to modify the parent infomation.
      */
     extent_protocol::attr a;
+    printf("want to mkdir :%s, the parent inode: %lld\n", name, parent);
     // find and check the parent parent
     if(check_dir_inode(parent, a) != OK) {
         printf("the parent inode is illegal!\n");
@@ -288,13 +298,16 @@ chfs_client::lookup(inum parent, const char *name, bool &found, inum &ino_out)
      * note: lookup file from parent dir according to name;
      * you should design the format of directory content.
      */
+    printf("want to look up :%s, the parent inode: %lld\n", name, parent);
     // get the parent directory 
     extent_protocol::attr a;
     if(check_dir_inode(parent, a) != OK) {
+        printf("get the parent directory error\n");
         return IOERR;
     }
     std::list<dirent> dirent_list;
     if(readdir(parent, dirent_list) != OK) {
+        printf("read directory error\n");
         return IOERR;   // readdir error
     }
     for(auto elem : dirent_list) {
@@ -400,6 +413,7 @@ chfs_client::write(inum ino, size_t size, off_t off, const char *data,
      * when off > length of original file, fill the holes with '\0'.
      */
     extent_protocol::attr a;
+
     if (ec->getattr(ino, a) != extent_protocol::OK) {
         return IOERR;
     }
