@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <mutex>
 
 #include "mr_protocol.h"
@@ -27,6 +28,7 @@ public:
 	mr_protocol::status submitTask(int taskType, int index, bool &success);
 	bool isFinishedMap();
 	bool isFinishedReduce();
+	void generateResult();
 	bool Done();
 
 private:
@@ -38,6 +40,7 @@ private:
 
 	long completedMapCount;
 	long completedReduceCount;
+	long assignedMapCount;
 	bool isFinished;
 	
 	string getFile(int index);
@@ -54,13 +57,15 @@ mr_protocol::status Coordinator::askTask(int, mr_protocol::AskTaskResponse &repl
 	// check whether need map
 	if (!isFinishedMap()) {
 		this->mtx.lock();
-		cerr << "get line 57" << endl;
+		// cerr << "get line 57" << endl;
 		for (int i = 0; i < file_size; ++i) {
 			if (!mapTasks[i].isAssigned) {
 				reply.task_type = mr_tasktype::MAP;
 				reply.index = i;
 				reply.file_name = files[i];
 				mapTasks[i].isAssigned = true;
+				++assignedMapCount;
+				cout << "the assignedMapCount: " << assignedMapCount << std::endl;
 				cerr << "assgin map work" << endl;
 				this->mtx.unlock();
 				return mr_protocol::OK;
@@ -111,6 +116,12 @@ mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &succe
 		reduceTasks[index].isCompleted = true;
 		++completedReduceCount;
 		if (this->completedReduceCount >= long(this->reduceTasks.size())) {
+			// write to the file for test
+			if(!isFinished) {
+				cerr << "generate the result" << endl;
+				generateResult();
+				cerr << "generate the result end" << endl;
+			}
 			isFinished = true;
 		}
 		cerr << "completedReduceCount: " << completedMapCount << endl;
@@ -118,6 +129,53 @@ mr_protocol::status Coordinator::submitTask(int taskType, int index, bool &succe
 
 	this->mtx.unlock();
 	return mr_protocol::OK;
+}
+
+void Coordinator::generateResult() {
+	map<string, uint64_t> result;
+	string basedir = "../";
+	string intermediate_filename, line, key, val, output_filename;
+	int i = 0;
+	size_t pos = 0;
+	uint64_t raw_val = 0;
+
+	while (true) {
+		intermediate_filename = basedir + "mr-out-" + to_string(i);
+		ifstream file(intermediate_filename);
+		++i;
+
+		if(file) {
+			file.seekg(0,std::ios::beg);
+			while(getline(file, line)) {
+				pos = line.find(' ');
+
+				if (pos == std::string::npos) {
+					cerr << "not found" << endl;
+				} else {
+					key = line.substr(0, pos);
+					val = line.substr(pos + 1);
+					raw_val = stoul(val);
+					result[key] += raw_val;
+				}	
+			}
+			file.close();
+		} else {
+			file.close();
+			break;
+		}
+	}
+
+	// write to the output file
+	string content;
+	for (auto elem : result) {
+		content = content + elem.first + ' ' + to_string(elem.second) + '\n';
+	}
+
+	output_filename = "./mr-out-0";
+	ofstream out_file(output_filename);
+	out_file << content;
+	cerr << "task finish" << endl;
+	out_file.close();
 }
 
 string Coordinator::getFile(int index) {
@@ -169,6 +227,7 @@ Coordinator::Coordinator(const vector<string> &files, int nReduce)
 	this->isFinished = false;
 	this->completedMapCount = 0;
 	this->completedReduceCount = 0;
+	this->assignedMapCount = 0;
 
 	int filesize = files.size();
 	for (int i = 0; i < filesize; i++) {

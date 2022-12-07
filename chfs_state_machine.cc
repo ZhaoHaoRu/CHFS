@@ -99,24 +99,24 @@ void chfs_state_machine::apply_log(raft_command &cmd) {
         switch (chfs_cmd.cmd_tp) {
             case chfs_command_raft::command_type::CMD_CRT:
                 ret = es.create(chfs_cmd.type, chfs_cmd.res->id);
-                printf("create type: %d, the id: %lld\n", chfs_cmd.type, chfs_cmd.res->id);
+                // printf("create type: %d, the id: %lld\n", chfs_cmd.type, chfs_cmd.res->id);
                 break;
             case chfs_command_raft::command_type::CMD_PUT:
                 ret = es.put(chfs_cmd.id, chfs_cmd.buf, tmp);
-                printf("put id: %lld, the content: %s\n", chfs_cmd.id, chfs_cmd.buf.c_str());
+                // printf("put id: %lld, the content: %s\n", chfs_cmd.id, chfs_cmd.buf.c_str());
                 break;
             case chfs_command_raft::command_type::CMD_GET:
                 ret = es.get(chfs_cmd.id, chfs_cmd.res->buf);
-                printf("get id: %lld, the content: %s\n", chfs_cmd.id, chfs_cmd.res->buf);
+                // printf("get id: %lld, the content: %s\n", chfs_cmd.id, chfs_cmd.res->buf);
                 break;
             case chfs_command_raft::command_type::CMD_GETA:
                 ret = es.getattr(chfs_cmd.id, chfs_cmd.res->attr);
                 assert(ret == extent_protocol::OK);
-                printf("get attr id: %lld, chfs_cmd.res->attr: %d\n", chfs_cmd.id, chfs_cmd.res->attr.type);
+                // printf("get attr id: %lld, chfs_cmd.res->attr: %d\n", chfs_cmd.id, chfs_cmd.res->attr.type);
                 break;
             case chfs_command_raft::command_type::CMD_RMV:
                 ret = es.remove(chfs_cmd.id, tmp);
-                printf("remote id: %lld\n", chfs_cmd.id);
+                // printf("remote id: %lld\n", chfs_cmd.id);
                 break;
             default:
                 break;

@@ -19,6 +19,17 @@
 
 using namespace std;
 
+#define DEBUG
+
+#ifdef DEBUG
+  #define LOG(format, args...) do {   \
+    FILE* debug_log = fopen("worker.log", "a+");  \
+    fprintf(debug_log, "%d, %s: ", __LINE__, __func__); \
+    fprintf(debug_log, format, ##args); \
+    fclose(debug_log);\
+  } while (0)
+#endif
+
 struct KeyVal {
     string key;
     string val;
@@ -45,7 +56,7 @@ vector<KeyVal> Map(const string &filename, const string &content)
     std::size_t file_size = content.size();
 
     // different from paper, also do some reduce work
-	cerr << "get line 48" << endl;
+	// cerr << "get line 48" << endl;
     for (std::size_t i = 0; i < file_size; ++i) {
         if (isalpha(content[i])) {
             if (!in_word) {
@@ -82,7 +93,7 @@ vector<KeyVal> Map(const string &filename, const string &content)
         }
     }
 
-	cerr << "get line 86" << endl;
+	// cerr << "get line 86" << endl;
     // generate the result
     for (auto elem : word_map) {
         KeyVal new_key_val;
@@ -93,7 +104,7 @@ vector<KeyVal> Map(const string &filename, const string &content)
         result.emplace_back(new_key_val);
     }
 
-	cerr << "get line 97" << endl;
+	// cerr << "get line 97" << endl;
     return result;
 }
 
@@ -124,7 +135,7 @@ public:
 	void doWork();
 
 private:
-	void doMap(int index, string &filename);
+	void doMap(int index, vector<string> &filenames);
 	void doReduce(int index);
 	void doSubmit(mr_tasktype taskType, int index);
 	int hash(string str);
@@ -136,12 +147,15 @@ private:
 	std::string basedir;
 	MAPF mapf;
 	REDUCEF reducef;
+	std::string rawdir;
+	std::string intermediate;
 };
 
 
 Worker::Worker(const string &dst, const string &dir, MAPF mf, REDUCEF rf)
 {
 	this->basedir = dir;
+	this->rawdir = "../";
 	this->mapf = mf;
 	this->reducef = rf;
 
@@ -159,99 +173,54 @@ int Worker::hash(string str)
 	return str_hash % REDUCER_COUNT;
 }
 
-void Worker::doMap(int index, string &filename)
+void Worker::doMap(int index, vector<string> &filenames)
 {
 	// Lab4: Your code goes here.
-
-	vector<vector<KeyVal>> intermediate(REDUCER_COUNT);
 	string content;
+	
+	// cerr << "Read the whole file into the buffer, the filename: " << filename << endl;
+	for(auto filename : filenames) {
+		// Read the whole file into the buffer
+		getline(ifstream(filename), content, '\0');
+		vector<KeyVal> ret = mapf(filename, content);
+		
+		for(auto elem : ret) {
+			int hash_val = this->hash(elem.key);
+			assert(hash_val >= 0 && hash_val < REDUCER_COUNT);
+			intermediate = intermediate + elem.key + ' ' + elem.val + '\n';
+		}	
 
-	// Read the whole file into the buffer
-	cerr << "Read the whole file into the buffer, the filename: " << filename << endl;
-	getline(ifstream(filename), content, '\0');
-	vector<KeyVal> ret = mapf(filename, content);
-	cerr << "finish mapf" << endl;
-
-	// distribute the intermediate key-values to different files intended for different Reduce tasks
-	for(auto elem : ret) {
-		int hash_val = this->hash(elem.key);
-		assert(hash_val >= 0 && hash_val < REDUCER_COUNT);
-		intermediate[hash_val].emplace_back(elem);
-	}	
-
-	cerr << "begin to write intermediate_file" << endl;
-	for (int i = 0; i < REDUCER_COUNT; ++i) {
-		cerr << "the index: " << index << " " << "the intermediate number: " << i << endl;
-		string intermediate_filename = basedir + "mr-" + to_string(index) + "-" + to_string(i);
-		cerr << "the intermediate_filename: " << intermediate_filename << endl;
-		// TODO: whether need to trunc?
-		std::ofstream out_file(intermediate_filename);
-		std::string new_content;
-
-		if(!out_file) {
-			cerr << "the out file wrong: " << intermediate_filename << endl;
-			continue;
-		}
-
-		cerr << "begin to generate new content" << endl;
-		for (auto elem : intermediate[i]) {
-			new_content = new_content + elem.key + ' ' + elem.val + '\n';
-		}
-
-		cerr << "get the new_content" << endl;
-		out_file << new_content;
-		cerr << "write to outfile" << endl;
+		// do the reduce job
+		cout << "the filename: " << filename << endl;
+		string output_filename = rawdir + "mr-out-" + to_string(index);
+		ofstream out_file(output_filename);
+		out_file << intermediate;
+		intermediate.clear();
 		out_file.close();
-		cerr << "outfile close" << endl;
+		cout << "(write end) the filename: " << filename << endl;
 	}
+
 	cerr << "finish domap" << endl;
 }
 
 void Worker::doReduce(int index)
 {
 	// Lab4: Your code goes here.
-	string intermediate_filename, line, key, val, output_filename;
-	map<string, uint64_t> word_map;
-	int i = 0, pos = 0;
-	uint64_t raw_val;
-
-	while (true) {
-		intermediate_filename = basedir + "mr-" + to_string(i) + "-" + to_string(index);
-		std::ifstream file(intermediate_filename);
-		++i;
-
-		if(file) {
-			file.seekg(0,std::ios::beg);
-			while(getline(file, line)) {
-				pos = line.find(' ');
-
-				if (pos == std::string::npos) {
-					cout << "not found" << endl;
-				} else {
-					key = line.substr(0, pos);
-					val = line.substr(pos + 1);
-					raw_val = stoul(val);
-
-					word_map[key] += raw_val;
-				}	
-			}
-			file.close();
-		} else {
-			file.close();
-			break;
-		}
-	}
 
 	// write to the output file
-	string content;
-	for (auto elem : word_map) {
-		content = content + elem.first + ' ' + to_string(elem.second) + '\n';
-	}
-
-	output_filename = basedir + "/mr-out-" + to_string(index);
-	ofstream out_file(output_filename);
-	out_file << content;
-	out_file.close();
+	// if(intermediate.empty()) {
+	// 	return;
+	// }
+	// string output_filename = rawdir + "mr-out-" + to_string(index);
+	// ofstream out_file(output_filename);
+	// cerr << "begin to write into the out file" << endl;
+	// cout << "intermediate: "  << index << '\n' << intermediate << endl;
+	// out_file << intermediate;
+	// cerr << "write end" << endl;
+	// LOG("the intermediate in index %d is %s\n", index, intermediate.data());
+	// intermediate.clear();
+	// out_file.close();
+	return;
 }
 
 void Worker::doSubmit(mr_tasktype taskType, int index)
@@ -284,7 +253,10 @@ void Worker::doWork()
 
 		if (response.task_type == mr_tasktype::MAP) {
 			cerr << "worker do map\n";
-			doMap(response.index, response.file_name);
+			vector<string> filenames;
+			filenames.emplace_back(response.file_name);
+
+			doMap(response.index, filenames);
 			cerr << "worker submit map " << response.index << endl;
 			doSubmit(mr_tasktype::MAP, response.index);
 		} else if (response.task_type == mr_tasktype::REDUCE) {
@@ -293,7 +265,7 @@ void Worker::doWork()
 			cerr << "worker submit reduce " << response.index << endl;
 			doSubmit(mr_tasktype::REDUCE, response.index);
 		} else {
-			usleep(5000);
+			sleep(1);
 		}
 	}
 }
